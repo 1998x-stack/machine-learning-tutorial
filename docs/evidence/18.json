@@ -1,0 +1,59 @@
+{
+  "chapter": "18",
+  "claims": [
+    {
+      "id": "mlflow-tracking",
+      "claim": "MLflow Tracking organizes runs and records parameters, metrics, metadata and artifacts for experiments.",
+      "kind": "implementation",
+      "source_url": "https://mlflow.org/docs/latest/tracking/",
+      "locator": "Tracking concepts and APIs",
+      "status": "verified",
+      "notes": "The local code example records run metadata and an artifact; it does not claim to configure a production server."
+    },
+    {
+      "id": "mlflow-registry",
+      "claim": "MLflow Model Registry provides model lineage, versioning, aliases, metadata and annotations.",
+      "kind": "implementation",
+      "source_url": "https://www.mlflow.org/docs/latest/registry/",
+      "locator": "Model Registry overview",
+      "status": "verified",
+      "notes": "The chapter distinguishes a versioned model artifact from an alias that points to a version."
+    },
+    {
+      "id": "feast-pit",
+      "claim": "Feast supports historical feature retrieval and low-latency online retrieval, using event timestamps for point-in-time correctness.",
+      "kind": "implementation",
+      "source_url": "https://docs.feast.dev/getting-started/concepts/feature-retrieval",
+      "locator": "Feature retrieval and event timestamp sections",
+      "status": "verified",
+      "notes": "A feature store reduces duplicated logic but does not automatically eliminate all serving skew."
+    },
+    {
+      "id": "mlops-levels",
+      "claim": "Google Cloud's MLOps reference describes levels 0, 1 and 2 from manual processes through pipeline and CI/CD automation.",
+      "kind": "framework",
+      "source_url": "https://docs.cloud.google.com/architecture/mlops-continuous-delivery-and-automation-pipelines-in-machine-learning",
+      "locator": "MLOps level 0, level 1 and level 2 sections",
+      "status": "verified",
+      "notes": "Presented as a reference framework, not a universal maturity certification."
+    },
+    {
+      "id": "hidden-debt",
+      "claim": "ML systems can accumulate system-level technical debt through data dependencies, feedback loops, configuration and boundary problems.",
+      "kind": "research",
+      "source_url": "https://proceedings.neurips.cc/paper/2015/hash/86df7dcfd896fcaf2674f757a2463eba-Abstract.html",
+      "locator": "Sculley et al. (2015), abstract and system anti-patterns",
+      "status": "verified",
+      "notes": "The article paraphrases the risk categories without repeating unsourced adoption statistics."
+    },
+    {
+      "id": "pipeline-demo",
+      "claim": "The runnable example fits preprocessing and estimator steps together, then serializes and reloads the entire fitted pipeline.",
+      "kind": "experiment",
+      "source_url": "https://github.com/1998x-stack/machine-learning-tutorial/blob/main/docs/chapters/18.html",
+      "locator": "Offline pipeline artifact experiment",
+      "status": "illustrative",
+      "notes": "Synthetic mixed-type table; not a deployed service."
+    }
+  ]
+}

@@ -28,14 +28,14 @@ class Links(HTMLParser):
             if a.get(k):
                 self.links.append(a[k])
 
-def check_page(path, require_article=False):
+def check_page(path, require_article=False, min_figures=2):
     html = path.read_text(encoding="utf-8")
     parsed = Links()
     parsed.feed(html)
     if parsed.h1 != 1:
         ERRORS.append(f"{path.relative_to(ROOT)}: expected one H1, got {parsed.h1}")
-    if require_article and (parsed.figures < 2 or "<article" not in html or "<main" not in html):
-        ERRORS.append(f"{path.relative_to(ROOT)}: article missing >=2 figures or semantic article/main")
+    if require_article and (parsed.figures < min_figures or "<article" not in html or "<main" not in html):
+        ERRORS.append(f"{path.relative_to(ROOT)}: article missing required figures or semantic article/main")
     for link in parsed.links:
         u = urlsplit(link)
         if u.scheme or u.netloc or link.startswith(("#", "mailto:", "tel:", "javascript:", "data:")):
@@ -54,8 +54,8 @@ def main():
         if not p.is_file():
             ERRORS.append(f"missing {p}")
             continue
-        if i <= 15:
-            check_page(p, require_article=True)
+        if i <= 20:
+            check_page(p, require_article=True, min_figures=3 if i >= 11 else 2)
         if not (ROOT / f"{i:02}.html").is_file():
             ERRORS.append(f"missing root legacy redirect {i:02}.html")
         if not (DOCS / f"{i:02}.html").is_file():
@@ -72,16 +72,32 @@ def main():
                 ERRORS.append(f"{f.relative_to(ROOT)}: missing SVG desc")
         except ET.ParseError as e:
             ERRORS.append(f"{f.relative_to(ROOT)}: invalid SVG {e}")
-    for i in range(11, 16):
+    for i in range(11, 21):
         chapter_svgs = list((DOCS / "assets" / "svg" / f"{i:02}").glob("*.svg"))
         if len(chapter_svgs) < 3:
             ERRORS.append(f"chapter {i:02}: expected >=3 standalone SVG files")
-    if len(svgs) < 40:
-        ERRORS.append(f"expected >=40 diagrams for first fifteen lessons, found {len(svgs)}")
+    if len(svgs) < 59:
+        ERRORS.append(f"expected >=58 chapter diagrams plus homepage map (59 SVGs), found {len(svgs)}")
+    for i in range(16, 21):
+        evidence = DOCS / "evidence" / f"{i:02}.json"
+        if not evidence.is_file():
+            ERRORS.append(f"missing evidence ledger {evidence.relative_to(ROOT)}")
+            continue
+        try:
+            ledger = json.loads(evidence.read_text(encoding="utf-8"))
+            claims = ledger.get("claims", [])
+            if not claims:
+                ERRORS.append(f"{evidence.relative_to(ROOT)}: empty claims")
+            for claim in claims:
+                required = {"id", "claim", "kind", "source_url", "locator", "status", "notes"}
+                if not required.issubset(claim) or claim.get("status") not in {"verified", "derived", "illustrative", "unverified"}:
+                    ERRORS.append(f"{evidence.relative_to(ROOT)}: malformed claim {claim.get('id', '<unknown>')}")
+        except (json.JSONDecodeError, AttributeError) as exc:
+            ERRORS.append(f"{evidence.relative_to(ROOT)}: invalid evidence JSON {exc}")
     if ERRORS:
         print("\n".join("ERROR " + s for s in ERRORS))
         return 1
-    print(f"PASS: 28 lessons, 15 updated article pages, {len(svgs)} valid standalone SVGs, local assets resolved")
+    print(f"PASS: 28 lessons, 20 updated article pages, {len(svgs)} valid standalone SVGs, local assets resolved")
     return 0
 
 if __name__ == "__main__":

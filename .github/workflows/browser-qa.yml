@@ -15,7 +15,8 @@ jobs:
       - name: Install test dependencies
         run: |
           python3 -m pip install --upgrade pip
-          python3 -m pip install "numpy>=1.24,<3" "pandas>=2,<3" "scikit-learn>=1.4,<2" playwright
+          python3 -m pip install "numpy>=1.24,<3" "pandas>=2,<3" "scikit-learn>=1.4,<2" "imbalanced-learn>=0.13,<0.15" "shap>=0.46,<1" "mlflow>=3,<4" playwright
+          python3 -m pip install torch --extra-index-url https://download.pytorch.org/whl/cpu
           python3 -m playwright install --with-deps chromium
       - name: Run article examples
         run: python3 scripts/run_examples.py

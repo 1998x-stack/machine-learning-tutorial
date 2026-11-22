@@ -1,0 +1,59 @@
+{
+  "chapter": "16",
+  "claims": [
+    {
+      "id": "smote-interpolation",
+      "claim": "SMOTE creates synthetic minority examples by interpolation between a minority sample and selected minority-class nearest neighbours.",
+      "kind": "algorithm",
+      "source_url": "https://doi.org/10.1613/jair.953",
+      "locator": "Chawla et al. (2002), SMOTE method section",
+      "status": "verified",
+      "notes": "The article explains the interpolation mechanism; it does not claim synthetic examples are always realistic."
+    },
+    {
+      "id": "imblearn-sampler-pipeline",
+      "claim": "In imbalanced-learn Pipeline, samplers are applied during fit rather than to held-out validation or test transforms.",
+      "kind": "implementation",
+      "source_url": "https://imbalanced-learn.org/stable/references/generated/imblearn.pipeline.Pipeline.html",
+      "locator": "Pipeline API description",
+      "status": "verified",
+      "notes": "Use the imbalanced-learn Pipeline for cross-validation without resampling held-out folds."
+    },
+    {
+      "id": "threshold-separation",
+      "claim": "Probability/score estimation and threshold-based action selection are distinct stages.",
+      "kind": "evaluation",
+      "source_url": "https://scikit-learn.org/stable/modules/classification_threshold.html",
+      "locator": "Decision threshold tuning guide",
+      "status": "verified",
+      "notes": "Threshold selection must use data independent from fitting the base estimator."
+    },
+    {
+      "id": "precision-recall",
+      "claim": "Precision, recall, balanced accuracy and average precision quantify different aspects of imbalanced classification.",
+      "kind": "evaluation",
+      "source_url": "https://scikit-learn.org/stable/modules/model_evaluation.html",
+      "locator": "Classification metrics",
+      "status": "verified",
+      "notes": "AP is not universally interchangeable with trapezoidal PR-AUC."
+    },
+    {
+      "id": "confusion-example",
+      "claim": "The 1,000-row example has TN=950, FP=40, FN=4, TP=6; accuracy 95.6%, precision 13.0%, recall 60.0%.",
+      "kind": "numerical",
+      "source_url": "https://github.com/1998x-stack/machine-learning-tutorial/blob/main/docs/assets/svg/16/confusion-costs.svg",
+      "locator": "confusion-costs.svg labels and arithmetic",
+      "status": "derived",
+      "notes": "All counts are a constructed teaching example; ratios are calculated directly from the displayed integer counts."
+    },
+    {
+      "id": "smote-pipeline-demo",
+      "claim": "The runnable experiment resamples only the training subset and selects a cost-sensitive threshold on a separate validation subset.",
+      "kind": "experiment",
+      "source_url": "https://github.com/1998x-stack/machine-learning-tutorial/blob/main/docs/chapters/16.html",
+      "locator": "Section: Offline experiment",
+      "status": "illustrative",
+      "notes": "Synthetic classification data; not a benchmark or production fraud result."
+    }
+  ]
+}

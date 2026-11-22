@@ -1,211 +1,97 @@
-<!DOCTYPE html>
-<html lang="zh-CN">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.5, user-scalable=yes">
-    <title>第18章 ML系统工程化</title>
-    <style>
-        * { margin:0; padding:0; box-sizing:border-box; }
-        body {
-            background: linear-gradient(135deg, #f5f3ff 0%, #e8f5f0 100%);
-            font-family: system-ui, -apple-system, 'Segoe UI', 'PingFang SC', Roboto, 'Helvetica Neue', sans-serif;
-            padding: 20px;
-        }
-        .double-border {
-            max-width: 1400px;
-            margin: 0 auto;
-            background: #ffffff;
-            border: 2px solid #8b5cf6;
-            border-radius: 24px;
-            box-shadow: 0 20px 30px -15px rgba(0,0,0,0.2), inset 0 1px 0 0 #f5f3ff;
-            overflow: hidden;
-        }
-        .container { display: grid; grid-template-columns: 260px 1fr; gap: 0; }
-        .sidebar {
-            background: #faf8ff; border-right: 2px solid #c4b5fd; padding: 24px 16px;
-        }
-        .sidebar h3 { font-size: 1.4rem; color: #6d28d9; border-left: 5px solid #8b5cf6; padding-left: 15px; margin-bottom: 25px; }
-        .chapter-list { list-style: none; }
-        .chapter-list li { margin-bottom: 6px; }
-        .chapter-list a {
-            display: block; padding: 8px 12px; text-decoration: none;
-            color: #334155; border-radius: 12px; transition: all 0.2s;
-            font-weight: 500; font-size: 0.92rem;
-        }
-        .chapter-list a:hover { background: #ede9fe; transform: translateX(3px); }
-        .chapter-list .active { background: #7c3aed; color: white; box-shadow: 0 2px 5px rgba(124,58,237,0.3); }
-        .main-content { padding: 30px 35px; background: white; }
-        .footer-nav {
-            margin-top: 45px; padding-top: 20px; border-top: 2px solid #c4b5fd;
-            display: flex; justify-content: space-between;
-        }
-        .footer-nav a {
-            padding: 8px 24px; background: #f1f5f9; text-decoration: none;
-            color: #5b21b6; border-radius: 40px; font-weight: 500; transition: 0.2s;
-        }
-        .footer-nav a:hover { background: #ede9fe; transform: translateY(-2px); }
-        h2 { color: #4c1d95; border-left: 6px solid #8b5cf6; padding-left: 15px; margin: 20px 0 15px; font-size: 1.5rem; }
-        h3 { color: #5b21b6; margin: 20px 0 10px; font-size: 1.2rem; }
-        h4 { color: #6d28d9; margin: 15px 0 8px; font-size: 1.05rem; }
-        p { line-height: 1.85; margin: 10px 0; color: #1e293b; }
-        ul, ol { margin: 10px 0 10px 20px; line-height: 1.8; }
-        li { color: #1e293b; margin-bottom: 4px; }
-        pre { background: #1e1035; color: #e8e8f0; padding: 15px; border-radius: 12px; overflow-x: auto; font-family: 'JetBrains Mono', 'Fira Code', monospace; margin: 15px 0; font-size: 0.9rem; line-height: 1.5; }
-        code { background: #f5f3ff; padding: 2px 6px; border-radius: 4px; font-family: 'JetBrains Mono', monospace; font-size: 0.85em; }
-        pre code { background: none; padding: 0; }
-        table { width: 100%; border-collapse: collapse; margin: 15px 0; background: #fafafe; }
-        th, td { border: 1px solid #c4b5fd; padding: 10px; text-align: left; }
-        th { background: #f5f3ff; color: #5b21b6; font-weight: 600; }
-        .tip, .warning, .highlight { padding: 12px 18px; border-radius: 16px; margin: 15px 0; line-height: 1.7; }
-        .tip { background: #e0f2fe; border-left: 6px solid #0ea5e9; }
-        .warning { background: #fee2e2; border-left: 6px solid #ef4444; }
-        .highlight { background: #fef9c3; border: 1px solid #facc15; }
-        strong { color: #1e1b4b; }
-        @media (max-width: 768px) {
-            .container { grid-template-columns: 1fr; }
-            .sidebar { border-right: none; border-bottom: 2px solid #c4b5fd; }
-            body { padding: 10px; }
-            .main-content { padding: 20px; }
-        }
-    </style>
-    <link rel="stylesheet" href="theme.css">
-</head>
-<body>
-<div class="double-border">
-<div class="container">
-    <div class="sidebar">
-        <h3>🤖 课程目录</h3>
-        <ul class="chapter-list">
-            <li><a href="01.html">第1章 机器学习概述</a></li>
-            <li><a href="02.html">第2章 数学基础：线性代数</a></li>
-            <li><a href="03.html">第3章 数学基础：概率统计</a></li>
-            <li><a href="04.html">第4章 数学基础：优化理论</a></li>
-            <li><a href="05.html">第5章 数据预处理与探索</a></li>
-            <li><a href="06.html">第6章 第一个ML项目实战</a></li>
-            <li><a href="07.html">第7章 模型评估与选择</a></li>
-            <li><a href="08.html">第8章 线性回归与正则化</a></li>
-            <li><a href="09.html">第9章 逻辑回归与分类</a></li>
-            <li><a href="10.html">第10章 决策树与随机森林</a></li>
-            <li><a href="11.html">第11章 支持向量机 SVM</a></li>
-            <li><a href="12.html">第12章 朴素贝叶斯与KNN</a></li>
-            <li><a href="13.html">第13章 聚类算法</a></li>
-            <li><a href="14.html">第14章 降维与特征工程</a></li>
-            <li><a href="15.html">第15章 模型调参与AutoML</a></li>
-            <li><a href="16.html">第16章 处理不平衡数据</a></li>
-            <li><a href="17.html">第17章 模型可解释性</a></li>
-            <li><a href="18.html" class="active">第18章 ML系统工程化</a></li>
-            <li><a href="19.html">第19章 神经网络基础</a></li>
-            <li><a href="20.html">第20章 深度学习框架实战</a></li>
-            <li><a href="21.html">第21章 CNN卷积神经网络</a></li>
-            <li><a href="22.html">第22章 RNN与序列模型</a></li>
-            <li><a href="23.html">第23章 NLP自然语言处理</a></li>
-            <li><a href="24.html">第24章 生成式模型</a></li>
-            <li><a href="25.html">第25章 强化学习入门</a></li>
-            <li><a href="26.html">第26章 大语言模型与RAG</a></li>
-            <li><a href="27.html">第27章 模型部署与服务化</a></li>
-            <li><a href="28.html">第28章 毕业项目：端到端ML系统</a></li>
-        </ul>
-    </div>
-    <div class="main-content">
-        <h2>18.1 Jupyter Notebook里跑通的模型 ≠ 生产系统</h2>
-        <p>有一个著名的数据：在业界，只有约13%的数据科学项目真正进入了生产环境。剩下的87%死在了Jupyter Notebook里。为什么？因为"训练一个效果不错的模型"和"构建一个可靠、可维护的ML系统"之间有一个巨大的鸿沟。</p>
-
-        <p>我亲身经历过这个痛。一个客户流失预测模型，在Notebook上AUC 0.88，领导说"上线"。我花了一周把代码打包成脚本放到服务器上跑定时任务。两周后模型效果断崖式下跌——原来一个上游数据源的格式变了，我的代码既没有验证也没报警，默默地把错误数据喂给了模型，然后模型默默产出了错误预测。从那以后我才真正理解：ML工程化不只是"部署"这一步，而是一个贯穿始终的系统工程思维。</p>
-
-        <h2>18.2 Pipeline：让数据流自动化</h2>
-        <p>sklearn的Pipeline把多个步骤串联成一个整体。这不仅仅是代码组织方式的问题——它直接关系到模型在生产环境中是否可靠。</p>
-
-        <pre><code>from sklearn.pipeline import Pipeline
-from sklearn.preprocessing import StandardScaler, OneHotEncoder
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="description" content="一个模型文件并不是一个机器学习系统。数据校验、特征一致性、实验谱系、模型注册、部署策略与线上监控共同决定模型是否可重复、可回滚、可审计，并能在环境变化时安全迭代。"><title>ML 系统工程化：从可复现实验到可观测生产系统 · 机器学习图解教程</title><link rel="stylesheet" href="../assets/css/article.css"></head><body class="article-page"><a class="skip-link" href="#content">跳转至正文</a><header class="site-header"><div class="header-inner"><a class="wordmark" href="../index.html"><span class="mark">M<span>·</span>L</span><span>机器学习图解教程<small>Machine Learning, Explained</small></span></a><nav aria-label="顶部导航"><a href="../index.html">课程目录</a><a href="https://github.com/1998x-stack/machine-learning-tutorial">GitHub</a></nav></div></header><div class="article-shell"><aside class="article-nav"><nav aria-label="文章目录"><details open><summary>本章目录</summary><div class="nav-items"><a href="../index.html">← 全部章节</a><a href="#sec1">生产系统远大于模型代码</a><a href="#sec2">Pipeline：让训练与推理共享同一组变换</a><a href="#sec3">MLflow：让一次运行拥有可追溯的身份</a><a href="#sec4">Feature Store：离线历史与在线实时有不同的时间约束</a><a href="#sec5">Training-serving skew：同名特征不代表同一语义</a><a href="#sec6">MLOps 成熟度：自动化训练不等于自动批准上线</a><a href="#sec7">监控：区分数据漂移、概念漂移与性能退化</a><a href="#sec8">可运行实验：把预处理、模型和输入契约一起保存</a><a href="#sec9">可运行实验：记录一次 MLflow 运行</a><a href="#sec10">发布前检查与来源</a></div></details></nav></aside><main class="article-main" id="content"><article><div class="breadcrumb"><a href="../index.html">课程目录</a><span>/</span><span>第 18 章</span></div><header class="article-header"><div class="chapter-number">CHAPTER 18 / 28</div><h1>ML 系统工程化：从可复现实验到可观测生产系统</h1><p class="dek">一个模型文件并不是一个机器学习系统。数据校验、特征一致性、实验谱系、模型注册、部署策略与线上监控共同决定模型是否可重复、可回滚、可审计，并能在环境变化时安全迭代。</p><div class="lead-question">Notebook 里成功训练的模型，为什么换一台机器、换一批数据或过两周就可能不再工作？</div></header><section id="sec1" aria-labelledby="title1"><h2 id="title1">01 · 生产系统远大于模型代码</h2><p>一个可交付的机器学习系统至少包含数据源、数据校验、特征生成、训练、评估、模型产物、服务接口和监控。模型代码只是其中一环。模型上线后还会遇到 schema 变化、上游延迟、数据分布漂移、标签延迟、依赖升级、资源约束和业务反馈。若没有可追溯的输入、模型版本与部署记录，模型出错时很难定位问题。</p><p>Sculley 等人在 2015 年讨论的“机器学习系统隐藏技术债务”强调了数据依赖、边界侵蚀、配置纠缠、反馈回路和外部环境变化等系统级风险。工程化不是给 Notebook 套一个 REST API，而是把这些依赖变成明确、可测试、可监控的接口。</p><figure><div class="figure-scroll"><img src="../assets/svg/18/mlops-pipeline.svg" width="1000" height="450" loading="lazy" alt="数据校验、特征处理、训练、验证、模型注册、服务与监控构成闭环；监控信号先触发调查和验证，不意味着无条件自动重训。"></div><figcaption>数据校验、特征处理、训练、验证、模型注册、服务与监控构成闭环；监控信号先触发调查和验证，不意味着无条件自动重训。</figcaption></figure></section><section id="sec2" aria-labelledby="title2"><h2 id="title2">02 · Pipeline：让训练与推理共享同一组变换</h2><p>对表格任务，训练时拟合的缺失值填充、数值标准化、类别编码和特征选择都应作为模型管线的一部分保存。否则线上服务可能只加载分类器，却忘记训练时的编码规则；或在训练与推理时分别实现一份看似相同但细节不同的特征逻辑。</p><p>scikit-learn 的 <code>Pipeline</code> 与 <code>ColumnTransformer</code> 将预处理和估计器串联，使交叉验证中的每个训练折独立拟合变换。保存时应保存完整管线而非只保存最后一个模型。对于自定义变换，必须保持可导入、版本固定、输入 schema 明确，且避免在 <code>transform</code> 时偷偷重新估计训练统计量。</p><p>Pipeline 解决的是同一代码路径内的组合与训练折隔离，不会自动解决线上数据延迟、外部特征定义不一致、数据源权限或分布漂移。</p></section><section id="sec3" aria-labelledby="title3"><h2 id="title3">03 · MLflow：让一次运行拥有可追溯的身份</h2><p>实验管理的基本对象是 Experiment 与 Run。Experiment 组织一个任务的多次实验；Run 记录一次执行的参数、指标、时间、标签、输入数据与输出 artifacts。把代码版本、依赖环境、数据版本、切分策略和随机种子一并记录，才有可能从一个看似不错的指标追溯到具体训练过程。</p><figure><div class="figure-scroll"><img src="../assets/svg/18/model-lineage.svg" width="1000" height="450" loading="lazy" alt="一个实验运行产出模型产物，再登记为不可变版本；服务别名指向某个版本，便于回滚与追踪。"></div><figcaption>一个实验运行产出模型产物，再登记为不可变版本；服务别名指向某个版本，便于回滚与追踪。</figcaption></figure><p>MLflow Tracking 提供 API 与 UI 记录运行信息；Model Registry 提供模型版本、谱系、元数据和别名管理。当前版本化工作流应优先使用模型版本与 aliases（例如 <code>champion</code>）表达部署指针，不要把旧式固定阶段名误当作所有新版本的通用状态机。别名更新后仍需记录实际部署解析到的版本号。</p></section><section id="sec4" aria-labelledby="title4"><h2 id="title4">04 · Feature Store：离线历史与在线实时有不同的时间约束</h2><p>训练数据通常需要回看过去某个预测时刻已经可用的特征；在线推理则需要低延迟读取当前可用值。Feature Store 把实体、特征定义、事件时间、物化与读取接口组织起来。离线存储适合批量历史提取与训练，在线存储适合实时服务；两者不必是同一个数据库。</p><figure><div class="figure-scroll"><img src="../assets/svg/18/feature-store-time.svg" width="1000" height="450" loading="lazy" alt="事件时间驱动离线 point-in-time join，在线存储提供最新已物化值；同一特征定义仍需监控新鲜度和服务一致性。"></div><figcaption>事件时间驱动离线 point-in-time join，在线存储提供最新已物化值；同一特征定义仍需监控新鲜度和服务一致性。</figcaption></figure><p><strong>Point-in-time join</strong> 的关键是按预测时刻只取当时已经发生且可用的特征记录，不能把未来事件值拼回历史训练行。还要考虑事件时间与到达时间不同、迟到事件、TTL、回填和实体键变化。共享定义可以降低重复实现，但不会自动保证离线与在线计算在每个边界条件下完全一致。</p><div class="eq" role="group" tabindex="0" aria-label="预测时刻只使用事件时间不晚于预测时刻的最后一个特征值"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><mrow><msub><mi>x</mi><mi>j</mi></msub><mo>(</mo><msub><mi>t</mi><mi>p</mi></msub><mo>)</mo><mo>=</mo><msub><mi>x</mi><mrow><mi>j</mi><mo>,</mo><mi>k</mi><mo>*</mo></mrow></msub><mo>,</mo><mspace width="1em"/><msub><mi>t</mi><mo>*</mo></msub><mo>=</mo><munder><mtext>max</mtext><mrow><msub><mi>t</mi><mi>k</mi></msub><mo>≤</mo><msub><mi>t</mi><mi>p</mi></msub></mrow></munder></mrow></math></div></section><section id="sec5" aria-labelledby="title5"><h2 id="title5">05 · Training-serving skew：同名特征不代表同一语义</h2><p>常见偏差包括：训练时使用过去 30 天自然日窗口，线上使用滚动 720 小时；训练数据使用完整回填，线上只看到迟到前的事件；训练时缺失值按中位数填充，线上把缺失当 0；训练和服务对时区、去重、实体主键或类别字典的处理不同。</p><p>要减少这种偏差，应尽量复用特征定义与变换代码；记录特征 schema、版本、窗口边界、时区、单位、缺失语义和数据新鲜度；对同一批实体与时间戳做离线/在线对照测试。Feature Store 是组织与服务基础设施，不是数据质量保证书。</p></section><section id="sec6" aria-labelledby="title6"><h2 id="title6">06 · MLOps 成熟度：自动化训练不等于自动批准上线</h2><p>Google Cloud 的 MLOps 指南用三个成熟度层次描述常见演进：Level 0 以人工和脚本为主；Level 1 自动化 ML pipeline，并引入持续训练、数据与模型验证；Level 2 进一步自动化 pipeline 组件的 CI/CD，测试与发布更系统。它是一套参考框架，不是适用于每个团队的法定成熟度标准。</p><p>自动化的边界应清晰：代码变更可以自动测试与构建；新数据可以触发候选训练；候选模型必须通过数据质量、性能基线、分组指标、延迟、资源和安全检查；只有满足审批策略才提升部署版本。对高风险系统，人工审查、灰度发布、回滚和独立审计仍然重要。</p></section><section id="sec7" aria-labelledby="title7"><h2 id="title7">07 · 监控：区分数据漂移、概念漂移与性能退化</h2><p><strong>数据漂移</strong>通常指输入分布变化；<strong>概念漂移</strong>指输入与目标关系随时间变化；<strong>性能退化</strong>是模型在可观测标签上实际变差。它们相关但不等价：输入分布变了，模型性能未必下降；模型性能下降，也可能来自标签定义变化、测量流程错误或上游 schema bug。</p><p>监控层应同时覆盖数据 schema/范围/缺失/新鲜度、预测分数分布、服务延迟/错误率、资源消耗、标签到达后的性能指标和重要分组误差。每个告警都要有 owner、调查步骤和回滚/重训条件。若标签尚未到达，就不能把输入漂移指标称为已测量的模型准确率。</p></section><section id="sec8" aria-labelledby="title8"><h2 id="title8">08 · 可运行实验：把预处理、模型和输入契约一起保存</h2><p>下面构造一个混合数值/类别的表格任务。所有填补、标准化和独热编码都在 Pipeline 中拟合；测试数据包含一个训练时未见过的城市，<code>handle_unknown='ignore'</code> 使其编码行为明确。保存与重新加载的是整个管线。</p><pre><code>import tempfile
+from pathlib import Path
+import joblib
+import numpy as np
+import pandas as pd
 from sklearn.compose import ColumnTransformer
-from sklearn.ensemble import RandomForestClassifier
+from sklearn.impute import SimpleImputer
+from sklearn.linear_model import LogisticRegression
+from sklearn.model_selection import train_test_split
+from sklearn.pipeline import Pipeline
+from sklearn.preprocessing import OneHotEncoder, StandardScaler
 
-# ColumnTransformer：对不同列做不同预处理
-preprocessor = ColumnTransformer([
-    ('num', StandardScaler(), ['age', 'income', 'tenure']),
-    ('cat', OneHotEncoder(handle_unknown='ignore'), ['city', 'plan']),
+rng = np.random.default_rng(18)
+n = 360
+age = rng.normal(42, 11, n)
+income = rng.normal(65000, 18000, n)
+city = rng.choice([&quot;Tokyo&quot;, &quot;Osaka&quot;, &quot;Fukuoka&quot;], n)
+plan = rng.choice([&quot;basic&quot;, &quot;plus&quot;], n)
+logit = -2.0 + 0.035 * (age - 40) + 0.000025 * (income - 60000)
+logit += (plan == &quot;plus&quot;) * 0.65 + (city == &quot;Tokyo&quot;) * 0.25
+prob = 1 / (1 + np.exp(-logit))
+y = (rng.random(n) &lt; prob).astype(int)
+X = pd.DataFrame({&quot;age&quot;: age, &quot;income&quot;: income, &quot;city&quot;: city, &quot;plan&quot;: plan})
+X.loc[::31, &quot;income&quot;] = np.nan
+
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=0.2, stratify=y, random_state=18)
+numeric = Pipeline([
+    (&quot;impute&quot;, SimpleImputer(strategy=&quot;median&quot;)),
+    (&quot;scale&quot;, StandardScaler())
 ])
-
-# 完整Pipeline
+categorical = Pipeline([
+    (&quot;impute&quot;, SimpleImputer(strategy=&quot;most_frequent&quot;)),
+    (&quot;encode&quot;, OneHotEncoder(handle_unknown=&quot;ignore&quot;))
+])
+preprocess = ColumnTransformer([
+    (&quot;numeric&quot;, numeric, [&quot;age&quot;, &quot;income&quot;]),
+    (&quot;categorical&quot;, categorical, [&quot;city&quot;, &quot;plan&quot;])
+])
 pipeline = Pipeline([
-    ('preprocessor', preprocessor),
-    ('feature_selector', SelectFromModel(RandomForestClassifier())),
-    ('classifier', RandomForestClassifier(n_estimators=200))
+    (&quot;preprocess&quot;, preprocess),
+    (&quot;classifier&quot;, LogisticRegression(max_iter=1000))
 ])
-
 pipeline.fit(X_train, y_train)
 
-# 保存整个pipeline（不只是模型！）
-import joblib
-joblib.dump(pipeline, 'full_pipeline.pkl')
+# 模拟线上输入：出现训练期未见的类别值
+online = X_test.iloc[:5].copy()
+online.loc[online.index[0], &quot;city&quot;] = &quot;Nagoya&quot;
+before = pipeline.predict_proba(online)[:, 1]
 
-# 生产环境使用：输入原始数据，返回预测
-predictions = joblib.load('full_pipeline.pkl').predict(raw_data)
-</code></pre>
+with tempfile.TemporaryDirectory() as tmp:
+    path = Path(tmp) / &quot;full_pipeline.joblib&quot;
+    joblib.dump(pipeline, path)
+    loaded = joblib.load(path)
+    after = loaded.predict_proba(online)[:, 1]
+    np.testing.assert_allclose(before, after)
+    print(&quot;model artifact:&quot;, path.name, &quot;bytes:&quot;, path.stat().st_size)
+print(&quot;probabilities:&quot;, np.round(after, 3))
+assert np.all(np.isfinite(after))</code></pre><p>需要 Python 3.10+、NumPy、pandas、scikit-learn 与 joblib。该示例只证明本地管线保存/加载和未知类别的处理，不构成远程模型服务或生产部署演示。</p></section><section id="sec9" aria-labelledby="title9"><h2 id="title9">09 · 可运行实验：记录一次 MLflow 运行</h2><p>MLflow Tracking 可以在本地记录参数、指标和工件。下面使用临时目录中的 SQLite 后端创建隔离的 tracking store，避免在仓库根目录留下运行数据；现代 MLflow 已将旧 file-based backend 置于维护模式。正式团队部署仍应配置受控的 tracking server、后端数据库和 artifact store。</p><pre><code>import json
+import tempfile
+from pathlib import Path
+import mlflow
 
-        <div class="tip">
-            <strong>💡 Pipeline的核心价值：</strong>把预处理逻辑和模型打包在一起保存。这样你在训练时怎么处理数据的，推理时就用完全一样的方式处理。消除了"训练代码里做了标准化，部署代码忘了做"这类人为错误。在生产环境中，<strong>保存 Pipeline 而不是保存模型</strong>——这是血的教训换来的经验。
-        </div>
+with tempfile.TemporaryDirectory() as tmp:
+    tracking = Path(tmp) / &quot;mlruns&quot;
+    tracking.mkdir(parents=True, exist_ok=True)
+    database = tracking / &quot;mlflow.db&quot;
+    mlflow.set_tracking_uri(f&quot;sqlite:///{database}&quot;)
+    mlflow.set_experiment(&quot;mlops-tutorial-18&quot;)
 
-        <h2>18.3 MLflow：实验管理与模型注册</h2>
-        <p>当你同时跑十几个实验，参数各不同，一周后回来看"best_model_v3_final_2.pkl"时，你已经完全忘了它对应什么参数、什么数据、什么结果。MLflow就是为这个痛点而生的。</p>
+    with mlflow.start_run(run_name=&quot;pipeline-contract-demo&quot;) as run:
+        mlflow.log_params({
+            &quot;model&quot;: &quot;logistic-regression&quot;,
+            &quot;preprocessing&quot;: &quot;column-transformer&quot;,
+            &quot;seed&quot;: 18,
+        })
+        mlflow.log_metrics({
+            &quot;validation_balanced_accuracy&quot;: 0.71,
+            &quot;validation_average_precision&quot;: 0.42,
+        })
+        manifest = {
+            &quot;data_contract&quot;: [&quot;age:float&quot;, &quot;income:float&quot;, &quot;city:string&quot;, &quot;plan:string&quot;],
+            &quot;split_seed&quot;: 18,
+            &quot;note&quot;: &quot;illustrative metadata, not a benchmark result&quot;,
+        }
+        manifest_path = Path(tmp) / &quot;run-manifest.json&quot;
+        manifest_path.write_text(json.dumps(manifest, indent=2), encoding=&quot;utf-8&quot;)
+        mlflow.log_artifact(str(manifest_path))
+        run_id = run.info.run_id
 
-        <table>
-            <tr><th>MLflow组件</th><th>功能</th><th>核心概念</th></tr>
-            <tr><td>Tracking</td><td>记录实验参数、指标、模型</td><td>Run、Experiment</td></tr>
-            <tr><td>Models</td><td>标准化模型格式，跨框架部署</td><td>Flavor、Signature</td></tr>
-            <tr><td>Registry</td><td>模型版本管理、阶段切换</td><td>Stage、Version</td></tr>
-        </table>
-
-        <pre><code>import mlflow
-import mlflow.sklearn
-
-mlflow.set_experiment("customer_churn_prediction")
-
-with mlflow.start_run():
-    # 记录参数
-    mlflow.log_params({'n_estimators': 200, 'max_depth': 10})
-
-    # 训练模型
-    model = RandomForestClassifier(n_estimators=200, max_depth=10)
-    model.fit(X_train, y_train)
-
-    # 记录指标
-    mlflow.log_metrics({'accuracy': 0.87, 'f1': 0.82, 'auc': 0.91})
-
-    # 保存模型（自动记录环境依赖）
-    mlflow.sklearn.log_model(model, "random_forest_model")
-
-# 之后查看：mlflow ui → http://localhost:5000
-</code></pre>
-
-        <h2>18.4 特征存储：告别"离线在线不一致"</h2>
-        <p>ML系统中最隐蔽的bug之一是"训练-服务偏差"（Training-Serving Skew）：训练时用的特征计算逻辑，和线上推理时不一样。比如训练时"用户过去30天点击次数"是离线批计算的值，但线上推理时用的是另一个实时服务计算的值——两者可能因为时间窗口定义、数据延迟等原因产生差异。</p>
-
-        <p>特征存储（Feature Store）解决的就是这个问题：<strong>所有特征的定义、计算、存储、服务都在一个地方</strong>。业界常用的有Feast（开源）、Tecton（商业）。虽然对于小团队可能过重，但了解这个概念非常重要——即使不用专门的Feature Store，你也要确保训练和推理的特征计算代码是同一套。</p>
-
-        <h2>18.5 MLOps成熟度模型</h2>
-
-        <table>
-            <tr><th>等级</th><th>特征</th><th>适合</th></tr>
-            <tr><td>L0: 手动</td><td>Notebook训练，手动部署，无监控</td><td>个人项目、探索期</td></tr>
-            <tr><td>L1: 自动化Pipeline</td><td>数据→训练→部署全自动化，有监控</td><td>初创公司、小团队</td></tr>
-            <tr><td>L2: CI/CD/CT</td><td>持续训练、自动回滚、A/B实验</td><td>中大型公司、核心业务</td></tr>
-        </table>
-
-        <div class="highlight">
-            <strong>🔑 实战建议：</strong>不要一上来就追求L2。从L0到L1是性价比最高的投资——花一两周把训练流程Pipeline化、加上基本的异常监控，就能避免80%的生产事故。MLflow + sklearn Pipeline + 基础监控脚本，这就已经是一个不错的生产系统了。等技术债务积累到一定程度再考虑引入Kubeflow这类重型MLOps平台。
-        </div>
-
-        <p>ML系统工程化是第三部分的终点。下一章开始，我们正式进入深度学习的世界！</p>
-
-        <div class="footer-nav">
-            <a href="17.html">← 上一章</a>
-            <a href="index.html">📖 返回目录</a>
-            <a href="19.html">下一章 →</a>
-        </div>
-    </div>
-</div>
-</div>
-</body>
-</html>
+    client = mlflow.tracking.MlflowClient()
+    recorded = client.get_run(run_id)
+    print(&quot;run id:&quot;, recorded.info.run_id)
+    print(&quot;logged params:&quot;, recorded.data.params)
+    print(&quot;logged metrics:&quot;, recorded.data.metrics)
+    assert recorded.data.params[&quot;model&quot;] == &quot;logistic-regression&quot;
+    assert &quot;validation_average_precision&quot; in recorded.data.metrics</code></pre><p>需要 Python 3.10+ 与完整的 <code>mlflow</code> 包；SQLite 后端依赖 SQLAlchemy，而 mlflow-skinny 不包含该后端依赖。指标数值在此处是明确标注的元数据示例，不是模型评估结果。Model Registry 的版本与别名管理通常需要完整的 Registry 后端配置；这段本地 Tracking 示例没有创建或发布 Registry 版本。</p></section><section id="sec10" aria-labelledby="title10"><h2 id="title10">10 · 发布前检查与来源</h2><p>一次可审计发布至少需要：数据与特征 schema、代码 commit、依赖锁定、训练数据时间范围、切分与随机种子、参数和指标、模型工件签名、运行时镜像、资源需求、部署版本、回滚目标和监控告警。若这些信息无法回答，系统仍然不可复现。</p><ul class="refs"><li><a href="https://mlflow.org/docs/latest/tracking/" rel="noopener noreferrer">MLflow Tracking：Experiments、Runs、参数、指标与 artifacts</a></li><li><a href="https://www.mlflow.org/docs/latest/registry/" rel="noopener noreferrer">MLflow Model Registry：版本、谱系、别名与元数据</a></li><li><a href="https://docs.feast.dev/" rel="noopener noreferrer">Feast Feature Store：离线/在线存储与 point-in-time 数据</a></li><li><a href="https://docs.feast.dev/getting-started/concepts/feature-retrieval" rel="noopener noreferrer">Feast Feature Retrieval：历史检索、在线检索和事件时间</a></li><li><a href="https://docs.cloud.google.com/architecture/mlops-continuous-delivery-and-automation-pipelines-in-machine-learning" rel="noopener noreferrer">Google Cloud MLOps：Level 0/1/2 与 CI/CD/CT</a></li><li><a href="https://proceedings.neurips.cc/paper/2015/hash/86df7dcfd896fcaf2674f757a2463eba-Abstract.html" rel="noopener noreferrer">Sculley et al. (2015), Hidden Technical Debt in Machine Learning Systems</a></li></ul></section><nav class="article-footer" aria-label="章节导航"><a href="17.html">← 上一章</a><a href="../index.html">全部章节</a><a href="19.html">下一章 →</a></nav></article></main></div><footer class="site-footer"><span>机器学习图解教程 · 第 18 章</span><span>模型解释、系统可靠性与证据边界</span></footer></body></html>

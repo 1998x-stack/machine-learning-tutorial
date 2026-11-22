@@ -1,0 +1,59 @@
+{
+  "chapter": "19",
+  "claims": [
+    {
+      "id": "backprop",
+      "claim": "Backpropagation applies the chain rule to propagate output error gradients through network connections and learn hidden representations.",
+      "kind": "research",
+      "source_url": "https://www.nature.com/articles/323533a0",
+      "locator": "Rumelhart, Hinton & Williams (1986), abstract",
+      "status": "verified",
+      "notes": "The chapter derives a small one-hidden-layer case with explicit tensor dimensions."
+    },
+    {
+      "id": "xavier",
+      "claim": "Glorot initialization derives variance scaling based on fan-in and fan-out to improve signal propagation in deep feed-forward networks.",
+      "kind": "research",
+      "source_url": "https://proceedings.mlr.press/v9/glorot10a.html",
+      "locator": "Glorot & Bengio (2010)",
+      "status": "verified",
+      "notes": "Formula assumptions and activation context are stated."
+    },
+    {
+      "id": "he-init",
+      "claim": "Kaiming initialization accounts for rectifier activations and commonly uses variance 2/fan_in for forward variance preservation.",
+      "kind": "research",
+      "source_url": "https://openaccess.thecvf.com/content_iccv_2015/html/He_Delving_Deep_into_Rectifiers_Surpassing_Human-Level_Performance_on_ImageNet_ICCV_2015_paper.html",
+      "locator": "He et al. (2015), initialization derivation",
+      "status": "verified",
+      "notes": "Fan mode and weight layout conventions matter."
+    },
+    {
+      "id": "batchnorm",
+      "claim": "BatchNorm uses mini-batch statistics during training and running statistics during evaluation, with learnable scale and shift.",
+      "kind": "research",
+      "source_url": "https://proceedings.mlr.press/v37/ioffe15.html",
+      "locator": "Ioffe & Szegedy (2015)",
+      "status": "verified",
+      "notes": "The chapter does not claim BatchNorm is universally best; it also distinguishes the biased batch variance used in the forward pass from the unbiased running-variance estimator in PyTorch BatchNorm1d."
+    },
+    {
+      "id": "dropout",
+      "claim": "Dropout randomly removes units during training and uses an unthinned network at inference.",
+      "kind": "research",
+      "source_url": "https://www.jmlr.org/beta/papers/v15/srivastava14a.html",
+      "locator": "Srivastava et al. (2014), abstract",
+      "status": "verified",
+      "notes": "Inverted dropout scaling is described separately as a common implementation convention."
+    },
+    {
+      "id": "manual-gradient-check",
+      "claim": "A one-hidden-layer tanh network's analytic W1 gradient is checked against a central finite-difference estimate.",
+      "kind": "experiment",
+      "source_url": "https://github.com/1998x-stack/machine-learning-tutorial/blob/main/docs/chapters/19.html",
+      "locator": "Manual backpropagation experiment",
+      "status": "derived",
+      "notes": "Numerical gradient check validates a toy implementation, not network generalization."
+    }
+  ]
+}

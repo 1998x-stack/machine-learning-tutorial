@@ -6,7 +6,7 @@ from playwright.sync_api import sync_playwright
 ROOT = Path(__file__).resolve().parents[1]
 OUT = ROOT / 'reports' / 'browser-qa'
 FILES = [ROOT / 'docs' / 'index.html'] + [
-    ROOT / 'docs' / 'chapters' / f'{i:02}.html' for i in range(1, 16)
+    ROOT / 'docs' / 'chapters' / f'{i:02}.html' for i in range(1, 21)
 ]
 VIEWPORTS = [('desktop', 1440, 900), ('mobile', 390, 844), ('compact', 360, 780)]
 
@@ -81,7 +81,7 @@ def main():
     if failures:
         print('\n'.join('ERROR ' + x for x in failures))
         return 1
-    print('PASS 48 viewport-page checks, three search interactions, MathML geometry and SVG images')
+    print('PASS 63 viewport-page checks, three search interactions, MathML geometry and SVG images')
     return 0
 
 if __name__ == '__main__':
