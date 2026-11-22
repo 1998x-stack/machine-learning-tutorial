@@ -6,7 +6,7 @@ from playwright.sync_api import sync_playwright
 ROOT = Path(__file__).resolve().parents[1]
 OUT = ROOT / 'reports' / 'browser-qa'
 FILES = [ROOT / 'docs' / 'index.html'] + [
-    ROOT / 'docs' / 'chapters' / f'{i:02}.html' for i in range(1, 6)
+    ROOT / 'docs' / 'chapters' / f'{i:02}.html' for i in range(1, 11)
 ]
 VIEWPORTS = [('desktop', 1440, 900), ('mobile', 390, 844), ('compact', 360, 780)]
 
@@ -47,6 +47,23 @@ def main():
                 dest = OUT / name
                 dest.mkdir(parents=True, exist_ok=True)
                 page.screenshot(path=str(dest / (path.stem + '.png')), animations='disabled')
+                if path.name == '07.html':
+                    slider = page.locator('#threshold-07')
+                    if slider.count() != 1:
+                        failures.append(f'{name} 07: threshold control missing')
+                    else:
+                        initial_tp = page.locator('[data-field="tp"]').inner_text()
+                        initial_tn = page.locator('[data-field="tn"]').inner_text()
+                        if initial_tp != '2' or initial_tn != '3':
+                            failures.append(f'{name} 07: default counts incorrect')
+                        slider.evaluate("""el => {
+                          el.value = '0.75';
+                          el.dispatchEvent(new Event('input', {bubbles:true}));
+                        }""")
+                        tp = page.locator('[data-field="tp"]').inner_text()
+                        tn = page.locator('[data-field="tn"]').inner_text()
+                        if tp != '1' or tn != '4':
+                            failures.append(f'{name} 07: slider counts incorrect')
                 if path.name == 'index.html':
                     page.locator('#course-search').fill('梯度')
                     visible = page.locator('.lesson-card:not([hidden])')
@@ -58,7 +75,7 @@ def main():
     if failures:
         print('\n'.join('ERROR ' + x for x in failures))
         return 1
-    print('PASS 18 viewport-page checks, three search interactions, MathML geometry and SVG images')
+    print('PASS 33 viewport-page checks, three search interactions, MathML geometry and SVG images')
     return 0
 
 if __name__ == '__main__':
