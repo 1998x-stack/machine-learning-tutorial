@@ -1,236 +1,34 @@
-<!DOCTYPE html>
-<html lang="zh-CN">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.5, user-scalable=yes">
-    <title>第8章 线性回归与正则化</title>
-    <style>
-        * { margin:0; padding:0; box-sizing:border-box; }
-        body {
-            background: linear-gradient(135deg, #f5f3ff 0%, #e8f5f0 100%);
-            font-family: system-ui, -apple-system, 'Segoe UI', 'PingFang SC', Roboto, 'Helvetica Neue', sans-serif;
-            padding: 20px;
-        }
-        .double-border {
-            max-width: 1400px;
-            margin: 0 auto;
-            background: #ffffff;
-            border: 2px solid #8b5cf6;
-            border-radius: 24px;
-            box-shadow: 0 20px 30px -15px rgba(0,0,0,0.2), inset 0 1px 0 0 #f5f3ff;
-            overflow: hidden;
-        }
-        .container {
-            display: grid;
-            grid-template-columns: 260px 1fr;
-            gap: 0;
-        }
-        .sidebar {
-            background: #faf8ff;
-            border-right: 2px solid #c4b5fd;
-            padding: 24px 16px;
-        }
-        .sidebar h3 {
-            font-size: 1.4rem;
-            color: #6d28d9;
-            border-left: 5px solid #8b5cf6;
-            padding-left: 15px;
-            margin-bottom: 25px;
-        }
-        .chapter-list { list-style: none; }
-        .chapter-list li { margin-bottom: 6px; }
-        .chapter-list a {
-            display: block; padding: 8px 12px; text-decoration: none;
-            color: #334155; border-radius: 12px; transition: all 0.2s;
-            font-weight: 500; font-size: 0.92rem;
-        }
-        .chapter-list a:hover { background: #ede9fe; transform: translateX(3px); }
-        .chapter-list .active {
-            background: #7c3aed; color: white;
-            box-shadow: 0 2px 5px rgba(124,58,237,0.3);
-        }
-        .main-content { padding: 30px 35px; background: white; }
-        .footer-nav {
-            margin-top: 45px; padding-top: 20px; border-top: 2px solid #c4b5fd;
-            display: flex; justify-content: space-between;
-        }
-        .footer-nav a {
-            padding: 8px 24px; background: #f1f5f9; text-decoration: none;
-            color: #5b21b6; border-radius: 40px; font-weight: 500; transition: 0.2s;
-        }
-        .footer-nav a:hover { background: #ede9fe; transform: translateY(-2px); }
-        footer {
-            text-align: center; margin-top: 30px; padding: 15px; color: #64748b;
-            border-top: 1px dashed #cbd5e1; font-size: 0.9rem;
-        }
-        h2 { color: #4c1d95; border-left: 6px solid #8b5cf6; padding-left: 15px; margin: 20px 0 15px; font-size: 1.5rem; }
-        h3 { color: #5b21b6; margin: 20px 0 10px; font-size: 1.2rem; }
-        h4 { color: #6d28d9; margin: 15px 0 8px; font-size: 1.05rem; }
-        p { line-height: 1.85; margin: 10px 0; color: #1e293b; }
-        ul, ol { margin: 10px 0 10px 20px; line-height: 1.8; }
-        li { color: #1e293b; margin-bottom: 4px; }
-        pre {
-            background: #1e1035; color: #e8e8f0; padding: 15px; border-radius: 12px;
-            overflow-x: auto; font-family: 'JetBrains Mono', 'Fira Code', monospace;
-            margin: 15px 0; font-size: 0.9rem; line-height: 1.5;
-        }
-        code { background: #f5f3ff; padding: 2px 6px; border-radius: 4px; font-family: 'JetBrains Mono', monospace; font-size: 0.85em; }
-        pre code { background: none; padding: 0; }
-        table { width: 100%; border-collapse: collapse; margin: 15px 0; background: #fafafe; }
-        th, td { border: 1px solid #c4b5fd; padding: 10px; text-align: left; }
-        th { background: #f5f3ff; color: #5b21b6; font-weight: 600; }
-        .tip, .warning, .highlight {
-            padding: 12px 18px; border-radius: 16px; margin: 15px 0; line-height: 1.7;
-        }
-        .tip { background: #e0f2fe; border-left: 6px solid #0ea5e9; }
-        .warning { background: #fee2e2; border-left: 6px solid #ef4444; }
-        .highlight { background: #fef9c3; border: 1px solid #facc15; }
-        strong { color: #1e1b4b; }
-        @media (max-width: 768px) {
-            .container { grid-template-columns: 1fr; }
-            .sidebar { border-right: none; border-bottom: 2px solid #c4b5fd; }
-            body { padding: 10px; }
-            .main-content { padding: 20px; }
-        }
-    </style>
-    <link rel="stylesheet" href="theme.css">
-</head>
-<body>
-<div class="double-border">
-<div class="container">
-    <div class="sidebar">
-        <h3>🤖 课程目录</h3>
-        <ul class="chapter-list">
-            <li><a href="01.html">第1章 机器学习概述</a></li>
-            <li><a href="02.html">第2章 数学基础：线性代数</a></li>
-            <li><a href="03.html">第3章 数学基础：概率统计</a></li>
-            <li><a href="04.html">第4章 数学基础：优化理论</a></li>
-            <li><a href="05.html">第5章 数据预处理与探索</a></li>
-            <li><a href="06.html">第6章 第一个ML项目实战</a></li>
-            <li><a href="07.html">第7章 模型评估与选择</a></li>
-            <li><a href="08.html" class="active">第8章 线性回归与正则化</a></li>
-            <li><a href="09.html">第9章 逻辑回归与分类</a></li>
-            <li><a href="10.html">第10章 决策树与随机森林</a></li>
-            <li><a href="11.html">第11章 支持向量机 SVM</a></li>
-            <li><a href="12.html">第12章 朴素贝叶斯与KNN</a></li>
-            <li><a href="13.html">第13章 聚类算法</a></li>
-            <li><a href="14.html">第14章 降维与特征工程</a></li>
-            <li><a href="15.html">第15章 模型调参与AutoML</a></li>
-            <li><a href="16.html">第16章 处理不平衡数据</a></li>
-            <li><a href="17.html">第17章 模型可解释性</a></li>
-            <li><a href="18.html">第18章 ML系统工程化</a></li>
-            <li><a href="19.html">第19章 神经网络基础</a></li>
-            <li><a href="20.html">第20章 深度学习框架实战</a></li>
-            <li><a href="21.html">第21章 CNN卷积神经网络</a></li>
-            <li><a href="22.html">第22章 RNN与序列模型</a></li>
-            <li><a href="23.html">第23章 NLP自然语言处理</a></li>
-            <li><a href="24.html">第24章 生成式模型</a></li>
-            <li><a href="25.html">第25章 强化学习入门</a></li>
-            <li><a href="26.html">第26章 大语言模型与RAG</a></li>
-            <li><a href="27.html">第27章 模型部署与服务化</a></li>
-            <li><a href="28.html">第28章 毕业项目：端到端ML系统</a></li>
-        </ul>
-    </div>
-    <div class="main-content">
-        <h2>8.1 最古老的ML算法，依然是工业界的中坚</h2>
-        <p>线性回归诞生于200多年前（1805年，Legendre发表最小二乘法），但它至今仍是工业界使用最频繁的模型之一。为什么？三个字：<strong>可解释、快、稳</strong>。在很多场景（如信贷评分卡、房价评估），你需要的不是一个黑盒深度学习模型，而是一个系数有明确业务含义的线性模型。这一章我们彻底搞懂线性回归以及它的三个"强化版"——Ridge、Lasso、ElasticNet。</p>
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="description" content="为什么最小二乘法可以同时拟合许多参数？正则化到底改变了什么？从投影几何与线性代数出发，把 OLS、Ridge、Lasso 和 Elastic Net 的目标、边界与代码对应起来。"><title>线性回归与正则化：从残差到稀疏解 · 机器学习图解教程</title><link rel="stylesheet" href="../assets/css/article.css"></head><body class="article-page"><a class="skip-link" href="#content">跳转至正文</a><header class="site-header"><div class="header-inner"><a class="wordmark" href="../index.html"><span class="mark">M<span>·</span>L</span><span>机器学习图解教程<small>Machine Learning, Explained</small></span></a><nav aria-label="顶部导航"><a href="../index.html">课程目录</a><a href="https://github.com/1998x-stack/machine-learning-tutorial">GitHub</a></nav></div></header><div class="article-shell"><aside class="article-nav"><nav aria-label="文章目录"><details open><summary>本章目录</summary><div class="nav-items"><a href="../index.html">← 全部章节</a><a href="#sec1">线性模型是特征组合，不要求原始关系呈直线</a><a href="#sec2">最小二乘法到底在最小化什么</a><a href="#sec3">什么时候系数难以解释或不稳定</a><a href="#sec4">Ridge：用 L2 惩罚稳定参数</a><a href="#sec5">Lasso 和 Elastic Net：稀疏性从哪里来</a><a href="#sec6">系数路径为什么不能只看一个 α</a><a href="#sec7">多项式特征仍要防止过拟合</a><a href="#sec8">可运行：比较三个正则化目标</a><a href="#sec9">局限与来源</a></div></details></nav></aside><main class="article-main" id="content"><article><div class="breadcrumb"><a href="../index.html">课程目录</a><span>/</span><span>第 08 章</span></div><header class="article-header"><div class="chapter-number">CHAPTER 08 / 28</div><h1>线性回归与正则化：从残差到稀疏解</h1><p class="dek">为什么最小二乘法可以同时拟合许多参数？正则化到底改变了什么？从投影几何与线性代数出发，把 OLS、Ridge、Lasso 和 Elastic Net 的目标、边界与代码对应起来。</p><div class="lead-question">如果增加特征总能让训练误差不升高，为什么测试误差反而可能变差？</div></header><section id="sec1" aria-labelledby="title1"><h2 id="title1">01 · 线性模型是特征组合，不要求原始关系呈直线</h2><p>对一条有 <code>d</code> 个特征的样本 <code>x∈R^d</code>，线性回归把预测写为 <code>ŷ=β₀+xᵀβ</code>。这里“线性”是指相对于待估计系数 <code>β</code> 呈线性，而不是限制原始特征只能是一维数值。把 <code>x, x²</code> 等非线性特征作为新的输入后，模型仍可以对扩展后的特征做线性回归。</p><p>对 <code>n</code> 条样本，设计矩阵 <code>X∈R^(n×d)</code>、系数 <code>β∈R^d</code>，预测向量为 <code>Xβ+β₀·1</code>。若模型要学习截距，通常需要把截距独立于正则化的权重项处理。将特征与标签的关联视作因果关系则需要额外的研究设计，单靠回归系数无法实现。</p></section><section id="sec2" aria-labelledby="title2"><h2 id="title2">02 · 最小二乘法到底在最小化什么</h2><p>最小二乘法（OLS）对每个预测计算真实值与预测值的<strong>竖直残差</strong>，选择使残差平方和最小的参数。它不会强迫直线穿过全部点，尤其在观测包含噪声时；平方也会使大的误差受到更强惩罚。</p><figure><div class="figure-scroll"><img src="../assets/svg/08/ols-residuals.svg" width="1000" height="430" loading="lazy" alt="散点与一条候选直线之间的橙色竖直线段是残差，OLS 在全体可行直线中寻找残差平方和最小者。"></div><figcaption>散点与一条候选直线之间的橙色竖直线段是残差，OLS 在全体可行直线中寻找残差平方和最小者。</figcaption></figure><div class="eq" role="group" tabindex="0" aria-label="最小二乘目标：逐样本预测残差平方的平均"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><mrow><munder><mo>min</mo><mrow><msub><mi>β</mi><mn>0</mn></msub><mo>,</mo><mi>β</mi></mrow></munder><mfrac><mn>1</mn><mi>n</mi></mfrac><munderover><mo>∑</mo><mrow><mi>i</mi><mo>=</mo><mn>1</mn></mrow><mi>n</mi></munderover><msup><mrow><mo>(</mo><msub><mi>y</mi><mi>i</mi></msub><mo>−</mo><msub><mi>β</mi><mn>0</mn></msub><mo>−</mo><msubsup><mi>x</mi><mi>i</mi><mi>T</mi></msubsup><mi>β</mi><mo>)</mo></mrow><mn>2</mn></msup></mrow></math></div><p>在完整列秩和适当截距处理的条件下，最优残差与设计矩阵的列空间正交，由正规方程 <code>XᵀXβ=Xᵀy</code> 表示。<strong>不要</strong>把显式计算 <code>(XᵀX)⁻¹</code> 当作通用实现：共线性或病态矩阵会带来数值不稳定，QR 分解或 SVD 的最小二乘求解器通常更稳妥。</p></section><section id="sec3" aria-labelledby="title3"><h2 id="title3">03 · 什么时候系数难以解释或不稳定</h2><p>如果面积以平方米计、价格以万元计，且两列特征尺度相差很大，优化算法或带正则化的系数估计可能对尺度敏感。两个强相关特征可能提供几乎相同的信息，导致单独系数显著摆动；这并不一定表示整体预测也同样不稳定。</p><p>最小二乘是优化定义，统计解释需要额外假设。误差零条件期望、样本选择偏差、异方差、时间相关和外生性都会影响推断。对预测任务应优先关注数据划分与泛化；对因果问题不能直接套用预测评价来宣称“系数代表效果”。</p></section><section id="sec4" aria-labelledby="title4"><h2 id="title4">04 · Ridge：用 L2 惩罚稳定参数</h2><p>Ridge 在平方残差目标后加上权重的平方惩罚。按 scikit-learn <code>Ridge</code> 的目标形式，可写为 <code>||y−Xβ||²+α||β||²</code>，其中示意里忽略了独立拟合、不作惩罚的截距。<code>α≥0</code>，较大的惩罚通常收缩系数幅度并改善某些病态设计的稳定性，代价是引入偏差；不能保证任何数据上的预测误差必然下降。</p><div class="eq" role="group" tabindex="0" aria-label="Ridge 目标：残差平方和加 L2 权重惩罚"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><mrow><munder><mo>min</mo><mi>β</mi></munder><msup><mrow><mo>‖</mo><mi>y</mi><mo>−</mo><mi>X</mi><mi>β</mi><mo>‖</mo></mrow><mn>2</mn></msup><mo>+</mo><mi>α</mi><msup><mrow><mo>‖</mo><mi>β</mi><mo>‖</mo></mrow><mn>2</mn></msup></mrow></math></div><p>这与带 1/(2n) 因子的 Lasso 目标在 <code>α</code> 的数值尺度上不同。**不能在未经换算和验证的情况下直接对比 Ridge(alpha=1) 与 Lasso(alpha=1) 的惩罚强度。**</p></section><section id="sec5" aria-labelledby="title5"><h2 id="title5">05 · Lasso 和 Elastic Net：稀疏性从哪里来</h2><p>Lasso 使用系数绝对值之和 <code>||β||₁</code> 作为惩罚，约束集合在二维时呈菱形，最优等高线更容易在坐标轴角点接触边界，从而出现零系数。Ridge 的 L2 约束在二维是圆形，通常产生连续收缩。图的几何只是直觉：Lasso 不保证所有问题都稀疏，也不能把选出的特征当成稳定的因果证据。</p><figure><div class="figure-scroll"><img src="../assets/svg/08/regularization-geometry.svg" width="1000" height="430" loading="lazy" alt="L2 的圆与 L1 的菱形改变优化问题的可行区域；接触角点是稀疏系数的几何直觉，但不是对任何数据的保证。"></div><figcaption>L2 的圆与 L1 的菱形改变优化问题的可行区域；接触角点是稀疏系数的几何直觉，但不是对任何数据的保证。</figcaption></figure><p>Elastic Net 把 L1 和 L2 混合，常用来处理存在相关特征的场景。scikit-learn 的 <code>ElasticNet</code> 中 <code>l1_ratio=1</code> 对应 Lasso；一般情况下混合参数取值与惩罚强度都需要通过开发集交叉验证选择，不能照抄某一数据集的最优设置。</p></section><section id="sec6" aria-labelledby="title6"><h2 id="title6">06 · 系数路径为什么不能只看一个 α</h2><p>当正则化强度从弱逐步变强，系数通常被压向零。Ridge 的系数常平滑缩小，Lasso 在一些参数值处可令部分系数精确为零。然而，若多个特征高度相关，单个系数路径并不保证始终单调；在不同训练切分中选中的特征组合也可能变化。</p><figure><div class="figure-scroll"><img src="../assets/svg/08/regularization-path.svg" width="1000" height="430" loading="lazy" alt="两幅概念路径图说明惩罚强度与系数收缩趋势；绘制的是教学函数而非真实数据上的某次训练结果。"></div><figcaption>两幅概念路径图说明惩罚强度与系数收缩趋势；绘制的是教学函数而非真实数据上的某次训练结果。</figcaption></figure><p>应在每折训练内部拟合标准化器，使用交叉验证选择 <code>α</code>，再用保留测试集检查最终性能。正则化并不是替代数据清洗、训练验证切分或变量含义审查的捷径。</p></section><section id="sec7" aria-labelledby="title7"><h2 id="title7">07 · 多项式特征仍要防止过拟合</h2><p>用 <code>PolynomialFeatures(degree=2)</code> 将 <code>x</code> 变换为 <code>x,x²</code> 后，线性模型就能拟合曲线。但二维或更高维时，多项式组合数量可能快速增长；高阶特征会放大尺度差异和条件数问题。应把特征展开与标准化放在 Pipeline 中，用训练折拟合处理器，并通过 CV 控制复杂度。</p></section><section id="sec8" aria-labelledby="title8"><h2 id="title8">08 · 可运行：比较三个正则化目标</h2><p>下面自行构造固定随机种子的数据，故意让第二列与第一列高度相关，比较常数基线、Ridge、Lasso、ElasticNet。每个候选使用相同的 KFold 策略，并且标准化在折内完成。程序验证输出有限、测试切分数量正确，不提前声称哪一种一定最好。</p><pre><code>import numpy as np
+from sklearn.model_selection import train_test_split, KFold, cross_val_score
+from sklearn.preprocessing import StandardScaler
+from sklearn.pipeline import make_pipeline
+from sklearn.linear_model import Ridge, Lasso, ElasticNet
+from sklearn.dummy import DummyRegressor
+from sklearn.metrics import mean_squared_error
 
-        <h2>8.2 最小二乘法：线性回归的心脏</h2>
-        <p>线性回归的目标是找到一组权重w，使得预测值Xw与真实值y之间的误差平方和最小：</p>
-
-        <p style="text-align:center; font-size:1.2rem;"><strong>min ||Xw − y||²</strong></p>
-
-        <p>这个优化问题有闭式解（可以直接算出来，不需要梯度下降迭代）：</p>
-
-        <p style="text-align:center; font-size:1.2rem;"><strong>w = (X^T X)^(-1) X^T y</strong></p>
-
-        <p>这就是著名的"正规方程"（Normal Equation）。当特征数量n > 样本数m时，X^T X不可逆，正规方程失效——这是线性回归的命门。</p>
-
-        <div class="tip">
-            <strong>💡 面试经典问题："什么时候用正规方程，什么时候用梯度下降？"</strong> 正规方程适合特征数 < 10,000（矩阵求逆是O(n³)），不需要选学习率，但大数据下内存吃不消。梯度下降适合特征多的大数据集，需要调学习率，但是更灵活。
-        </div>
-
-        <h2>8.3 多项式回归：一条直线不够用的时候</h2>
-        <p>如果数据有明显的曲线趋势怎么办？多项式回归本质上还是线性回归——不过先把特征做了非线性变换：</p>
-
-        <pre><code>from sklearn.preprocessing import PolynomialFeatures
-from sklearn.linear_model import LinearRegression
-from sklearn.pipeline import Pipeline
-
-# 二次多项式回归：把 [x] 变成 [1, x, x²]
-poly_reg = Pipeline([
-    ('poly', PolynomialFeatures(degree=2, include_bias=False)),
-    ('linear', LinearRegression())
-])
-poly_reg.fit(X, y)
-</code></pre>
-
-        <p>但注意：degree越高，模型越容易过拟合。一般情况下degree=2或3就够了。degree=100的多项式会疯狂地上下摆动去"穿过"每一个训练点，在训练集上误差为零，但在测试集上惨不忍睹。</p>
-
-        <h2>8.4 正则化：防止过拟合的三兄弟</h2>
-        <p>当特征很多、样本很少时，线性回归会变得不稳定——某个特征的系数可能是+1000，另一个是-998，两者几乎抵消，但对噪声极度敏感。正则化在损失函数里加入对权重的惩罚，让模型"老实一点"。</p>
-
-        <table>
-            <tr><th>方法</th><th>惩罚项</th><th>效果</th><th>适用场景</th></tr>
-            <tr><td>Ridge (L2)</td><td>λ·Σw²</td><td>所有系数收缩接近0但不为0</td><td>特征都或多或少有用</td></tr>
-            <tr><td>Lasso (L1)</td><td>λ·Σ|w|</td><td>部分系数精确变为0（特征选择）</td><td>只有少数特征真的重要</td></tr>
-            <tr><td>ElasticNet</td><td>λ₁·Σ|w| + λ₂·Σw²</td><td>L1+L2的组合，取两者之长</td><td>特征多且相关度高时</td></tr>
-        </table>
-
-        <h2>8.5 L1 vs L2 的几何直觉</h2>
-        <p>为什么Lasso能让系数精确为0而Ridge不能？看几何：</p>
-        <ul>
-            <li><strong>L2约束区域是圆形：</strong>等高线切到圆的边上，交点在坐标轴上概率极低 → 系数通常不为0</li>
-            <li><strong>L1约束区域是菱形（有尖角）：</strong>等高线很容易切到菱形的角上，角在坐标轴上 → 系数精确为0</li>
-        </ul>
-
-        <p>这个几何差异导致了一个重要的工程选择：如果你有1000个特征但怀疑只有20个真的有用，用Lasso——它能自动把没用的980个特征系数压成0，省去你做特征选择的麻烦。</p>
-
-        <h2>8.6 正则化路径与λ选择</h2>
-        <p>λ（正则化强度）是最关键的参数。λ=0就是普通线性回归，λ→∞所有系数→0。</p>
-
-        <pre><code>import numpy as np
-from sklearn.linear_model import Ridge, Lasso, ElasticNet, RidgeCV
-
-# RidgeCV自动帮你选最好的λ
-alphas = np.logspace(-3, 3, 50)
-ridge_cv = RidgeCV(alphas=alphas, store_cv_values=True)
-ridge_cv.fit(X_train, y_train)
-print(f"最佳alpha: {ridge_cv.alpha_:.4f}")
-
-# 比较三种正则化
+rng = np.random.default_rng(19)
+X = rng.normal(size=(240, 6))
+X[:, 1] = X[:, 0] * 0.95 + 0.05 * rng.normal(size=240)
+y = 2.0 * X[:, 0] - 1.2 * X[:, 2] + 0.3 * rng.normal(size=240)
+Xtr, Xtest, ytr, ytest = train_test_split(
+    X, y, test_size=0.20, random_state=19)
 models = {
-    'Linear': LinearRegression(),
-    'Ridge': Ridge(alpha=1.0),
-    'Lasso': Lasso(alpha=0.01),
-    'ElasticNet': ElasticNet(alpha=0.01, l1_ratio=0.5)
+    &quot;baseline&quot;: DummyRegressor(strategy=&quot;mean&quot;),
+    &quot;ridge&quot;: make_pipeline(StandardScaler(), Ridge(alpha=1.0)),
+    &quot;lasso&quot;: make_pipeline(StandardScaler(), Lasso(alpha=0.08, max_iter=5000)),
+    &quot;elastic&quot;: make_pipeline(StandardScaler(),
+                             ElasticNet(alpha=0.08, l1_ratio=0.5, max_iter=5000)),
 }
-
+folds = KFold(n_splits=5, shuffle=True, random_state=19)
+scores = {}
 for name, model in models.items():
-    model.fit(X_train, y_train)
-    score = model.score(X_test, y_test)
-    coef_nonzero = (model.coef_ if name != 'Linear' else model.named_steps
-                    if hasattr(model, 'named_steps') else None)
-    print(f"{name}: R²={score:.4f}")
-</code></pre>
-
-        <div class="warning">
-            <strong>⚠️ 使用Lasso前的关键步骤：</strong>Lasso对特征尺度非常敏感——不同特征的数量级差异会导致惩罚不均衡。使用Lasso前<strong>必须</strong>先用StandardScaler标准化。Ridge也有同样要求。很多人在标准化前就直接fit，结果发现Lasso效果还不如Ridge，以为是模型的问题，其实是预处理的问题。
-        </div>
-
-        <div class="highlight">
-            <strong>🔑 一句话总结：</strong>大多数情况下用<strong>Ridge</strong>（稳定、效果好）；如果你怀疑很多特征是冗余的，用<strong>Lasso</strong>做自动特征选择；特征之间有强相关性时用<strong>ElasticNet</strong>（Lasso在高度相关特征中倾向于随机选一个，ElasticNet能同时保留相关特征）。
-        </div>
-
-        <p>线性回归学完了。下一章我们进入逻辑回归——名字里带"回归"但实际是分类算法，这个命名上的"坑"困惑了无数初学者，我们来彻底讲清楚。</p>
-
-        <div class="footer-nav">
-            <a href="07.html">← 上一章</a>
-            <a href="index.html">📖 返回目录</a>
-            <a href="09.html">下一章 →</a>
-        </div>
-    </div>
-</div>
-</div>
-</body>
-</html>
+    mse = -cross_val_score(model, Xtr, ytr, cv=folds,
+                           scoring=&quot;neg_mean_squared_error&quot;)
+    scores[name] = float(np.sqrt(mse).mean())
+print(&quot;CV RMSE by candidate:&quot;, scores)
+winner = min(scores, key=scores.get)
+selected = models[winner].fit(Xtr, ytr)
+test_mse = mean_squared_error(ytest, selected.predict(Xtest))
+print(&quot;selected:&quot;, winner, &quot;held-out RMSE:&quot;, np.sqrt(test_mse))
+assert np.isfinite(test_mse) and test_mse &gt;= 0
+assert Xtr.shape[0] + Xtest.shape[0] == 240</code></pre><p>依赖 Python 3.10+、NumPy、scikit-learn。此处只用 CV 分数选择一个模型，然后对获选模型评估一次保留测试集；不利用其他模型的测试分数反复挑选，避免测试集参与模型选择。</p></section><section id="sec9" aria-labelledby="title9"><h2 id="title9">09 · 局限与来源</h2><p>样本外关系非线性、噪声分布偏斜、特征强相关或观测分布移动时，线性回归可能产生可观系统误差。带正则化并不保证无偏系数、稳定特征选择或准确不确定性区间；针对推断需求还要审查误差过程和模型设定。</p><ul class="refs"><li><a href="https://scikit-learn.org/stable/modules/linear_model.html">scikit-learn 线性模型、Ridge/Lasso/ElasticNet 的目标与用途</a></li><li><a href="https://scikit-learn.org/stable/modules/generated/sklearn.linear_model.Ridge.html">Ridge API</a></li><li><a href="https://scikit-learn.org/stable/modules/generated/sklearn.linear_model.Lasso.html">Lasso API</a></li><li><a href="https://scikit-learn.org/stable/modules/generated/sklearn.linear_model.ElasticNet.html">ElasticNet API</a></li></ul></section><nav class="article-footer" aria-label="章节导航"><a href="07.html">← 上一章</a><a href="../index.html">全部章节</a><a href="09.html">下一章 →</a></nav></article></main></div><footer class="site-footer"><span>机器学习图解教程 · 第 08 章</span><span>解释优先、证据可追踪</span></footer></body></html>

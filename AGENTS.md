@@ -5,7 +5,7 @@
 
 ## Repo map
 - `docs/index.html` 是唯一课程门户；`docs/courses.json` 是章节目录单一来源。
-- `docs/chapters/NN.html` 是 28 篇可独立阅读的教程；01–05 是第一批新模板，06–28 是待逐篇复审的兼容旧稿。
+- `docs/chapters/NN.html` 是 28 篇可独立阅读的教程；01–10 已按新规范精修，11–28 是待逐篇复审的兼容旧稿。
 - `docs/assets/css/{site,article}.css` 管理视觉 token、移动端和打印；勿在每篇重新复制整套 CSS。
 - `docs/assets/svg/NN/` 存放按章节编号的 **独立 SVG**；`docs/assets/js/` 仅增强交互，不承担文章正文内容。
 - 根目录 `index.html`、`NN.html` 是旧 URL 兼容入口，非可编辑正文。
@@ -24,7 +24,14 @@
 10. **Release**: 提交分支与 PR；核对变更清单、CI、部署，再检查实际 Pages 页面。不自动宣称已发布。只在核验完成后标记章节精修完毕。
 
 ## Scope rules
-- 按批次逐章重构，**不要顺手替换** 尚未审查的 06–28 数学内容。
+- 按批次逐章重构，**不要顺手替换** 尚未审查的 11–28 数学内容。
 - `docs/` 是 deployable output/source for this dependency-free static site，无需重复生成的 dist/build 目录。
 - 保持旧 `NN.html` 的导航有效，禁止无迁移说明地删除入口。
 - 不拷贝 Olah 或第三方图标、图像、图表或代码的受限内容。
+
+## 第二批 (06–10) QA gates
+- 远程数据案例说明版本/年代、单位、下载条件及部署边界；离线实验不得伪装成真实 California Housing 结果。
+- 优化器、模型选择、交叉验证、概率校准及决策阈值只从训练或验证数据学习，测试数据只允许最终独立报告。
+- SVG 的几何线、统计数值、坐标轴、概率峰值必须经推导或代码校核；第二批每篇至少 3 幅独立 SVG。
+- 新滑块必须具备原生键盘访问、无 JS 默认含义和可见的数字反馈；浏览器 QA 验证其状态变化。
+- `scripts/run_examples.py` 和 `scripts/browser_qa.py` 覆盖前十章；离线检查未执行的外部项目不能标为通过。

@@ -54,7 +54,7 @@ def main():
         if not p.is_file():
             ERRORS.append(f"missing {p}")
             continue
-        if i <= 5:
+        if i <= 10:
             check_page(p, require_article=True)
         if not (ROOT / f"{i:02}.html").is_file():
             ERRORS.append(f"missing root legacy redirect {i:02}.html")
@@ -72,12 +72,12 @@ def main():
                 ERRORS.append(f"{f.relative_to(ROOT)}: missing SVG desc")
         except ET.ParseError as e:
             ERRORS.append(f"{f.relative_to(ROOT)}: invalid SVG {e}")
-    if len(svgs) < 10:
-        ERRORS.append(f"expected >=10 diagrams for first five lessons, found {len(svgs)}")
+    if len(svgs) < 25:
+        ERRORS.append(f"expected >=25 diagrams for first ten lessons, found {len(svgs)}")
     if ERRORS:
         print("\n".join("ERROR " + s for s in ERRORS))
         return 1
-    print(f"PASS: 28 lessons, 5 updated article pages, {len(svgs)} valid standalone SVGs, local assets resolved")
+    print(f"PASS: 28 lessons, 10 updated article pages, {len(svgs)} valid standalone SVGs, local assets resolved")
     return 0
 
 if __name__ == "__main__":

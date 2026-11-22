@@ -4,7 +4,7 @@
 
 [课程首页](docs/index.html) · [GitHub Pages](https://1998x-stack.github.io/machine-learning-tutorial/)（上线状态以实际部署为准） · [内容工程规范](AGENTS.md) · [来源与核验](docs/references.md)
 
-## 首批精修 · 01–05
+## 精修批次一 · 01–05
 
 | 章节 | 重点问题 | 图解 |
 | --- | --- | --- |
@@ -14,7 +14,7 @@
 | [04 优化理论](docs/chapters/04.html) | 梯度下降、学习率、链式法则 | 收敛发散轨迹 / 反向传播 |
 | [05 预处理与 EDA](docs/chapters/05.html) | 缺失值、管线与信息泄漏 | 正误流程 / ColumnTransformer |
 
-其余 **06–28** 已原样迁移至 `docs/chapters/`，还未完成逐章数学与代码技术审计。所有根目录 `01.html`–`28.html` 是旧地址兼容跳转，避免破坏外部链接。
+其余 **11–28** 已原样迁移至 `docs/chapters/`，还未完成逐章数学与代码技术审计。所有根目录 `01.html`–`28.html` 是旧地址兼容跳转，避免破坏外部链接。
 
 ## 目录结构
 
@@ -23,14 +23,14 @@ docs/
 ├── index.html                      # 全站门户、章节搜索及学习路线
 ├── courses.json                    # 28 篇原始章节元数据
 ├── chapters/
-│   ├── 01.html ... 05.html         # 独立重构长文
-│   ├── 06.html ... 28.html         # 原稿迁移，等待下批次
+│   ├── 01.html ... 10.html         # 独立重构长文
+│   ├── 11.html ... 28.html         # 原稿迁移，等待下批次
 │   └── theme.css                   # 老页面的向后兼容样式
 ├── assets/
 │   ├── css/site.css                # 门户 tokens & responsive
 │   ├── css/article.css             # 文章排版、公式、打印和导航
 │   ├── js/site.js                  # 首页无依赖搜索增强
-│   └── svg/01...05/               # 每篇两幅独立原创 SVG
+│   └── svg/01...10/               # 25 幅独立章节 SVG
 └── references.md                   # 技术来源及证据边界
 scripts/validate_site.py            # 无依赖静态验证
 .github/workflows/validate.yml      # PR / push 自动质量检查
@@ -58,3 +58,31 @@ python3 scripts/validate_site.py
 ## 设计原则
 
 优先保证独立可读、论证正确和证据可追踪；每幅 SVG 的箭头必须对应有意义的计算或数据依赖；所有数值教学示例注明它不是论文实验。启发于 [Olah-style-posts](https://github.com/1998x-stack/Olah-style-posts) 及相关解释性写作实践，图解与正文为重新设计，不复制原作。
+
+## 精修批次二 · 06–10
+
+| 章节 | 内容核心 | 新机制图 |
+|---|---|---|
+| [06 端到端项目](docs/chapters/06.html) | 划分、常数基线、残差、可选 California Housing | 数据边界、模型比较、残差审计 |
+| [07 模型评估](docs/chapters/07.html) | 混淆矩阵、阈值滑块、AP / AUC、交叉验证 | 四格指标、分数排序、CV |
+| [08 线性回归](docs/chapters/08.html) | OLS、Ridge/Lasso/ElasticNet | 残差、约束几何、系数路径 |
+| [09 逻辑回归](docs/chapters/09.html) | Sigmoid、交叉熵、决策阈值与校准 | S 曲线、损失函数、校准流程 |
+| [10 树与森林](docs/chapters/10.html) | Gini、剪枝、bootstrap、OOB、置换重要性 | 树分裂、袋外、重要性审计 |
+
+### 执行示例与浏览器 QA
+
+```bash
+python3 -m pip install numpy pandas scikit-learn playwright joblib
+python3 -m playwright install chromium
+python3 scripts/validate_site.py
+python3 scripts/run_examples.py
+python3 scripts/browser_qa.py
+```
+
+十篇内嵌示例在 CI 独立运行。第 06 章另有 `examples/06_california_housing.py`，需要联网下载历史住房区域数据，不属于离线 CI 实验：
+
+```bash
+python3 examples/06_california_housing.py
+```
+
+该数据不是现代单套房产现价；地理组隔离是教学划分策略，不能当作对当前市场的泛化保证。浏览器检查覆盖首页与 01–10 章节 × 1440/390/360 px，并实际操作章节 07 阈值滑块。
