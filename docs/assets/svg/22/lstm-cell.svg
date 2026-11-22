@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 460" role="img" aria-labelledby="lstm-gates-title lstm-gates-desc">
+<title id="lstm-gates-title">现代 LSTM 的四个门控计算</title><desc id="lstm-gates-desc">遗忘门筛选旧 cell state，输入门写入候选信息，输出门控制暴露给隐藏状态的记忆。</desc>
+<defs>
+ <marker id="lstm-gates-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 Z" fill="#55736d"/></marker>
+ <marker id="lstm-gates-orange" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L10 5 L0 10 Z" fill="#bc6a47"/></marker>
+ <style>text{font-family:Inter,ui-sans-serif,system-ui,"Noto Sans CJK SC",sans-serif;fill:#203b38}.title{font-size:22px;font-weight:750}.label{font-size:16px;font-weight:650}.small{font-size:13px;fill:#536b66}.tiny{font-size:12px;fill:#536b66}.box{fill:#fffdf8;stroke:#a9bdb3;stroke-width:2}.green{fill:#e3f1eb;stroke:#16786f;stroke-width:2}.orange{fill:#f8e9df;stroke:#bc6a47;stroke-width:2}.purple{fill:#eee9f7;stroke:#7863b0;stroke-width:2}.amber{fill:#f7f0dc;stroke:#9b7533;stroke-width:2}.line{fill:none;stroke:#55736d;stroke-width:2.5;marker-end:url(#lstm-gates-arrow)}.oline{fill:none;stroke:#bc6a47;stroke-width:2.5;marker-end:url(#lstm-gates-orange)}.dash{stroke-dasharray:7 6}</style>
+</defs><rect width="900" height="460" rx="22" fill="#fbfaf6"/>
+<text x="40" y="42" class="title">LSTM 将“记忆通道”与“当前输出”分开</text>
+<rect x="50" y="115" width="130" height="58" rx="12" class="green"/><text x="115" y="150" text-anchor="middle" class="label">xₜ, hₜ₋₁</text>
+<path d="M180 145 H210 V115 H240" class="line"/><path d="M210 145 V196 H240" class="line"/><path d="M210 196 V276 H240" class="line"/><path d="M210 276 V356 H240" class="line"/>
+<rect x="245" y="85" width="150" height="62" rx="12" class="orange"/><text x="320" y="122" text-anchor="middle" class="label">遗忘门 fₜ</text>
+<rect x="245" y="165" width="150" height="62" rx="12" class="green"/><text x="320" y="202" text-anchor="middle" class="label">输入门 iₜ</text>
+<rect x="245" y="245" width="150" height="62" rx="12" class="purple"/><text x="320" y="282" text-anchor="middle" class="label">候选 gₜ</text>
+<rect x="245" y="325" width="150" height="62" rx="12" class="orange"/><text x="320" y="362" text-anchor="middle" class="label">输出门 oₜ</text>
+<rect x="480" y="160" width="170" height="150" rx="16" class="purple"/><text x="565" y="205" text-anchor="middle" class="label">Cell update</text><text x="565" y="244" text-anchor="middle" class="small">fₜ ⊙ cₜ₋₁</text><text x="565" y="272" text-anchor="middle" class="small">+ iₜ ⊙ gₜ</text>
+<path d="M395 115 H440 V195 H475" class="line"/><path d="M395 196 H475" class="line"/><path d="M395 276 H440 V275 H475" class="line"/>
+<rect x="700" y="180" width="145" height="65" rx="12" class="green"/><text x="772" y="220" text-anchor="middle" class="label">cₜ</text><path d="M650 230 H695" class="line"/>
+<path d="M772 245 V325 H660" class="line"/><rect x="500" y="340" width="160" height="58" rx="12" class="orange"/><text x="580" y="375" text-anchor="middle" class="label">hₜ = oₜ ⊙ tanh(cₜ)</text><path d="M395 356 H495" class="line"/>
+<text x="50" y="435" class="small">σ 门值位于 [0,1]；此图采用现代含 forget gate 的 LSTM 公式。</text>
+</svg>

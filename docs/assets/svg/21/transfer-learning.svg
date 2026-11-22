@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 460" role="img" aria-labelledby="cnn-transfer-title cnn-transfer-desc">
+<title id="cnn-transfer-title">迁移学习的冻结、训练头部与逐层解冻</title><desc id="cnn-transfer-desc">先用预训练骨干提取表示并训练新任务头；验证稳定后，可按阶段解冻高层，以较小学习率微调。</desc>
+<defs>
+ <marker id="cnn-transfer-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 Z" fill="#55736d"/></marker>
+ <marker id="cnn-transfer-orange" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L10 5 L0 10 Z" fill="#bc6a47"/></marker>
+ <style>text{font-family:Inter,ui-sans-serif,system-ui,"Noto Sans CJK SC",sans-serif;fill:#203b38}.title{font-size:22px;font-weight:750}.label{font-size:16px;font-weight:650}.small{font-size:13px;fill:#536b66}.tiny{font-size:12px;fill:#536b66}.box{fill:#fffdf8;stroke:#a9bdb3;stroke-width:2}.green{fill:#e3f1eb;stroke:#16786f;stroke-width:2}.orange{fill:#f8e9df;stroke:#bc6a47;stroke-width:2}.purple{fill:#eee9f7;stroke:#7863b0;stroke-width:2}.amber{fill:#f7f0dc;stroke:#9b7533;stroke-width:2}.line{fill:none;stroke:#55736d;stroke-width:2.5;marker-end:url(#cnn-transfer-arrow)}.oline{fill:none;stroke:#bc6a47;stroke-width:2.5;marker-end:url(#cnn-transfer-orange)}.dash{stroke-dasharray:7 6}</style>
+</defs><rect width="900" height="460" rx="22" fill="#fbfaf6"/>
+<text x="40" y="42" class="title">从预训练表示迁移到目标任务</text>
+<rect x="55" y="135" width="145" height="110" rx="14" class="green"/><text x="127" y="175" text-anchor="middle" class="label">目标数据</text><text x="127" y="207" text-anchor="middle" class="small">训练集</text>
+<path d="M205 190 H265" class="line"/>
+<rect x="280" y="100" width="230" height="180" rx="14" class="purple"/><text x="395" y="135" text-anchor="middle" class="label">预训练 Backbone</text><rect x="310" y="155" width="170" height="38" rx="8" fill="#d9d0ef"/><text x="395" y="180" text-anchor="middle" class="small">低层特征</text><rect x="310" y="207" width="170" height="38" rx="8" fill="#c9bde7"/><text x="395" y="232" text-anchor="middle" class="small">高层特征</text>
+<path d="M515 190 H575" class="line"/>
+<rect x="590" y="135" width="135" height="110" rx="14" class="orange"/><text x="657" y="175" text-anchor="middle" class="label">新任务头</text><text x="657" y="207" text-anchor="middle" class="small">类别 / 回归</text>
+<path d="M730 190 H780" class="line"/><rect x="790" y="150" width="80" height="80" rx="12" class="green"/><text x="830" y="197" text-anchor="middle" class="label">输出</text>
+<rect x="65" y="330" width="355" height="72" rx="12" class="box"/><text x="88" y="359" class="label">阶段 A · 冻结骨干</text><text x="88" y="385" class="small">只训练新任务头；降低小数据集过拟合风险</text>
+<rect x="455" y="330" width="380" height="72" rx="12" class="box"/><text x="478" y="359" class="label">阶段 B · 逐层解冻</text><text x="478" y="385" class="small">较小 backbone LR；重新验证 BN 与数据增强策略</text>
+</svg>

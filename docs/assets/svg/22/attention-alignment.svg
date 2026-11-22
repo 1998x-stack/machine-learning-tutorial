@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 460" role="img" aria-labelledby="seq-attention-title seq-attention-desc">
+<title id="seq-attention-title">Attention 在每个解码步对全部源状态计算权重</title>
+<desc id="seq-attention-desc">四个 encoder state 和当前 decoder query 一起进入加性打分与 softmax，得到 alpha 权重并加权求和形成 context vector。</desc>
+<defs><marker id="seq-attention-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L10 5 L0 10 Z" fill="#55736d"/></marker><style>text{font-family:Inter,ui-sans-serif,system-ui,"Noto Sans CJK SC",sans-serif;fill:#203b38}.title{font-size:22px;font-weight:750}.label{font-size:16px;font-weight:650}.small{font-size:13px;fill:#536b66}.box{fill:#fffdf8;stroke:#a9bdb3;stroke-width:2}.green{fill:#e3f1eb;stroke:#16786f;stroke-width:2}.orange{fill:#f8e9df;stroke:#bc6a47;stroke-width:2}.purple{fill:#eee9f7;stroke:#7863b0;stroke-width:2}.line{fill:none;stroke:#55736d;stroke-width:2.5;marker-end:url(#seq-attention-arrow)}</style></defs>
+<rect width="900" height="460" rx="22" fill="#fbfaf6"/>
+<text x="40" y="42" class="title">一个 decoder step，会重新读取整段 encoder states</text>
+<text x="55" y="95" class="label">Encoder states h₁ … hₛ</text>
+<rect x="55" y="115" width="120" height="58" rx="10" class="green"/><text x="115" y="151" text-anchor="middle" class="label">h₁ · I</text>
+<rect x="205" y="115" width="120" height="58" rx="10" class="green"/><text x="265" y="151" text-anchor="middle" class="label">h₂ · love</text>
+<rect x="355" y="115" width="120" height="58" rx="10" class="green"/><text x="415" y="151" text-anchor="middle" class="label">h₃ · deep</text>
+<rect x="505" y="115" width="120" height="58" rx="10" class="green"/><text x="565" y="151" text-anchor="middle" class="label">h₄ · learning</text>
+<rect x="55" y="300" width="180" height="65" rx="12" class="orange"/><text x="145" y="338" text-anchor="middle" class="label">Decoder query sₜ₋₁</text>
+<path d="M115 173 V210 H355 V245" class="line"/><path d="M265 173 V220 H385 V245" class="line"/><path d="M415 173 V245" class="line"/><path d="M565 173 V220 H445 V245" class="line"/>
+<path d="M235 332 H300 V290 H350" class="line"/>
+<rect x="350" y="245" width="220" height="95" rx="14" class="purple"/><text x="460" y="278" text-anchor="middle" class="label">score + softmax</text><text x="460" y="307" text-anchor="middle" class="small">αₜ₁ … αₜ₄</text><text x="460" y="327" text-anchor="middle" class="small">每个源位置一个权重</text>
+<path d="M570 292 H640" class="line"/>
+<rect x="655" y="250" width="190" height="88" rx="14" class="orange"/><text x="750" y="283" text-anchor="middle" class="label">context cₜ</text><text x="750" y="310" text-anchor="middle" class="small">Σᵢ αₜᵢ hᵢ</text>
+<text x="55" y="420" class="small">同一个输出位置会读取多个源状态；不同 decoder step 会重新计算一组对齐权重。</text>
+</svg>

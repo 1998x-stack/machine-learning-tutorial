@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 460" role="img" aria-labelledby="cnn-shapes-title cnn-shapes-desc">
+<title id="cnn-shapes-title">卷积输出尺寸与参数量</title><desc id="cnn-shapes-desc">输入 N×3×32×32，经 3×3、stride 2、padding 1、16 个输出通道的卷积，得到 N×16×16×16。</desc>
+<defs>
+ <marker id="cnn-shapes-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 Z" fill="#55736d"/></marker>
+ <marker id="cnn-shapes-orange" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L10 5 L0 10 Z" fill="#bc6a47"/></marker>
+ <style>text{font-family:Inter,ui-sans-serif,system-ui,"Noto Sans CJK SC",sans-serif;fill:#203b38}.title{font-size:22px;font-weight:750}.label{font-size:16px;font-weight:650}.small{font-size:13px;fill:#536b66}.tiny{font-size:12px;fill:#536b66}.box{fill:#fffdf8;stroke:#a9bdb3;stroke-width:2}.green{fill:#e3f1eb;stroke:#16786f;stroke-width:2}.orange{fill:#f8e9df;stroke:#bc6a47;stroke-width:2}.purple{fill:#eee9f7;stroke:#7863b0;stroke-width:2}.amber{fill:#f7f0dc;stroke:#9b7533;stroke-width:2}.line{fill:none;stroke:#55736d;stroke-width:2.5;marker-end:url(#cnn-shapes-arrow)}.oline{fill:none;stroke:#bc6a47;stroke-width:2.5;marker-end:url(#cnn-shapes-orange)}.dash{stroke-dasharray:7 6}</style>
+</defs><rect width="900" height="460" rx="22" fill="#fbfaf6"/>
+<text x="40" y="42" class="title">形状变化是卷积层的第一份契约</text>
+<rect x="48" y="130" width="185" height="150" rx="16" class="green"/><text x="140" y="174" text-anchor="middle" class="label">输入张量</text><text x="140" y="212" text-anchor="middle" class="small">N × 3 × 32 × 32</text><text x="140" y="244" text-anchor="middle" class="small">批次 / 通道 / 高 / 宽</text>
+<path d="M242 205 H335" class="line"/>
+<rect x="350" y="110" width="210" height="190" rx="16" class="orange"/><text x="455" y="154" text-anchor="middle" class="label">Conv2d</text><text x="455" y="190" text-anchor="middle" class="small">kernel = 3 × 3</text><text x="455" y="220" text-anchor="middle" class="small">stride = 2</text><text x="455" y="250" text-anchor="middle" class="small">padding = 1</text><text x="455" y="278" text-anchor="middle" class="small">Cout = 16</text>
+<path d="M570 205 H655" class="line"/>
+<rect x="670" y="130" width="185" height="150" rx="16" class="purple"/><text x="762" y="174" text-anchor="middle" class="label">输出张量</text><text x="762" y="212" text-anchor="middle" class="small">N × 16 × 16 × 16</text><text x="762" y="244" text-anchor="middle" class="small">空间分辨率减半</text>
+<rect x="80" y="340" width="740" height="72" rx="12" class="box"/><text x="110" y="370" class="small">Hout = ⌊(H + 2p − d(k−1) − 1) / s⌋ + 1</text><text x="110" y="395" class="small">参数量 = Cout × (Cin / groups) × kH × kW + Cout（若使用 bias）</text>
+</svg>

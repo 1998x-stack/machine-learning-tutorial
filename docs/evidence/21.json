@@ -1,0 +1,77 @@
+{
+  "chapter": "21",
+  "claims": [
+    {
+      "id": "conv-output-shape",
+      "claim": "Conv2d spatial output uses kernel, stride, padding and dilation; grouped convolution changes channel connectivity.",
+      "kind": "implementation",
+      "source_url": "https://docs.pytorch.org/docs/stable/generated/torch.nn.Conv2d.html",
+      "locator": "Conv2d API: formula and groups",
+      "status": "verified",
+      "notes": "The article derives a 32×32 → 16×16 example and checks it with PyTorch."
+    },
+    {
+      "id": "conv-parameter-count",
+      "claim": "For grouped Conv2d with bias, parameter count is Cout×(Cin/groups)×kh×kw+Cout.",
+      "kind": "derived",
+      "source_url": "https://docs.pytorch.org/docs/stable/generated/torch.nn.Conv2d.html",
+      "locator": "weight and bias tensor shapes",
+      "status": "derived",
+      "notes": "Formula is derived from documented weight and bias tensor shapes."
+    },
+    {
+      "id": "cross-correlation",
+      "claim": "PyTorch Conv2d implements the cross-correlation operation commonly called convolution in deep learning.",
+      "kind": "implementation",
+      "source_url": "https://docs.pytorch.org/docs/stable/generated/torch.nn.Conv2d.html",
+      "locator": "Conv2d mathematical definition",
+      "status": "verified",
+      "notes": "Kernel is not rotated as in strict mathematical convolution."
+    },
+    {
+      "id": "resnet-degradation",
+      "claim": "The ResNet paper reports a degradation problem where deeper plain networks can have higher training error, indicating optimization difficulty rather than ordinary overfitting alone.",
+      "kind": "research",
+      "source_url": "https://arxiv.org/abs/1512.03385",
+      "locator": "Abstract and Section 3",
+      "status": "verified",
+      "notes": "Do not simplify the result to a universal claim that every deep network suffers vanishing gradients."
+    },
+    {
+      "id": "resnet-ensemble-result",
+      "claim": "The 3.57% ImageNet top-5 error reported in the ResNet paper is for an ensemble, not every single ResNet-152 model.",
+      "kind": "research",
+      "source_url": "https://arxiv.org/abs/1512.03385",
+      "locator": "ImageNet results and ensemble table",
+      "status": "verified",
+      "notes": "Historical result is explicitly scoped to the reported ensemble."
+    },
+    {
+      "id": "torchvision-v15",
+      "claim": "TorchVision ResNet-50 uses a v1.5 bottleneck variant with downsampling stride placed in the 3×3 convolution rather than the first 1×1 convolution.",
+      "kind": "implementation",
+      "source_url": "https://docs.pytorch.org/vision/main/models/generated/torchvision.models.resnet50.html",
+      "locator": "Implementation note",
+      "status": "verified",
+      "notes": "Implementation variant is distinguished from the original paper's stride placement."
+    },
+    {
+      "id": "weight-preprocess",
+      "claim": "TorchVision ResNet50 IMAGENET1K_V2 transforms use resize 232 and center crop 224.",
+      "kind": "implementation",
+      "source_url": "https://docs.pytorch.org/vision/main/models/generated/torchvision.models.resnet50.html",
+      "locator": "ResNet50_Weights.IMAGENET1K_V2 transforms",
+      "status": "verified",
+      "notes": "Use the transforms attached to the exact selected weight enum."
+    },
+    {
+      "id": "augmentation-label",
+      "claim": "A data augmentation is valid only when its transformation preserves the task label semantics.",
+      "kind": "method",
+      "source_url": "https://pytorch.org/vision/stable/transforms.html",
+      "locator": "TorchVision transforms overview",
+      "status": "verified",
+      "notes": "Horizontal flipping is not label-preserving for every visual domain."
+    }
+  ]
+}

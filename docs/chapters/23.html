@@ -1,235 +1,51 @@
-<!DOCTYPE html>
-<html lang="zh-CN">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.5, user-scalable=yes">
-    <title>第23章 NLP自然语言处理</title>
-    <style>
-        * { margin:0; padding:0; box-sizing:border-box; }
-        body {
-            background: linear-gradient(135deg, #f5f3ff 0%, #e8f5f0 100%);
-            font-family: system-ui, -apple-system, 'Segoe UI', 'PingFang SC', Roboto, 'Helvetica Neue', sans-serif;
-            padding: 20px;
-        }
-        .double-border {
-            max-width: 1400px;
-            margin: 0 auto;
-            background: #ffffff;
-            border: 2px solid #8b5cf6;
-            border-radius: 24px;
-            box-shadow: 0 20px 30px -15px rgba(0,0,0,0.2), inset 0 1px 0 0 #f5f3ff;
-            overflow: hidden;
-        }
-        .container { display: grid; grid-template-columns: 260px 1fr; gap: 0; }
-        .sidebar {
-            background: #faf8ff; border-right: 2px solid #c4b5fd; padding: 24px 16px;
-        }
-        .sidebar h3 { font-size: 1.4rem; color: #6d28d9; border-left: 5px solid #8b5cf6; padding-left: 15px; margin-bottom: 25px; }
-        .chapter-list { list-style: none; }
-        .chapter-list li { margin-bottom: 6px; }
-        .chapter-list a {
-            display: block; padding: 8px 12px; text-decoration: none;
-            color: #334155; border-radius: 12px; transition: all 0.2s;
-            font-weight: 500; font-size: 0.92rem;
-        }
-        .chapter-list a:hover { background: #ede9fe; transform: translateX(3px); }
-        .chapter-list .active { background: #7c3aed; color: white; box-shadow: 0 2px 5px rgba(124,58,237,0.3); }
-        .main-content { padding: 30px 35px; background: white; }
-        .footer-nav {
-            margin-top: 45px; padding-top: 20px; border-top: 2px solid #c4b5fd;
-            display: flex; justify-content: space-between;
-        }
-        .footer-nav a {
-            padding: 8px 24px; background: #f1f5f9; text-decoration: none;
-            color: #5b21b6; border-radius: 40px; font-weight: 500; transition: 0.2s;
-        }
-        .footer-nav a:hover { background: #ede9fe; transform: translateY(-2px); }
-        h2 { color: #4c1d95; border-left: 6px solid #8b5cf6; padding-left: 15px; margin: 20px 0 15px; font-size: 1.5rem; }
-        h3 { color: #5b21b6; margin: 20px 0 10px; font-size: 1.2rem; }
-        h4 { color: #6d28d9; margin: 15px 0 8px; font-size: 1.05rem; }
-        p { line-height: 1.85; margin: 10px 0; color: #1e293b; }
-        ul, ol { margin: 10px 0 10px 20px; line-height: 1.8; }
-        li { color: #1e293b; margin-bottom: 4px; }
-        pre { background: #1e1035; color: #e8e8f0; padding: 15px; border-radius: 12px; overflow-x: auto; font-family: 'JetBrains Mono', 'Fira Code', monospace; margin: 15px 0; font-size: 0.9rem; line-height: 1.5; }
-        code { background: #f5f3ff; padding: 2px 6px; border-radius: 4px; font-family: 'JetBrains Mono', monospace; font-size: 0.85em; }
-        pre code { background: none; padding: 0; }
-        table { width: 100%; border-collapse: collapse; margin: 15px 0; background: #fafafe; }
-        th, td { border: 1px solid #c4b5fd; padding: 10px; text-align: left; }
-        th { background: #f5f3ff; color: #5b21b6; font-weight: 600; }
-        .tip, .warning, .highlight { padding: 12px 18px; border-radius: 16px; margin: 15px 0; line-height: 1.7; }
-        .tip { background: #e0f2fe; border-left: 6px solid #0ea5e9; }
-        .warning { background: #fee2e2; border-left: 6px solid #ef4444; }
-        .highlight { background: #fef9c3; border: 1px solid #facc15; }
-        strong { color: #1e1b4b; }
-        @media (max-width: 768px) {
-            .container { grid-template-columns: 1fr; }
-            .sidebar { border-right: none; border-bottom: 2px solid #c4b5fd; }
-            body { padding: 10px; }
-            .main-content { padding: 20px; }
-        }
-    </style>
-    <link rel="stylesheet" href="theme.css">
-</head>
-<body>
-<div class="double-border">
-<div class="container">
-    <div class="sidebar">
-        <h3>🤖 课程目录</h3>
-        <ul class="chapter-list">
-            <li><a href="01.html">第1章 机器学习概述</a></li>
-            <li><a href="02.html">第2章 数学基础：线性代数</a></li>
-            <li><a href="03.html">第3章 数学基础：概率统计</a></li>
-            <li><a href="04.html">第4章 数学基础：优化理论</a></li>
-            <li><a href="05.html">第5章 数据预处理与探索</a></li>
-            <li><a href="06.html">第6章 第一个ML项目实战</a></li>
-            <li><a href="07.html">第7章 模型评估与选择</a></li>
-            <li><a href="08.html">第8章 线性回归与正则化</a></li>
-            <li><a href="09.html">第9章 逻辑回归与分类</a></li>
-            <li><a href="10.html">第10章 决策树与随机森林</a></li>
-            <li><a href="11.html">第11章 支持向量机 SVM</a></li>
-            <li><a href="12.html">第12章 朴素贝叶斯与KNN</a></li>
-            <li><a href="13.html">第13章 聚类算法</a></li>
-            <li><a href="14.html">第14章 降维与特征工程</a></li>
-            <li><a href="15.html">第15章 模型调参与AutoML</a></li>
-            <li><a href="16.html">第16章 处理不平衡数据</a></li>
-            <li><a href="17.html">第17章 模型可解释性</a></li>
-            <li><a href="18.html">第18章 ML系统工程化</a></li>
-            <li><a href="19.html">第19章 神经网络基础</a></li>
-            <li><a href="20.html">第20章 深度学习框架实战</a></li>
-            <li><a href="21.html">第21章 CNN卷积神经网络</a></li>
-            <li><a href="22.html">第22章 RNN与序列模型</a></li>
-            <li><a href="23.html" class="active">第23章 NLP自然语言处理</a></li>
-            <li><a href="24.html">第24章 生成式模型</a></li>
-            <li><a href="25.html">第25章 强化学习入门</a></li>
-            <li><a href="26.html">第26章 大语言模型与RAG</a></li>
-            <li><a href="27.html">第27章 模型部署与服务化</a></li>
-            <li><a href="28.html">第28章 毕业项目：端到端ML系统</a></li>
-        </ul>
-    </div>
-    <div class="main-content">
-        <h2>23.1 让机器理解语言——NLP的前世今生</h2>
-        <p>自然语言处理（NLP）是AI领域最激动人心的方向之一。从2013年Word2Vec让词向量成为可能，到2017年Transformer颠覆一切，再到2022年ChatGPT引爆全球——NLP在不到十年内经历了翻天覆地的变化。</p>
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="description" content="语言模型需要把离散文本映射为 token 序列，再通过上下文建模获得表示。Word2Vec、Transformer、BERT 与 GPT 采用不同训练目标；理解 tokenizer、注意力掩码和评估边界，比记住模型名称更重要。"><title>自然语言处理：从子词表示到 Transformer 与 BERT · 机器学习图解教程</title><link rel="stylesheet" href="../assets/css/article.css"></head><body class="article-page"><a class="skip-link" href="#content">跳转至正文</a><header class="site-header"><div class="header-inner"><a class="wordmark" href="../index.html"><span class="mark">M<span>·</span>L</span><span>机器学习图解教程<small>Machine Learning, Explained</small></span></a><nav aria-label="顶部导航"><a href="../index.html">课程目录</a><a href="https://github.com/1998x-stack/machine-learning-tutorial">GitHub</a></nav></div></header><div class="article-shell"><aside class="article-nav"><nav aria-label="文章目录"><details open><summary>本章目录</summary><div class="nav-items"><a href="../index.html">← 全部章节</a><a href="#sec1">NLP 的完整数据路径</a><a href="#sec2">Word2Vec：静态词向量</a><a href="#sec3">自注意力：上下文如何进入表示</a><a href="#sec4">Encoder、Decoder 与注意力掩码</a><a href="#sec5">BERT 与 GPT：目标决定上下文约束</a><a href="#sec6">从 tokenizer 到训练批次的可执行契约</a><a href="#sec7">NLP 评估与常见失败模式</a><a href="#references">来源与边界</a></div></details></nav></aside><main class="article-main" id="content"><article><div class="breadcrumb"><a href="../index.html">课程目录</a><span>/</span><span>第 23 章</span></div><header class="article-header"><div class="chapter-number">CHAPTER 23 / 28</div><h1>自然语言处理：从子词表示到 Transformer 与 BERT</h1><p class="dek">语言模型需要把离散文本映射为 token 序列，再通过上下文建模获得表示。Word2Vec、Transformer、BERT 与 GPT 采用不同训练目标；理解 tokenizer、注意力掩码和评估边界，比记住模型名称更重要。</p><div class="lead-question">为什么同一个词在不同句子里可以有不同含义？静态词向量、上下文表示和自回归语言模型分别解决了什么问题？</div></header><section id="sec1" aria-labelledby="title1"><h2 id="title1">01 · NLP 的完整数据路径</h2><p>自然语言不是模型可以直接相乘的数值矩阵。典型 NLP 流程先确定文本规范化规则，再由 tokenizer 切成 token，映射到词表 ID，加入特殊标记并组成批次，最后通过 embedding 和模型计算得到上下文表示。规范化、分词和词表都是模型输入契约的一部分。</p><figure><div class="figure-scroll"><img src="../assets/svg/23/tokenization-pipeline.svg" width="900" height="460" loading="lazy" alt="原始文本被切分为子词 token，映射为整数 ID，再补齐批次并建立 attention mask。"></div><figcaption>token ID 只在对应 tokenizer 的词表中有意义；不能把两个模型的 ID 空间混用。</figcaption></figure><p>词级词表可能遇到未登录词和形态变化；字符级序列很长；子词方法在词表规模与序列长度之间折中。BPE、WordPiece 和 Unigram 的训练目标及合并/分割规则并不相同，不能笼统称为同一种算法。特殊 token（如 CLS、SEP、BOS、EOS、PAD）也由具体模型约定。</p></section><section id="sec2" aria-labelledby="title2"><h2 id="title2">02 · Word2Vec：静态词向量</h2><p>Word2Vec 的核心思想是利用上下文共现学习稠密词向量。CBOW 用上下文预测中心词；Skip-gram 用中心词预测周围词。Skip-gram with Negative Sampling（SGNS）把一个正样本词对与若干负样本词对组成二分类式目标，避免对整个词表做完整 softmax。</p><div class="eq" role="group" tabindex="0" aria-label="Skip gram 负采样目标最大化真实词对点积的对数 sigmoid 并压低负样本点积"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block" aria-label="Skip gram 负采样目标最大化真实词对点积的对数 sigmoid 并压低负样本点积"><mrow><mi>ℒ</mi><mo>=</mo><mo>−</mo><mi>log</mi><mi>σ</mi><mo>(</mo><msup><mi>v</mi><mi>⊤</mi></msup><mi>u</mi><mo>)</mo><mo>−</mo><munderover><mo>∑</mo><mrow><mi>j</mi><mo>=</mo><mn>1</mn></mrow><mi>K</mi></munderover><mi>log</mi><mi>σ</mi><mo>(</mo><mo>−</mo><msup><mi>v</mi><mi>⊤</mi></msup><msub><mi>u</mi><mi>j</mi></msub><mo>)</mo></mrow></math></div><p>这类 embedding 是<strong>静态</strong>的：一个词在不同句子里共享同一向量。词向量算术（如 king−man+woman≈queen）是特定训练语料与向量空间中的经验现象，不是语言理解的普遍定律，也不保证无偏或稳定。</p><pre><code>import torch
+from torch import nn
+import torch.nn.functional as F
 
-        <p>NLP的终极挑战是：<strong>语言是离散的、组合的、歧义的、依赖上下文的</strong>。同一句话"我喜欢上了这门课"——在不同上下文中可以是"我喜欢/上了这门课"或"我喜欢上/了这门课"。人类靠常识消歧义，而机器只能靠统计模式。</p>
-
-        <h2>23.2 第一步：把文字变成数字</h2>
-        <p>模型吃的是数字，你给我的是文字。第一步必须是把文字变成向量。这个转化方式经历了三次重大变革：</p>
-
-        <table>
-            <tr><th>方法</th><th>原理</th><th>问题</th></tr>
-            <tr><td>One-Hot / Bag of Words</td><td>每个词是一个维度的0/1或计数</td><td>维度过高（词表多大就多少维），无语义信息</td></tr>
-            <tr><td>Word2Vec / GloVe</td><td>用周围词预测中心词，获得稠密低维向量</td><td>一个词只有一个向量，无法处理多义词</td></tr>
-            <tr><td>Contextual Embedding</td><td>一个词在不同上下文中获得不同向量</td><td>需要预训练大模型，推理成本高</td></tr>
-        </table>
-
-        <h3>Word2Vec：词向量的"Hello World"</h3>
-        <p>核心思想：一个词的含义由它周围的词决定（"You shall know a word by the company it keeps"，Firth, 1957）。两种训练方式：</p>
-        <ul>
-            <li><strong>CBOW：</strong>用上下文预测中心词（"我___机器学习" → "爱"）</li>
-            <li><strong>Skip-gram：</strong>用中心词预测上下文（"爱" → "我", "机器学习"）</li>
-        </ul>
-
-        <p>Word2Vec训练完后，你会发现：<strong>king - man + woman ≈ queen</strong>。这就是词向量最经典的语义算术——向量空间中的方向编码了语义关系。</p>
-
-        <h2>23.3 Transformer：NLP的"工业革命"</h2>
-        <p>RNN/LSTM的问题在第22章已经铺垫过：无法并行、长程依赖困难。Transformer用<strong>自注意力（Self-Attention）</strong>完全解决了这两个问题。</p>
-
-        <h3>自注意力的直觉</h3>
-        <p>对于输入序列中的每个词，Self-Attention计算它和序列中所有词（包括自己）的"相关性"，然后用这些相关性作为权重，对所有词的信息做加权平均。</p>
-
-        <p>比如句子"The animal didn't cross the street because it was too tired"——"it"应该和"animal"强相关，而不是"street"。Self-Attention自动学会了这种指代消解。</p>
-
-        <h3>多头注意力（Multi-Head Attention）</h3>
-        <p>Q（Query）、K（Key）、V（Value）三个矩阵是Transformer注意力机制的核心。每个"头"看不同的方面：一个头可能关注语法关系，另一个关注语义相似度，另一个关注位置信息。多个头合在一起，模型能从多个角度理解序列。</p>
-
-        <pre><code>import torch
-import torch.nn as nn
-
-class MultiHeadAttention(nn.Module):
-    def __init__(self, d_model=512, n_heads=8):
-        super().__init__()
-        self.d_model = d_model
-        self.n_heads = n_heads
-        self.d_k = d_model // n_heads
-
-        self.W_q = nn.Linear(d_model, d_model)
-        self.W_k = nn.Linear(d_model, d_model)
-        self.W_v = nn.Linear(d_model, d_model)
-        self.W_o = nn.Linear(d_model, d_model)
-
-    def forward(self, Q, K, V, mask=None):
-        batch_size = Q.size(0)
-
-        # 1. 线性变换 + 分头
-        Q = self.W_q(Q).view(batch_size, -1, self.n_heads, self.d_k).transpose(1,2)
-        K = self.W_k(K).view(batch_size, -1, self.n_heads, self.d_k).transpose(1,2)
-        V = self.W_v(V).view(batch_size, -1, self.n_heads, self.d_k).transpose(1,2)
-
-        # 2. 计算注意力分数: softmax(QK^T / sqrt(d_k)) × V
-        scores = torch.matmul(Q, K.transpose(-2, -1)) / (self.d_k ** 0.5)
-        if mask is not None:
-            scores = scores.masked_fill(mask == 0, -1e9)
-        attention = torch.softmax(scores, dim=-1)
-        out = torch.matmul(attention, V)
-
-        # 3. 合并多头 → 输出
-        out = out.transpose(1, 2).contiguous().view(batch_size, -1, self.d_model)
-        return self.W_o(out)
-</code></pre>
-
-        <div class="highlight">
-            <strong>🔑 为什么要除以sqrt(d_k)？</strong>当d_k很大时，QK^T的点积值也会很大，导致softmax后的分布非常"尖锐"（接近one-hot），梯度几乎为零。除以sqrt(d_k)相当于做了缩放，让softmax保持在梯度有效的区域。这是Transformer设计中的一个关键细节——没有它，训练不稳定甚至发散。
-        </div>
-
-        <h2>23.4 BERT：预训练 + 微调的范式革命</h2>
-        <p>2018年BERT的出现彻底改变了NLP的游戏规则。它的核心思想：<strong>先在海量无标注文本上预训练一个通用语言理解模型，然后在下游任务数据上微调</strong>。这个"预训练→微调"的范式成为了NLP的标配。</p>
-
-        <p>BERT的创新点：</p>
-        <ul>
-            <li><strong>双向编码：</strong>传统语言模型只能从左到右（或从右到左）看上下文。BERT同时看两边——用Masked Language Model（MLM）任务，随机遮住一些词让模型预测</li>
-            <li><strong>下一句预测（NSP）：</strong>判断两句话是否是连续的。后来发现这个任务不那么重要（RoBERTa去掉了NSP效果反而更好）</li>
-        </ul>
-
-        <pre><code>from transformers import AutoTokenizer, AutoModelForSequenceClassification
-
-# 加载预训练BERT做中文情感分析
-model_name = "bert-base-chinese"
-tokenizer = AutoTokenizer.from_pretrained(model_name)
-model = AutoModelForSequenceClassification.from_pretrained(model_name, num_labels=2)
-
-# 微调（只需几行代码）
-texts = ["这部电影太棒了", "剧情无聊到想睡觉"]
-labels = [1, 0]
-inputs = tokenizer(texts, padding=True, truncation=True, return_tensors="pt")
-outputs = model(**inputs, labels=torch.tensor(labels))
-loss = outputs.loss
+vocab_size, dim, negatives = 40, 12, 5
+center_embedding = nn.Embedding(vocab_size, dim)
+context_embedding = nn.Embedding(vocab_size, dim)
+center_ids = torch.tensor([2, 7, 11, 5])
+positive_ids = torch.tensor([3, 8, 10, 4])
+negative_ids = torch.randint(0, vocab_size, (4, negatives))
+center = center_embedding(center_ids)
+positive = context_embedding(positive_ids)
+negative = context_embedding(negative_ids)
+pos_score = (center * positive).sum(dim=-1)
+neg_score = torch.einsum("bd,bkd-&gt;bk", center, negative)
+loss = -F.logsigmoid(pos_score).mean() - F.logsigmoid(-neg_score).mean()
 loss.backward()
-</code></pre>
+assert torch.isfinite(loss)
+print("SGNS toy loss:", round(loss.item(), 4))</code></pre></section><section id="sec3" aria-labelledby="title3"><h2 id="title3">03 · 自注意力：上下文如何进入表示</h2><p>自注意力把每个 token 的输入表示投影为 Query、Key 和 Value。Query 与各 Key 的点积形成相关性分数，按 key 位置 softmax，再对 Value 加权求和。缩放因子 <code>√dₖ</code> 用于控制点积分布的尺度；多头注意力让不同投影子空间并行计算。</p><figure><div class="figure-scroll"><img src="../assets/svg/23/self-attention.svg" width="900" height="460" loading="lazy" alt="输入序列分别映射为 Q K V，经过缩放点积和 softmax，再对 V 加权求和。"></div><figcaption>注意力分数矩阵的两个序列维度分别对应 query 位置与 key 位置。</figcaption></figure><div class="eq" role="group" tabindex="0" aria-label="缩放点积注意力公式"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block" aria-label="缩放点积注意力公式"><mrow><mi>Attention</mi><mo>(</mo><mi>Q</mi><mo>,</mo><mi>K</mi><mo>,</mo><mi>V</mi><mo>)</mo><mo>=</mo><mi>softmax</mi><mo>(</mo><mfrac><mrow><mi>Q</mi><msup><mi>K</mi><mi>⊤</mi></msup></mrow><msqrt><msub><mi>d</mi><mi>k</mi></msub></msqrt></mfrac><mo>)</mo><mi>V</mi></mrow></math></div><p>位置顺序不会从普通点积中自动出现，因此 Transformer 还要注入位置编码或位置偏置。标准全注意力在长度 T 上构造 T×T 交互矩阵，计算和显存随序列长度呈二次增长；长上下文系统常需稀疏、分块或其他高效注意力方案。</p><pre><code>import torch
 
-        <div class="tip">
-            <strong>💡 BERT vs GPT的本质区别：</strong>BERT是编码器（Encoder-only），看双向上下文，擅长"理解"任务（分类、NER、QA）。GPT是解码器（Decoder-only），只看左边上下文（自回归），擅长"生成"任务（续写、对话、翻译）。这就是为什么做文本分类用BERT，做聊天机器人用GPT——架构决定了能力边界。
-        </div>
+def scaled_dot_product_attention(q, k, v, key_valid=None):
+    depth = q.size(-1)
+    scores = q @ k.transpose(-2, -1) / (depth ** 0.5)
+    if key_valid is not None:
+        scores = scores.masked_fill(~key_valid[:, None, None, :],
+                                    torch.finfo(scores.dtype).min)
+    weights = scores.softmax(dim=-1)
+    return weights @ v, weights
 
-        <h2>23.5 现代NLP技术栈</h2>
-        <p>2026年的NLP开发者工具箱：</p>
+q = torch.randn(2, 3, 5, 8)  # [B, heads, query_len, depth]
+k = torch.randn(2, 3, 6, 8)
+v = torch.randn(2, 3, 6, 8)
+valid = torch.tensor([[1, 1, 1, 1, 0, 0], [1, 1, 1, 1, 1, 1]], dtype=torch.bool)
+out, weights = scaled_dot_product_attention(q, k, v, valid)
+assert tuple(out.shape) == (2, 3, 5, 8)
+assert torch.all(weights[0, :, :, 4:] == 0)
+print("attention output:", tuple(out.shape))</code></pre></section><section id="sec4" aria-labelledby="title4"><h2 id="title4">04 · Encoder、Decoder 与注意力掩码</h2><p>Transformer Encoder 的自注意力通常允许每个输入位置读取同一序列中的左右上下文；自回归 Decoder 则使用因果掩码，位置 t 只能读取不晚于 t 的 token。若没有因果掩码，训练时模型可能直接看到要预测的未来 token，目标就失去意义。</p><figure><div class="figure-scroll"><img src="../assets/svg/23/encoder-decoder-masks.svg" width="900" height="460" loading="lazy" alt="左侧 Encoder 的双向注意力矩阵全可见，右侧 Decoder 的上三角未来位置被屏蔽。"></div><figcaption>每一行是 query 位置，每一列是 key 位置；因果掩码屏蔽未来列。</figcaption></figure><figure><div class="figure-scroll"><img src="../assets/svg/23/mlm-vs-causal.svg" width="900" height="460" loading="lazy" alt="BERT 风格的 Masked Language Modeling 与 GPT 风格的下一 token 预测目标对比。"></div><figcaption>两个目标都从 token 序列学习表示，但可见上下文和预测位置不同。</figcaption></figure><p>BERT 原论文使用双向 Transformer Encoder，并采用 Masked Language Modeling（MLM）和 Next Sentence Prediction（NSP）预训练目标。后续 RoBERTa 工作去掉 NSP，并改变训练数据、批次和训练时长等设置；因此不能把“BERT 必须依赖 NSP”当作现代编码器预训练的通用规则。</p></section><section id="sec5" aria-labelledby="title5"><h2 id="title5">05 · BERT 与 GPT：目标决定上下文约束</h2><p>BERT 是 Encoder-only 表示模型：MLM 让被遮盖位置利用左右上下文预测原 token，适合分类、序列标注、检索表示等任务。GPT 类 Decoder-only 模型使用因果语言建模，预测下一个 token，适合逐步生成。两者是典型范式，不代表“BERT 只能理解、GPT 只能生成”：模型能力还受数据、规模、指令微调、工具使用和评估方式影响。</p><table><thead><tr><th>维度</th><th>Encoder-only（BERT 类）</th><th>Decoder-only（GPT 类）</th></tr></thead><tbody><tr><td>注意力</td><td>输入序列双向可见</td><td>因果掩码，只看左侧上下文</td></tr><tr><td>典型预训练</td><td>MLM（原始 BERT 另有 NSP）</td><td>Next-token prediction</td></tr><tr><td>常见任务形态</td><td>给定文本的表示与判别</td><td>条件续写与生成</td></tr><tr><td>推理特点</td><td>完整输入可并行编码</td><td>自回归生成按 token 迭代</td></tr></tbody></table><p>微调时 tokenizer 与模型权重必须配套；输入要传入正确的 attention mask；标签编号、类别顺序、最大长度和截断方向也必须与训练契约一致。训练/验证/测试应按文档或实体分组，避免同一来源文本的近重复片段跨集合。</p></section><section id="sec6" aria-labelledby="title6"><h2 id="title6">06 · 从 tokenizer 到训练批次的可执行契约</h2><p>下面用一个极简词表演示 token ID、padding 与 mask 的关系。它不是 BPE 或 WordPiece 的实现；真实 tokenizer 会处理子词合并、特殊 token、Unicode 规范化和模型特定规则。</p><pre><code>import torch
 
-        <table>
-            <tr><th>需求</th><th>工具/模型</th><th>说明</th></tr>
-            <tr><td>文本分类、NER、QA</td><td>BERT, RoBERTa, DeBERTa</td><td>HuggingFace直接微调</td></tr>
-            <tr><td>文本生成、对话</td><td>GPT, LLaMA, Qwen</td><td>开源模型 + LoRA微调</td></tr>
-            <tr><td>文本Embedding</td><td>text-embedding-3, BGE, GTE</td><td>用于检索、语义搜索</td></tr>
-            <tr><td>框架</td><td>HuggingFace Transformers</td><td>几行代码加载任何模型</td></tr>
-        </table>
-
-        <p>NLP的现代图景就讲到这里。下一章我们进入生成式模型——看看AI是如何"创造"新内容的。</p>
-
-        <div class="footer-nav">
-            <a href="22.html">← 上一章</a>
-            <a href="index.html">📖 返回目录</a>
-            <a href="24.html">下一章 →</a>
-        </div>
-    </div>
-</div>
-</div>
-</body>
-</html>
+vocab = {"[PAD]": 0, "[CLS]": 1, "[SEP]": 2, "hello": 3, "world": 4, "ml": 5}
+sentences = [["[CLS]", "hello", "world", "[SEP]"],
+             ["[CLS]", "ml", "[SEP]"]]
+max_len = max(map(len, sentences))
+input_ids = torch.tensor([
+    [vocab[t] for t in row] + [vocab["[PAD]"]] * (max_len - len(row))
+    for row in sentences
+])
+attention_mask = input_ids.ne(vocab["[PAD]"]).long()
+assert tuple(input_ids.shape) == (2, 4)
+assert attention_mask.tolist() == [[1, 1, 1, 1], [1, 1, 1, 0]]
+print("input_ids:", input_ids.tolist())
+print("attention_mask:", attention_mask.tolist())</code></pre><p>注意：有些模型把 mask 的 1/0 语义或参数名称定义为“可见/屏蔽”相反方向；使用 API 时应查看模型文档，不要把一个框架的 mask 约定复制到另一个框架。</p></section><section id="sec7" aria-labelledby="title7"><h2 id="title7">07 · NLP 评估与常见失败模式</h2><ul><li><strong>Tokenizer mismatch：</strong>用 A 模型 tokenizer 产生 ID，却送入 B 模型 embedding，数值形状正确也可能语义完全错误。</li><li><strong>Padding leakage：</strong>注意力屏蔽了 PAD，但损失仍把 PAD 位置计入；或反过来，损失忽略 PAD 却让模型注意 PAD。</li><li><strong>Truncation bias：</strong>只保留开头可能删掉答案，盲目保留结尾也可能丢失任务指令。</li><li><strong>数据泄漏：</strong>同一用户、文档、模板或时间片段的近重复文本进入不同数据集。</li><li><strong>指标错配：</strong>Accuracy、macro-F1、micro-F1、perplexity 和生成评测回答不同问题；不能把单一指标当作全面语言质量。</li><li><strong>预训练偏差：</strong>语言模型可能复现训练语料中的偏见、隐私泄露和不可靠事实。</li></ul><p>现代 NLP 的核心工作流是：固定数据与 tokenizer 契约，明确任务目标和掩码，建立简单基线，再用分层评估和错误分析验证模型真正学到了什么。</p></section><section id="references" aria-labelledby="ref-title"><h2 id="ref-title">来源、实现版本与适用边界</h2><p>论文用于核对算法定义与历史主张；官方文档用于核对 API 行为。图中的张量和数值若未明确引用论文实验，均为构造的教学示例，不代表 benchmark 或生产效果。</p><ul class="refs"><li><a href="https://arxiv.org/abs/1301.3781" rel="noopener noreferrer">Mikolov et al. (2013), Efficient Estimation of Word Representations in Vector Space</a></li><li><a href="https://arxiv.org/abs/1706.03762" rel="noopener noreferrer">Vaswani et al. (2017), Attention Is All You Need</a></li><li><a href="https://arxiv.org/abs/1810.04805" rel="noopener noreferrer">Devlin et al. (2018), BERT: Pre-training of Deep Bidirectional Transformers for Language Understanding</a></li><li><a href="https://arxiv.org/abs/1907.11692" rel="noopener noreferrer">Liu et al. (2019), RoBERTa: A Robustly Optimized BERT Pretraining Approach</a></li><li><a href="https://huggingface.co/docs/transformers/main_classes/tokenizer" rel="noopener noreferrer">Hugging Face Transformers: Tokenizers 与 padding/truncation</a></li><li><a href="https://docs.pytorch.org/docs/stable/generated/torch.nn.functional.scaled_dot_product_attention.html" rel="noopener noreferrer">PyTorch scaled_dot_product_attention API</a></li></ul></section><nav class="article-footer" aria-label="章节导航"><a href="22.html">← 上一章</a><a href="../index.html">全部章节</a><a href="24.html">下一章 →</a></nav></article></main></div><footer class="site-footer"><span>机器学习图解教程 · 第 23 章</span><span>从计算机制到可验证的工程实现</span></footer></body></html>
