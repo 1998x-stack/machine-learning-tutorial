@@ -1,0 +1,77 @@
+{
+  "chapter": "27",
+  "claims": [
+    {
+      "id": "fastapi-body",
+      "claim": "FastAPI recognizes Pydantic model-typed parameters as JSON request bodies and validates inputs.",
+      "kind": "implementation",
+      "source_url": "https://fastapi.tiangolo.com/tutorial/body/",
+      "locator": "Request Body tutorial",
+      "status": "verified",
+      "notes": "The demo lacks production authentication and rate limiting."
+    },
+    {
+      "id": "fastapi-lifespan",
+      "claim": "FastAPI lifespan handlers provide startup/shutdown resource management; async routes do not automatically make CPU-bound model inference nonblocking.",
+      "kind": "implementation",
+      "source_url": "https://fastapi.tiangolo.com/advanced/events/",
+      "locator": "Lifespan event handlers",
+      "status": "verified",
+      "notes": "The example uses synchronous def endpoints for CPU-bound toy inference."
+    },
+    {
+      "id": "model-persistence-security",
+      "claim": "Pickle/joblib model loading can execute arbitrary code, and cross-version scikit-learn model persistence is not guaranteed.",
+      "kind": "implementation",
+      "source_url": "https://scikit-learn.org/stable/model_persistence.html",
+      "locator": "Security and version compatibility sections",
+      "status": "verified",
+      "notes": "Load only trusted artifacts in controlled environments; consider skops.io threat model."
+    },
+    {
+      "id": "onnx-parity",
+      "claim": "ONNX Runtime runs exported graphs with declared providers and needs parity verification of names, shapes, classes and numerical tolerance.",
+      "kind": "implementation",
+      "source_url": "https://onnxruntime.ai/docs/get-started/with-python",
+      "locator": "InferenceSession and input name",
+      "status": "verified",
+      "notes": "No guaranteed speedup from converting a model to ONNX; target hardware benchmarks needed."
+    },
+    {
+      "id": "p95-definition",
+      "claim": "P95 is an empirical quantile of end-to-end request latency and is not in general a sum of each component's P95.",
+      "kind": "derivation",
+      "source_url": "https://numpy.org/doc/stable/reference/generated/numpy.quantile.html",
+      "locator": "Quantile computation definition",
+      "status": "derived",
+      "notes": "Synthetic latency histogram/budget is explicitly illustrative, not production data."
+    },
+    {
+      "id": "canary-budget",
+      "claim": "Canary release routes a small portion of traffic to a candidate and evaluates observable risk before traffic expansion.",
+      "kind": "method",
+      "source_url": "https://docs.cloud.google.com/architecture/mlops-continuous-delivery-and-automation-pipelines-in-machine-learning",
+      "locator": "Deployment validation and monitoring",
+      "status": "verified",
+      "notes": "95/5 split and thresholds shown are invented examples, not universal release standards."
+    },
+    {
+      "id": "drift-difference",
+      "claim": "Covariate shift in P(X) and concept drift in P(Y|X) are different notions; reliable model-performance assessment generally requires labels.",
+      "kind": "concept",
+      "source_url": "https://proceedings.neurips.cc/paper/2015/hash/86df7dcfd896fcaf2674f757a2463eba-Abstract.html",
+      "locator": "Model dependency risk and system drift background",
+      "status": "derived",
+      "notes": "Definitions are mathematical; the chapter explicitly notes immature labels and source selection."
+    },
+    {
+      "id": "docker-illustration",
+      "claim": "The Dockerfile is an illustrative build recipe, not a built or scanned production image.",
+      "kind": "toy",
+      "source_url": "https://docs.docker.com/build/building/best-practices/",
+      "locator": "Dockerfile build best practices",
+      "status": "illustrative",
+      "notes": "Production should pin image digest and dependency hashes; no deployment is claimed."
+    }
+  ]
+}

@@ -69,3 +69,24 @@
 | 25 | [Sutton & Barto](http://incompleteideas.net/book/the-book-2nd.html) · [Q-Learning](https://doi.org/10.1007/BF00992698) · [DQN](https://www.nature.com/articles/nature14236) · [Double DQN](https://arxiv.org/abs/1509.06461) · [REINFORCE](https://doi.org/10.1162/neco.1992.4.2.229) · [PPO](https://arxiv.org/abs/1707.06347) · [Gymnasium Env API](https://gymnasium.farama.org/main/api/env/) | 表格 Q-learning 收敛依赖充分探索等条件；DQN target/replay 不保证任意任务稳定；terminated 与 truncated 区分；PPO clipping 不是严格信赖域保证 |
 
 详细主张、来源定位、状态和限制记录在 `docs/evidence/21.json` 至 `25.json`。新增 20 幅 SVG 是原创机制图；19 个 Python 示例使用随机/合成小张量核验形状和更新规则，不构成论文复现或生产模型性能结论。
+
+## 第六批一手来源与技术边界 · 26–28
+
+| 章节 | 一手论文 / 官方资料 | 审计要点 |
+|---|---|---|
+| 26 | [Attention Is All You Need](https://arxiv.org/abs/1706.03762) · [RAG: Lewis et al.](https://arxiv.org/abs/2005.11401) · [LoRA: Hu et al.](https://arxiv.org/abs/2106.09685) · [ReAct](https://arxiv.org/abs/2210.03629) · [Hugging Face KV Cache](https://huggingface.co/docs/transformers/en/kv_cache) | 自回归解码与训练并行计算区分；原始 RAG 与工程检索增强不同；LoRA 的矩阵维度与新增参数可推导；Agent 工具权限不能只靠提示词 |
+| 26 | [OWASP LLM Prompt Injection Prevention](https://cheatsheetseries.owasp.org/cheatsheets/LLM_Prompt_Injection_Prevention_Cheat_Sheet.html) · [Microsoft RAG Evaluators](https://learn.microsoft.com/en-us/azure/foundry/concepts/evaluation-evaluators/rag-evaluators) · [PyTorch SDPA](https://docs.pytorch.org/docs/stable/generated/torch.nn.functional.scaled_dot_product_attention.html) | 文档/工具输出属于不可信输入；检索 Recall@k 与 groundedness/accuracy 分开评估；不同 mask API 的 True/False 约定必须明确 |
+| 27 | [FastAPI Request Body](https://fastapi.tiangolo.com/tutorial/body/) · [FastAPI Lifespan](https://fastapi.tiangolo.com/advanced/events/) · [scikit-learn Model Persistence](https://scikit-learn.org/stable/model_persistence.html) · [ONNX Runtime Python](https://onnxruntime.ai/docs/get-started/with-python) | API 验证、生命周期与 CPU 推理并发；受信任反序列化和依赖兼容；ONNX 输出数值必须同输入对照，不能假设转换必然加速 |
+| 27 | [Docker Build Best Practices](https://docs.docker.com/build/building/best-practices/) · [Google MLOps](https://docs.cloud.google.com/architecture/mlops-continuous-delivery-and-automation-pipelines-in-machine-learning) · [NumPy Quantile](https://numpy.org/doc/stable/reference/generated/numpy.quantile.html) | 容器仅是构建示例；95/5 发布和 60ms 延迟预算属于人工机制图，不代表任何真实服务或万能阈值 |
+| 28 | [Feast historical feature retrieval](https://docs.feast.dev/getting-started/concepts/feature-retrieval) · [scikit-learn TimeSeriesSplit](https://scikit-learn.org/stable/modules/generated/sklearn.model_selection.TimeSeriesSplit.html) · [Common pitfalls](https://scikit-learn.org/stable/common_pitfalls.html) · [Classification threshold](https://scikit-learn.org/stable/modules/classification_threshold.html) | as-of 历史特征、事件时间与 available_at；未来 7 天标签窗口；时序 gap 防跨期泄漏；阈值由验证集选，测试集不可参与调参 |
+| 28 | [Randomized uplift model evaluation research](https://www.sciencedirect.com/science/article/pii/S037722172300721X) · [Hidden Technical Debt](https://proceedings.neurips.cc/paper/2015/hash/86df7dcfd896fcaf2674f757a2463eba-Abstract.html) · [Model persistence](https://scikit-learn.org/stable/model_persistence.html) | 购买预测概率不同于优惠券处理效应；随机处理/对照和利润成本需要真实实验；model SHA 不能代替来源审查，工件必须可追溯 |
+
+全部新增 15 幅章节 SVG 为原创计算机制图，示意中的企业政策、用户事件、处理组结果、延迟预算、Canary 比例和成本阈值均为构造案例。代码片段的运行成功不等于真实语义检索、云端部署、生产 QPS、商业试验或 LLM 基准复现。逐项来源定位与 verified / derived / illustrative 状态见 `docs/evidence/26.json` 至 `28.json`。
+
+## 全站第二轮审计的优先级
+
+1. 技术事实：文中跨年份模型、框架 API、过时服务建议和引用是否仍符合当前官方版本。
+2. 数学与 SVG：分母、矩阵形状、轴含义、箭头起点/终点、数据标签与图注是否一一对应；每张 SVG 应单独以浏览器或 XML 工具打开。
+3. Python 示例：固定依赖与随机种子，在 CI 的 Python 3.12 中逐段独立执行；真实模型下载和外部服务不混入离线质量门禁。
+4. 移动端与无障碍：360/390px 没有文档级水平溢出；宽图/公式局部滚动；focus 可见；MathML 实际排版及打印/无联网阅读可用。
+5. 发布与回滚：先通过 PR 静态、Python、Playwright，再合并并检查 Pages 实际工作流；没有独立在线访问复核则明确标记未验证。

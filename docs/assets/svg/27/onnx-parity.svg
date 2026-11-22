@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1100 540" role="img" aria-labelledby="ml-onnx-title ml-onnx-desc"><title id="ml-onnx-title">模型转换后的 ONNX 数值与输出契约验证</title><desc id="ml-onnx-desc">原 Python 推理作为参考；经受支持的 opset 导出 ONNX，运行于指定 Execution Provider，比较类型、形状、类别顺序及容差范围内的概率，测量硬件上的实际延迟。</desc><defs><marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path fill="#648078" d="M0 0L10 5L0 10Z"/></marker><marker id="org" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path fill="#c16a43" d="M0 0L10 5L0 10Z"/></marker><style>text{font-family:Inter,system-ui,"Noto Sans CJK SC","Microsoft YaHei",sans-serif;fill:#25403b}.t{font-size:24px;font-weight:750}.l{font-size:18px;font-weight:660}.s{font-size:15px;fill:#4d6962}.xs{font-size:13px;fill:#5b736c}.n{fill:#fffefa;stroke:#b7c8c0;stroke-width:2}.g{fill:#e1f1e9;stroke:#16786f;stroke-width:2}.o{fill:#fbe8dc;stroke:#bc6a47;stroke-width:2}.p{fill:#eee9f8;stroke:#7863b0;stroke-width:2}.y{fill:#f9f1dc;stroke:#a48138;stroke-width:2}.dash{stroke-dasharray:7 6}.arrow{stroke:#648078;stroke-width:2.4;fill:none;marker-end:url(#arr)}.warn{stroke:#c16a43;stroke-width:2.4;fill:none;marker-end:url(#org)}</style></defs><rect width="1100" height="540" rx="22" fill="#fbfaf6"/>
+<text x="46" y="48" class="t">ONNX 是可交换计算图，不是自动加速按钮</text>
+<rect x="58" y="119" width="230" height="96" rx="13" class="g"/><text x="173" y="152" text-anchor="middle" class="l">原模型（Python）</text><text x="173" y="180" text-anchor="middle" class="s">preprocess + estimator</text>
+<path d="M288 164 L349 164" class="arrow"/>
+<rect x="365" y="119" width="213" height="96" rx="13" class="o"/><text x="471.5" y="152" text-anchor="middle" class="l">Export to ONNX</text><text x="471.5" y="180" text-anchor="middle" class="s">支持算子 + opset</text>
+<path d="M578 164 L637 164" class="arrow"/>
+<rect x="651" y="119" width="218" height="96" rx="13" class="p"/><text x="760" y="152" text-anchor="middle" class="l">ONNX Runtime</text><text x="760" y="180" text-anchor="middle" class="s">CPU / CUDA provider</text>
+<path d="M869 164 L926 164" class="arrow"/>
+<rect x="943" y="119" width="120" height="96" rx="13" class="g"/><text x="1003" y="152" text-anchor="middle" class="l">预测值</text><text x="1003" y="180" text-anchor="middle" class="s">[B,C]</text>
+<path d="M160 215 V326 H355" class="arrow"/>
+<rect x="368" y="299" width="343" height="95" rx="13" class="n"/><text x="539.5" y="332" text-anchor="middle" class="l">Reference output</text><text x="539.5" y="360" text-anchor="middle" class="s">原推理相同输入 float32</text>
+<path d="M774 215 V345 H717" class="arrow"/>
+<rect x="770" y="299" width="260" height="95" rx="13" class="y"/><text x="900" y="332" text-anchor="middle" class="l">Parity checks</text><text x="900" y="360" text-anchor="middle" class="s">shape · class · tol</text>
+<path d="M711 344 L764 344" class="arrow"/>
+<rect x="70" y="447" width="947" height="61" rx="12" class="n"/>
+<text x="97" y="485" class="s">验证边界：先比较数值一致性，再测 P50/P95、吞吐/显存；并注明 opset、dtype、EP 和设备。</text></svg>
