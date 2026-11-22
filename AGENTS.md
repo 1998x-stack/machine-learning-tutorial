@@ -5,7 +5,7 @@
 
 ## Repo map
 - `docs/index.html` 是唯一课程门户；`docs/courses.json` 是章节目录单一来源。
-- `docs/chapters/NN.html` 是 28 篇可独立阅读的教程；01–15 已按新规范精修，16–28 是待逐篇复审的兼容旧稿。
+- `docs/chapters/NN.html` 是 28 篇可独立阅读的教程；01–20 已按新规范精修，21–28 是待逐篇复审的兼容旧稿。
 - `docs/assets/css/{site,article}.css` 管理视觉 token、移动端和打印；勿在每篇重新复制整套 CSS。
 - `docs/assets/svg/NN/` 存放按章节编号的 **独立 SVG**；`docs/assets/js/` 仅增强交互，不承担文章正文内容。
 - 根目录 `index.html`、`NN.html` 是旧 URL 兼容入口，非可编辑正文。
@@ -24,7 +24,7 @@
 10. **Release**: 提交分支与 PR；核对变更清单、CI、部署，再检查实际 Pages 页面。不自动宣称已发布。只在核验完成后标记章节精修完毕。
 
 ## Scope rules
-- 按批次逐章重构，**不要顺手替换** 尚未审查的 16–28 数学内容。
+- 按批次逐章重构，**不要顺手替换** 尚未审查的 21–28 数学内容。
 - `docs/` 是 deployable output/source for this dependency-free static site，无需重复生成的 dist/build 目录。
 - 保持旧 `NN.html` 的导航有效，禁止无迁移说明地删除入口。
 - 不拷贝 Olah 或第三方图标、图像、图表或代码的受限内容。
@@ -34,7 +34,7 @@
 - 优化器、模型选择、交叉验证、概率校准及决策阈值只从训练或验证数据学习，测试数据只允许最终独立报告。
 - SVG 的几何线、统计数值、坐标轴、概率峰值必须经推导或代码校核；第二批每篇至少 3 幅独立 SVG。
 - 新滑块必须具备原生键盘访问、无 JS 默认含义和可见的数字反馈；浏览器 QA 验证其状态变化。
-- `scripts/run_examples.py` 和 `scripts/browser_qa.py` 覆盖前十五章；离线检查未执行的外部项目不能标为通过。
+- `scripts/run_examples.py` 和 `scripts/browser_qa.py` 覆盖前二十章；离线检查未执行的外部项目不能标为通过。
 
 ## Third-wave gates (11–15)
 - SVM 文章必须区分几何间隔、函数间隔、C 的软间隔惩罚与 gamma 的 RBF 相似性范围；可分情形的解析图不能冒充真实样本决策边界。
@@ -44,3 +44,12 @@
 - 任何搜索预算必须记录候选参数个数、CV 折数及 refit；嵌套 CV 的内层只选择、外层只评估。只有真实报告中间指标的迭代模型才可演示 Optuna pruning。
 - 11–15 每篇至少 3 幅 title/desc/viewBox 完整的独立 SVG，图中的每个数学量或点的邻域分类都应交叉核验。
 - 静态验证只接受部署在 docs/ 内部的相对站内资源；源码示例链接使用 GitHub 官方仓库地址。CI 覆盖前 15 章示例与 48 组页面尺寸。
+
+## Fourth-wave gates (16–20)
+- 不平衡分类必须分别解释基率、排序指标、阈值与错误成本；SMOTE 只能在每个训练折内部拟合，验证/测试数据保持原始分布。AP 不得无条件写成梯形 PR-AUC。
+- SHAP 必须说明基线、输出空间、背景数据与特征依赖假设；LIME 必须检查局部 fidelity；PDP/ICE 不得被解释为因果效应，相关特征可能生成低概率组合。
+- MLflow 区分 Tracking Run、模型工件、Registry 版本与 alias；Feature Store 必须解释事件时间与 point-in-time join；MLOps 成熟度层级注明是参考框架。
+- 神经网络每个公式标明张量形状；区分反向传播求梯度与优化器更新；Xavier/He 公式必须说明 fan 与激活假设；BN/Dropout 的 train/eval 行为不可混淆。
+- PyTorch 必须区分 model.eval() 与 inference_mode/no_grad；BCEWithLogitsLoss/CrossEntropyLoss 接收 logits；Checkpoint 需包含优化器状态；AMP 说明设备、dtype、GradScaler 和 unscale/clip 顺序。
+- 16–20 每章至少 3 幅独立 SVG，并建立 docs/evidence/NN.json 逐条登记重要主张、来源定位和 verified/derived/illustrative 状态。
+- CI 必须执行前 20 章全部正文代码块，覆盖首页+前 20 章在 1440/390/360px 的 63 组浏览器检查，并验证新证据台账 JSON。
