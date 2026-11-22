@@ -27,3 +27,21 @@
 | 10 | [RandomForest](https://scikit-learn.org/stable/modules/generated/sklearn.ensemble.RandomForestClassifier.html) · [Permutation Importance](https://scikit-learn.org/stable/modules/permutation_importance.html) | OOB 非独立测试；MDI 易受高基数影响，置换重要性受相关性影响 |
 
 新绘制的 15 幅 SVG 是机制解释或人工教学数据；不冒充论文基准实验。远程 California Housing 下载脚本不在离线 CI 结果范围内。
+
+## 第三批技术核查 · 11–15
+
+以下官方资料核对的是原理、API 与适用条件。SVG 全部是原创的解析函数或明确声明的人造教学数据，不是实际 benchmark 曲线。
+
+| 章节 | 一手/官方来源 | 边界和关键纠错 |
+| --- | --- | --- |
+| 11 | [SVM Guide](https://scikit-learn.org/stable/modules/svm.html) · [SVC API](https://scikit-learn.org/stable/modules/generated/sklearn.svm.SVC.html) | 几何间隔与函数间隔不同；C 控制违例惩罚，gamma 控制核局部尺度；核 SVM 受输入缩放和样本数限制 |
+| 12 | [Naive Bayes](https://scikit-learn.org/stable/modules/naive_bayes.html) · [MultinomialNB](https://scikit-learn.org/stable/modules/generated/sklearn.naive_bayes.MultinomialNB.html) · [Neighbors](https://scikit-learn.org/stable/modules/neighbors.html) | 给定类别条件独立、非负词频与平滑的分母；KNN 依赖度量、尺度和维度 |
+| 13 | [Clustering Guide](https://scikit-learn.org/stable/modules/clustering.html) · [KMeans](https://scikit-learn.org/stable/modules/generated/sklearn.cluster.KMeans.html) · [DBSCAN](https://scikit-learn.org/stable/modules/generated/sklearn.cluster.DBSCAN.html) | KMeans 局部最优及凸形偏好，DBSCAN min_samples 包括自身，Silhouette 不代表人群真值 |
+| 14 | [PCA](https://scikit-learn.org/stable/modules/generated/sklearn.decomposition.PCA.html) · [Manifold](https://scikit-learn.org/stable/modules/manifold.html) · [Feature selection](https://scikit-learn.org/stable/modules/feature_selection.html) · [TargetEncoder](https://scikit-learn.org/stable/modules/generated/sklearn.preprocessing.TargetEncoder.html) | t-SNE 不保留全局簇距/密度；目标编码 fit_transform 内部交叉拟合；特征选择必须进入训练折 |
+| 15 | [Grid/Random search](https://scikit-learn.org/stable/modules/grid_search.html) · [Nested CV example](https://scikit-learn.org/stable/auto_examples/model_selection/plot_nested_cross_validation_iris.html) · [Optuna search spaces](https://optuna.readthedocs.io/en/stable/tutorial/10_key_features/002_configurations.html) · [Optuna pruning](https://optuna.readthedocs.io/en/stable/tutorial/10_key_features/003_efficient_optimization_algorithms.html) | 搜索 CV 选择偏差；内层选参、外层评估；非迭代模型不能虚构 pruning 中间步骤 |
+
+## 跨批次共用事实约束
+
+- Docs 是 Pages 唯一构建工件；相对链接不能越过 `docs/`。指向 `examples/` 源码应直接使用 GitHub 仓库的网页 URL。
+- 随机样本或合成数据的数值结果只能说明定义与算法，不代表真实应用准确率或因果效应。
+- 对生成的公式曲线验证坐标和峰值，对邻域图核验距离、eps/min_samples 计数，对聚类中心核验平均值。未实测的算法性能图一律注明“示意”。
