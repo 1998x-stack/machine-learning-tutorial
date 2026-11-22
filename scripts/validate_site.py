@@ -263,7 +263,7 @@ def main():
                 error(path, "article should cite at least two non-repository primary/official sources")
             if not re.search(r'<nav class="article-footer"', source):
                 error(path, "missing previous/home/next article navigation")
-            if not re.search(r'<section[^>]*>[\s\S]*class="refs"', source):
+            if '<ul class="refs"' not in source:
                 error(path, "missing visible references list")
 
         for raw, attrs in audit.links:
