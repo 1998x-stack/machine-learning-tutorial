@@ -1,0 +1,41 @@
+{
+  "chapter": "05",
+  "claims": [
+    {
+      "id": "preprocessing-leakage",
+      "claim": "Fitting a preprocessing transform before splitting can leak information from held-out observations into training.",
+      "kind": "method",
+      "source_url": "https://scikit-learn.org/stable/common_pitfalls.html",
+      "locator": "Data leakage during preprocessing",
+      "status": "verified",
+      "notes": "Fit learned transformations only on the training partition or training fold."
+    },
+    {
+      "id": "pipeline-boundary",
+      "claim": "A Pipeline composes transformations and an estimator so each cross-validation training fold fits its own preprocessing state.",
+      "kind": "implementation",
+      "source_url": "https://scikit-learn.org/stable/modules/compose.html",
+      "locator": "Pipeline and ColumnTransformer",
+      "status": "verified",
+      "notes": "External feature extraction and temporal availability still require separate controls."
+    },
+    {
+      "id": "imputation-strategy",
+      "claim": "Imputation replaces missing values using a defined strategy; missingness indicators may preserve information about absence.",
+      "kind": "implementation",
+      "source_url": "https://scikit-learn.org/stable/modules/impute.html",
+      "locator": "Univariate imputation and missing indicators",
+      "status": "verified",
+      "notes": "The best strategy depends on missingness mechanism and deployment distribution."
+    },
+    {
+      "id": "scaling-contract",
+      "claim": "Scaling parameters such as means and standard deviations are learned from training data and reused unchanged at inference.",
+      "kind": "implementation",
+      "source_url": "https://scikit-learn.org/stable/modules/preprocessing.html",
+      "locator": "Standardization and preprocessing estimators",
+      "status": "verified",
+      "notes": "Scaling is not universally necessary for tree-based estimators."
+    }
+  ]
+}
