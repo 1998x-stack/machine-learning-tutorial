@@ -40,7 +40,7 @@
 | 14 | [PCA](https://scikit-learn.org/stable/modules/generated/sklearn.decomposition.PCA.html) · [Manifold](https://scikit-learn.org/stable/modules/manifold.html) · [Feature selection](https://scikit-learn.org/stable/modules/feature_selection.html) · [TargetEncoder](https://scikit-learn.org/stable/modules/generated/sklearn.preprocessing.TargetEncoder.html) | t-SNE 不保留全局簇距/密度；目标编码 fit_transform 内部交叉拟合；特征选择必须进入训练折 |
 | 15 | [Grid/Random search](https://scikit-learn.org/stable/modules/grid_search.html) · [Nested CV example](https://scikit-learn.org/stable/auto_examples/model_selection/plot_nested_cross_validation_iris.html) · [Optuna search spaces](https://optuna.readthedocs.io/en/stable/tutorial/10_key_features/002_configurations.html) · [Optuna pruning](https://optuna.readthedocs.io/en/stable/tutorial/10_key_features/003_efficient_optimization_algorithms.html) | 搜索 CV 选择偏差；内层选参、外层评估；非迭代模型不能虚构 pruning 中间步骤 |
 
-## 第四批技术核查 · 16–22
+## 第四批技术核查 · 16–23
 
 以下官方资料核对的是原理、API 与适用条件。本章 SVG 是流程示意或明确声明的人造教学数据，不是实际业务数据集或基准曲线。
 
@@ -53,6 +53,7 @@
 | 20 | [autograd](https://pytorch.org/tutorials/beginner/basics/autogradqs_tutorial.html) · [DataLoader](https://pytorch.org/docs/stable/data.html) · [BCEWithLogitsLoss](https://pytorch.org/docs/stable/generated/torch.nn.BCEWithLogitsLoss.html) · [CrossEntropyLoss](https://pytorch.org/docs/stable/generated/torch.nn.CrossEntropyLoss.html) · [AMP](https://pytorch.org/docs/stable/notes/amp_examples.html) · [可复现性](https://pytorch.org/docs/stable/notes/randomness.html) | 梯度默认累加、需 zero_grad；eval() 与 no_grad() 不同作用；损失函数内置激活不能重复；log-sum-exp 保证数值稳定；混合精度需重验指标；shuffle 仅训练集 |
 | 21 | [VGG](https://arxiv.org/abs/1409.1556) · [ResNet](https://arxiv.org/abs/1512.03385) · [EfficientNet](https://arxiv.org/abs/1905.11946) · [PyTorch Conv2d](https://pytorch.org/docs/stable/generated/torch.nn.Conv2d.html) · [torchvision 预训练模型](https://pytorch.org/vision/stable/models.html) | 卷积参数量与分辨率无关；输出尺寸 O=⌊(W−K+2P)/S⌋+1；堆两层 3×3 感受野为 5×5；残差相加需形状一致；迁移学习学习率与解冻策略在验证集确定；增强仅训练集；不转述二手精度数字 |
 | 22 | [GRU](https://arxiv.org/abs/1406.1078) · [Seq2Seq](https://arxiv.org/abs/1409.3215) · [Bahdanau 注意力](https://arxiv.org/abs/1409.0473) · [Attention Is All You Need](https://arxiv.org/abs/1706.03762) · [PyTorch LSTM](https://pytorch.org/docs/stable/generated/torch.nn.LSTM.html) · [PyTorch GRU](https://pytorch.org/docs/stable/generated/torch.nn.GRU.html) | RNN 共享权重、梯度易消失/爆炸；LSTM 门控与加法细胞状态；GRU 合并门；Seq2Seq 固定向量的瓶颈；注意力为编码器状态加权和；自注意力并行且路径短；变长需 padding/掩码 |
+| 23 | [Word2Vec](https://arxiv.org/abs/1301.3781) · [Attention Is All You Need](https://arxiv.org/abs/1706.03762) · [BERT](https://arxiv.org/abs/1810.04805) · [RoBERTa](https://arxiv.org/abs/1907.11692) · [Transformers 文档](https://huggingface.co/docs/transformers/index) | one-hot 正交无相似度；静态嵌入一词一向量、多义无法区分；自注意力双向直接连接；1/√d_k 缩放控制 softmax 尖锐度；MLM 训练/推理掩码不一致；NSP 可去掉；编码器理解、解码器生成 |
 
 ## 跨批次共用事实约束
 

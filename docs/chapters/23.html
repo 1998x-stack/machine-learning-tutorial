@@ -1,235 +1,38 @@
-<!DOCTYPE html>
-<html lang="zh-CN">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.5, user-scalable=yes">
-    <title>第23章 NLP自然语言处理</title>
-    <style>
-        * { margin:0; padding:0; box-sizing:border-box; }
-        body {
-            background: linear-gradient(135deg, #f5f3ff 0%, #e8f5f0 100%);
-            font-family: system-ui, -apple-system, 'Segoe UI', 'PingFang SC', Roboto, 'Helvetica Neue', sans-serif;
-            padding: 20px;
-        }
-        .double-border {
-            max-width: 1400px;
-            margin: 0 auto;
-            background: #ffffff;
-            border: 2px solid #8b5cf6;
-            border-radius: 24px;
-            box-shadow: 0 20px 30px -15px rgba(0,0,0,0.2), inset 0 1px 0 0 #f5f3ff;
-            overflow: hidden;
-        }
-        .container { display: grid; grid-template-columns: 260px 1fr; gap: 0; }
-        .sidebar {
-            background: #faf8ff; border-right: 2px solid #c4b5fd; padding: 24px 16px;
-        }
-        .sidebar h3 { font-size: 1.4rem; color: #6d28d9; border-left: 5px solid #8b5cf6; padding-left: 15px; margin-bottom: 25px; }
-        .chapter-list { list-style: none; }
-        .chapter-list li { margin-bottom: 6px; }
-        .chapter-list a {
-            display: block; padding: 8px 12px; text-decoration: none;
-            color: #334155; border-radius: 12px; transition: all 0.2s;
-            font-weight: 500; font-size: 0.92rem;
-        }
-        .chapter-list a:hover { background: #ede9fe; transform: translateX(3px); }
-        .chapter-list .active { background: #7c3aed; color: white; box-shadow: 0 2px 5px rgba(124,58,237,0.3); }
-        .main-content { padding: 30px 35px; background: white; }
-        .footer-nav {
-            margin-top: 45px; padding-top: 20px; border-top: 2px solid #c4b5fd;
-            display: flex; justify-content: space-between;
-        }
-        .footer-nav a {
-            padding: 8px 24px; background: #f1f5f9; text-decoration: none;
-            color: #5b21b6; border-radius: 40px; font-weight: 500; transition: 0.2s;
-        }
-        .footer-nav a:hover { background: #ede9fe; transform: translateY(-2px); }
-        h2 { color: #4c1d95; border-left: 6px solid #8b5cf6; padding-left: 15px; margin: 20px 0 15px; font-size: 1.5rem; }
-        h3 { color: #5b21b6; margin: 20px 0 10px; font-size: 1.2rem; }
-        h4 { color: #6d28d9; margin: 15px 0 8px; font-size: 1.05rem; }
-        p { line-height: 1.85; margin: 10px 0; color: #1e293b; }
-        ul, ol { margin: 10px 0 10px 20px; line-height: 1.8; }
-        li { color: #1e293b; margin-bottom: 4px; }
-        pre { background: #1e1035; color: #e8e8f0; padding: 15px; border-radius: 12px; overflow-x: auto; font-family: 'JetBrains Mono', 'Fira Code', monospace; margin: 15px 0; font-size: 0.9rem; line-height: 1.5; }
-        code { background: #f5f3ff; padding: 2px 6px; border-radius: 4px; font-family: 'JetBrains Mono', monospace; font-size: 0.85em; }
-        pre code { background: none; padding: 0; }
-        table { width: 100%; border-collapse: collapse; margin: 15px 0; background: #fafafe; }
-        th, td { border: 1px solid #c4b5fd; padding: 10px; text-align: left; }
-        th { background: #f5f3ff; color: #5b21b6; font-weight: 600; }
-        .tip, .warning, .highlight { padding: 12px 18px; border-radius: 16px; margin: 15px 0; line-height: 1.7; }
-        .tip { background: #e0f2fe; border-left: 6px solid #0ea5e9; }
-        .warning { background: #fee2e2; border-left: 6px solid #ef4444; }
-        .highlight { background: #fef9c3; border: 1px solid #facc15; }
-        strong { color: #1e1b4b; }
-        @media (max-width: 768px) {
-            .container { grid-template-columns: 1fr; }
-            .sidebar { border-right: none; border-bottom: 2px solid #c4b5fd; }
-            body { padding: 10px; }
-            .main-content { padding: 20px; }
-        }
-    </style>
-    <link rel="stylesheet" href="theme.css">
-</head>
-<body>
-<div class="double-border">
-<div class="container">
-    <div class="sidebar">
-        <h3>🤖 课程目录</h3>
-        <ul class="chapter-list">
-            <li><a href="01.html">第1章 机器学习概述</a></li>
-            <li><a href="02.html">第2章 数学基础：线性代数</a></li>
-            <li><a href="03.html">第3章 数学基础：概率统计</a></li>
-            <li><a href="04.html">第4章 数学基础：优化理论</a></li>
-            <li><a href="05.html">第5章 数据预处理与探索</a></li>
-            <li><a href="06.html">第6章 第一个ML项目实战</a></li>
-            <li><a href="07.html">第7章 模型评估与选择</a></li>
-            <li><a href="08.html">第8章 线性回归与正则化</a></li>
-            <li><a href="09.html">第9章 逻辑回归与分类</a></li>
-            <li><a href="10.html">第10章 决策树与随机森林</a></li>
-            <li><a href="11.html">第11章 支持向量机 SVM</a></li>
-            <li><a href="12.html">第12章 朴素贝叶斯与KNN</a></li>
-            <li><a href="13.html">第13章 聚类算法</a></li>
-            <li><a href="14.html">第14章 降维与特征工程</a></li>
-            <li><a href="15.html">第15章 模型调参与AutoML</a></li>
-            <li><a href="16.html">第16章 处理不平衡数据</a></li>
-            <li><a href="17.html">第17章 模型可解释性</a></li>
-            <li><a href="18.html">第18章 ML系统工程化</a></li>
-            <li><a href="19.html">第19章 神经网络基础</a></li>
-            <li><a href="20.html">第20章 深度学习框架实战</a></li>
-            <li><a href="21.html">第21章 CNN卷积神经网络</a></li>
-            <li><a href="22.html">第22章 RNN与序列模型</a></li>
-            <li><a href="23.html" class="active">第23章 NLP自然语言处理</a></li>
-            <li><a href="24.html">第24章 生成式模型</a></li>
-            <li><a href="25.html">第25章 强化学习入门</a></li>
-            <li><a href="26.html">第26章 大语言模型与RAG</a></li>
-            <li><a href="27.html">第27章 模型部署与服务化</a></li>
-            <li><a href="28.html">第28章 毕业项目：端到端ML系统</a></li>
-        </ul>
-    </div>
-    <div class="main-content">
-        <h2>23.1 让机器理解语言——NLP的前世今生</h2>
-        <p>自然语言处理（NLP）是AI领域最激动人心的方向之一。从2013年Word2Vec让词向量成为可能，到2017年Transformer颠覆一切，再到2022年ChatGPT引爆全球——NLP在不到十年内经历了翻天覆地的变化。</p>
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="description" content="NLP 的每一步都在回答同一个问题：怎样把离散的文字变成能承载语义的向量。本章从 one-hot 讲到词嵌入、自注意力、BERT 与 GPT 的能力边界。"><title>自然语言处理：从词嵌入到自注意力 · 机器学习图解教程</title><link rel="stylesheet" href="../assets/css/article.css"></head><body class="article-page"><a class="skip-link" href="#content">跳转至正文</a><header class="site-header"><div class="header-inner"><a class="wordmark" href="../index.html"><span class="mark">M<span>·</span>L</span><span>机器学习图解教程<small>Machine Learning, Explained</small></span></a><nav aria-label="顶部导航"><a href="../index.html">课程目录</a><a href="https://github.com/1998x-stack/machine-learning-tutorial">GitHub</a></nav></div></header><div class="article-shell"><aside class="article-nav"><nav aria-label="文章目录"><details open><summary>本章目录</summary><div class="nav-items"><a href="../index.html">← 全部章节</a><a href="#sec1">NLP 的挑战：离散、组合、歧义</a><a href="#sec2">把文字变成数字：从 one-hot 到上下文向量</a><a href="#sec3">Word2Vec：用上下文学词向量</a><a href="#sec4">自注意力：让每个词看到所有词</a><a href="#sec5">多头注意力与 √d_k 缩放</a><a href="#sec6">BERT：预训练 + 微调</a><a href="#sec7">编码器 vs 解码器：能力边界</a><a href="#sec8">离线实验：纯 Python 核对注意力</a><a href="#sec9">来源、版本与验收界限</a></div></details></nav></aside><main class="article-main" id="content"><article><div class="breadcrumb"><a href="../index.html">课程目录</a><span>/</span><span>第 23 章</span></div><header class="article-header"><div class="chapter-number">CHAPTER 23 / 28</div><h1>自然语言处理：从词嵌入到自注意力</h1><p class="dek">NLP 的每一步都在回答同一个问题：怎样把离散的文字变成能承载语义的向量。本章从 one-hot 讲到词嵌入、自注意力、BERT 与 GPT 的能力边界。</p><div class="lead-question">“我喜欢上了这门课”可以切成“喜欢 / 上了”也可以切成“喜欢上 / 了”，机器凭什么在两种切法里选出对的那个？</div></header>
+<section id="sec1" aria-labelledby="title1"><h2 id="title1">01 · NLP 的挑战：离散、组合、歧义</h2><p>语言对模型不友好，因为它是<strong>离散</strong>、<strong>组合</strong>且<strong>依赖上下文</strong>的。“我喜欢上了这门课”既可以切分为“喜欢／上了”，也可以切分为“喜欢上／了”，两种切法含义不同，而人类靠常识与上下文消歧。机器能做的是从大量文本中学习统计规律，把它转成一个可优化的问题。</p><p>而这一切的前提，是先解决一个看似基础却关键的问题：<strong>如何把文字变成模型能处理的数字，并且让这些数字保留语义</strong>。整章都围绕这一点展开。</p></section>
+<section id="sec2" aria-labelledby="title2"><h2 id="title2">02 · 把文字变成数字：从 one-hot 到上下文向量</h2><p>文本表示经历了三个阶段，每一步都在修复上一步的缺陷：</p><table><thead><tr><th>方法</th><th>原理</th><th>主要问题</th></tr></thead><tbody><tr><td>One-hot / 词袋</td><td>每个词占一个维度，取 0/1 或计数</td><td>维度等于词表大小；任意两个词都正交，不携带语义相似度</td></tr><tr><td>静态词嵌入（Word2Vec / GloVe）</td><td>用上下文预测学习稠密低维向量</td><td>一词一向量，无法区分多义词</td></tr><tr><td>上下文嵌入（如 ELMo / BERT）</td><td>同一个词在不同句子中得到不同向量</td><td>需要预训练模型，推理成本更高</td></tr></tbody></table><figure id="fig-embedding"><div class="figure-scroll"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 330" role="img" aria-labelledby="t23a d23a"><title id="t23a">稀疏 one-hot 与稠密嵌入的对比</title><desc id="t23a">左侧 one-hot 向量很长且只有一个 1；右侧低维稠密向量中语义相近的词距离更近，且方向可编码语义关系。</desc><rect x="1" y="1" width="998" height="328" rx="18" fill="#fffdf9" stroke="#d8e2d9"/><g font-family="system-ui,'PingFang SC','Microsoft YaHei',sans-serif"><text x="40" y="45" font-size="22" fill="#213a37" font-weight="760">从稀疏正交到稠密语义空间</text><text x="60" y="86" font-size="15" fill="#147b70" font-weight="720">one-hot（词表 = 维度）</text><g stroke="#d8e2d9"><rect x="60" y="104" width="26" height="26" fill="#e7f3ef"/><rect x="86" y="104" width="26" height="26" fill="#fff"/><rect x="112" y="104" width="26" height="26" fill="#fff"/><rect x="138" y="104" width="26" height="26" fill="#fff"/><rect x="164" y="104" width="26" height="26" fill="#fff"/><rect x="190" y="104" width="26" height="26" fill="#fff"/><rect x="216" y="104" width="26" height="26" fill="#fff"/><rect x="242" y="104" width="26" height="26" fill="#fff"/><rect x="268" y="104" width="26" height="26" fill="#fff"/></g><text x="60" y="152" font-size="13" fill="#147b70">“猫” = [1,0,0,…]</text><text x="60" y="176" font-size="13" fill="#147b70">“狗” = [0,1,0,…]</text><text x="60" y="200" font-size="12.5" fill="#57706c">两两正交，看不出“猫≈狗”</text><text x="440" y="86" font-size="15" fill="#c4774b" font-weight="720">嵌入：低维、稠密、有方向</text><path d="M470 260 H900 M470 260 V120" fill="none" stroke="#a4b2aa" stroke-width="1.6"/><g fill="#147b70"><circle cx="560" cy="210" r="6"/><circle cx="600" cy="196" r="6"/><circle cx="660" cy="180" r="6"/></g><g fill="#7863b0"><circle cx="800" cy="150" r="6"/><circle cx="840" cy="140" r="6"/></g><g font-size="12.5" fill="#147b70"><text x="548" y="232">猫</text><text x="588" y="218">狗</text><text x="648" y="202">动物</text></g><g font-size="12.5" fill="#66529e"><text x="786" y="140">国王</text><text x="826" y="128">女王</text></g><path d="M780 200 L780 260" stroke="#a4b2aa" stroke-width="1.2" stroke-dasharray="4 4"/><text x="520" y="290" font-size="13" fill="#57706c">相近词距离近；“国王−男人+女人≈女王”是向量方向编码语义的经典例子。</text><text x="40" y="316" font-size="13" fill="#57706c">教学示意：点为虚构坐标，用于说明密集嵌入的几何直觉。</text></g></svg></div><figcaption>one-hot 向量彼此正交、维度高且无相似度；稠密嵌入把词放到低维空间，语义相近者距离更近，某些方向还对应稳定的语义关系。图为教学示意。</figcaption></figure><p>需要提醒的是，<strong>“king − man + woman ≈ queen”只是说明性的经典例子</strong>，它依赖具体的训练语料与模型，并非任何词向量都严格满足。把它当作“方向可能编码语义”的直觉即可。</p></section>
+<section id="sec3" aria-labelledby="title3"><h2 id="title3">03 · Word2Vec：用上下文学词向量</h2><p>Word2Vec 的核心假设是分布假设：<em>“一个词的含义由它经常出现的邻居决定”</em>。它有两种训练方式：</p><ul><li><strong>CBOW</strong>：用上下文词预测中心词，例如用“我／机器学习”预测“爱”。</li><li><strong>Skip-gram</strong>：用中心词预测周围的上下文词，例如用“爱”预测“我”“机器学习”。</li></ul><p>训练目标可以写成对数似然的最大化：对语料中的每个（中心词 c，上下文词 o）对，提高它们的相容性、压低随机负样本的相容性。Skip-gram 配合负采样在大语料上效率高，得到的向量维度通常只有几十到几百，远小于词表大小，因此被广泛用于检索、聚类与下游模型初始化。局限也很明确：一个词只有一个向量，多义词无法区分，且没有上下文交互。</p></section>
+<section id="sec4" aria-labelledby="title4"><h2 id="title4">04 · 自注意力：让每个词看到所有词</h2><p>自注意力（Self-Attention）让序列中的每个位置与其余所有位置（包括自身）计算相关性，再用这些权重对信息加权求和。在句子 “The animal didn't cross the street because it was too tired” 中，代词 “it” 应该与 “animal” 强相关而不是 “street”——自注意力可以根据上下文自动学出这种指代关系。</p><figure id="fig-self-attention"><div class="figure-scroll"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 340" role="img" aria-labelledby="t23b d23b"><title id="t23b">自注意力为 “it” 分配注意力权重</title><desc id="t23b">句子中各词在上方排成一行；代词 it 与 animal、street 等分别算出权重，animal 权重最大，因此 it 的新表示主要来自 animal 的信息。</desc><rect x="1" y="1" width="998" height="338" rx="18" fill="#fffdf9" stroke="#d8e2d9"/><g font-family="system-ui,'PingFang SC','Microsoft YaHei',sans-serif"><text x="40" y="45" font-size="22" fill="#213a37" font-weight="760">同一个句子内部，词与词相互加权</text><g font-size="13.5" text-anchor="middle"><rect x="70" y="90" width="130" height="46" rx="8" fill="#f3f7f3" stroke="#d8e2d9"/><text x="135" y="118" fill="#304442">The</text><rect x="220" y="90" width="150" height="46" rx="8" fill="#e7f3ef" stroke="#147b70"/><text x="295" y="118" fill="#147b70">animal</text><rect x="390" y="90" width="130" height="46" rx="8" fill="#f3f7f3" stroke="#d8e2d9"/><text x="455" y="118" fill="#304442">didn't</text><rect x="540" y="90" width="130" height="46" rx="8" fill="#f3f7f3" stroke="#d8e2d9"/><text x="605" y="118" fill="#304442">cross</text><rect x="690" y="90" width="130" height="46" rx="8" fill="#f3f7f3" stroke="#d8e2d9"/><text x="755" y="118" fill="#304442">street</text><rect x="840" y="90" width="110" height="46" rx="8" fill="#efeaf7" stroke="#7863b0"/><text x="895" y="118" fill="#66529e" font-weight="720">it</text></g><g fill="none"><path d="M895 136 C700 170, 400 170, 295 138" stroke="#c4774b" stroke-width="5"/><path d="M895 136 C820 168, 780 168, 755 138" stroke="#a4b2aa" stroke-width="2"/><path d="M895 136 C600 180, 470 180, 455 138" stroke="#cdd6d0" stroke-width="1.4"/></g><g font-size="12.5" text-anchor="middle"><text x="560" y="198" fill="#b5673f">权重最大→animal</text><text x="782" y="164" fill="#57706c">0.1</text><text x="452" y="206" fill="#57706c">0.05</text></g><g stroke="#7863b0" stroke-width="1.6" fill="none" stroke-dasharray="5 4" marker-end="url(#a23)"><path d="M895 214 V262"/></g><rect x="760" y="264" width="270" height="46" rx="8" fill="#efeaf7" stroke="#7863b0"/><text x="895" y="292" font-size="13" fill="#66529e" text-anchor="middle">it 的新表示 ≈ animal 的信息主导</text><g fill="none" stroke="#a4b2aa" stroke-width="1.4"><path d="M135 150 V214"/><path d="M295 150 V214"/><path d="M755 150 V214"/></g><g font-size="12.5" fill="#57706c" text-anchor="middle"><text x="135" y="232">查询 q</text><text x="295" y="232">键 k</text><text x="755" y="232">值 v</text></g><text x="40" y="326" font-size="13" fill="#57706c">教学示意：权重为虚构，用于展示自注意力的“回看”直觉。</text><defs><marker id="a23" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto"><path d="M1 1 L7 4 L1 7" fill="none" stroke="#7863b0" stroke-width="1.6"/></marker></defs></g></svg></div><figcaption>自注意力为代词 “it” 分配权重：与 “animal” 的权重最大，因此 “it” 的新表示主要由 “animal” 的信息构成。权重为教学示意。</figcaption></figure><p>计算分三步：先用输入的线性投影得到查询 Q、键 K、值 V；用 Q 与所有 K 的点积作为相关性分数并缩放；softmax 归一化后对 V 加权求和。写成矩阵形式即缩放点积注意力：</p><div class="eq eq-scroll" role="region" tabindex="0" aria-label="缩放点积注意力：对 QK 转置除以根号 d_k 后 softmax，再乘 V"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block" aria-label="缩放点积注意力公式"><mrow><mi>Attention</mi><mo>(</mo><mi>Q</mi><mo>,</mo><mi>K</mi><mo>,</mo><mi>V</mi><mo>)</mo><mo>=</mo><mi>softmax</mi><mrow><mo>(</mo><mfrac><mrow><mi>Q</mi><msup><mi>K</mi><mi>⊤</mi></msup></mrow><msqrt><msub><mi>d</mi><mi>k</mi></msub></msqrt></mfrac><mo>)</mo></mrow><mi>V</mi></mrow></math></div><p>注意这一步与上一章的循环网络形成对比：任意两个位置之间都有一条<strong>直接</strong>的连接，不需要逐步传递状态，因此梯度路径更短、还能并行计算。</p></section>
+<section id="sec5" aria-labelledby="title5"><h2 id="title5">05 · 多头注意力与 √d_k 缩放</h2><p>单个注意力只能学出一种“看”的方式。多头注意力把 Q、K、V 分别投影到多个子空间，各自算一次注意力再拼接起来：</p><div class="eq eq-scroll" role="region" tabindex="0" aria-label="多头注意力：每个头在子空间做注意力后拼接并线性变换"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block" aria-label="多头注意力公式"><mrow><msub><mi>head</mi><mi>i</mi></msub><mo>=</mo><mi>Attention</mi><mrow><mo>(</mo><mi>Q</mi><msubsup><mi>W</mi><mi>i</mi><mi>Q</mi></msubsup><mo>,</mo><mi>K</mi><msubsup><mi>W</mi><mi>i</mi><mi>K</mi></msubsup><mo>,</mo><mi>V</mi><msubsup><mi>W</mi><mi>i</mi><mi>V</mi></msubsup><mo>)</mo></mrow><mo>,</mo><mspace width="1em"/><mi>MultiHead</mi><mo>=</mo><mi>Concat</mi><mrow><mo>(</mo><msub><mi>head</mi><mn>1</mn></msub><mo>,</mo><mo>…</mo><mo>,</mo><msub><mi>head</mi><mi>h</mi></msub><mo>)</mo></mrow><msup><mi>W</mi><mi>O</mi></msup></mrow></math></div><p>不同的头可以学到不同类型的关系（如语法依赖与语义相似），但它们并不是被显式分工的，而是训练中自然分化出来。</p><p>公式里的 <code>1/√d_k</code> 缩放不是装饰。当维数 <code>d_k</code> 很大时，Q·K 的点积量级会随之变大，softmax 的分布会变得非常尖锐（接近 one-hot），梯度接近 0，训练不稳定。除以 <code>√d_k</code> 把分数控制在合适的尺度，使 softmax 停留在梯度有效的区域。第 08 节的例子会用一个可运行的小脚本展示该缩放带来的变化。</p></section>
+<section id="sec6" aria-labelledby="title6"><h2 id="title6">06 · BERT：预训练 + 微调</h2><p>BERT（2018）把“预训练 + 微调”变成了 NLP 的标配：先在大规模无标注文本上训练一个通用语言理解模型，再在具体任务的少量标注数据上微调。它的关键选择是<strong>双向编码</strong>——传统语言模型只能从左到右预测，而 BERT 用掩码语言模型（MLM）随机遮住一部分词让模型利用两侧上下文预测它们。</p><p>BERT 还使用了一个“下一句预测（NSP）”辅助任务，但后续工作（如 RoBERTa）发现去掉 NSP 并加大训练数据与时长，效果反而更好——这说明预训练目标的取舍需要实验验证，而不是“任务越多越好”。</p><div class="note"><p><strong>MLM 与掩码的细节：</strong>训练时被遮位置具有特殊性，而微调时输入没有 <code>[MASK]</code>，存在训练与推理的输入不一致；也不应把 MLM 直接当成生成式语言模型使用。BERT 擅长分类、命名实体识别、抽取式问答等“理解”类任务，不适合自由文本生成。</p></div></section>
+<section id="sec7" aria-labelledby="title7"><h2 id="title7">07 · 编码器 vs 解码器：能力边界</h2><p>两类架构的差别决定了它们擅长的任务：<strong>编码器型</strong>（BERT 系）同时看两侧上下文，适合理解型任务（分类、NER、抽取式问答）；<strong>解码器型</strong>（GPT 系）只能看左侧上文，自回归地逐词生成，适合生成型任务（续写、对话、翻译）。因此“做分类用编码器、做生成用解码器”是一条实用的经验规则，但归根结底取决于任务是否需要双向上下文、是否需要逐词生成。</p><figure id="fig-encoder-decoder"><div class="figure-scroll"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 310" role="img" aria-labelledby="t23c d23c"><title id="t23c">编码器双向可见与解码器自回归可见的对比</title><desc id="t23c">上方编码器中每个位置同时看到两侧所有词；下方解码器中每个位置只能看到自己与左侧的词，并通过掩码防止看到未来。</desc><rect x="1" y="1" width="998" height="308" rx="18" fill="#fffdf9" stroke="#d8e2d9"/><g font-family="system-ui,'PingFang SC','Microsoft YaHei',sans-serif"><text x="40" y="45" font-size="22" fill="#213a37" font-weight="760">可见范围不同，擅长的任务也不同</text><text x="60" y="86" font-size="14" fill="#147b70" font-weight="720">编码器（BERT）：双向</text><g font-size="12.5" text-anchor="middle"><rect x="250" y="98" width="90" height="38" rx="6" fill="#e7f3ef" stroke="#147b70"/><text x="295" y="122" fill="#147b70">我</text><rect x="350" y="98" width="90" height="38" rx="6" fill="#c4774b" stroke="#b5673f"/><text x="395" y="122" fill="#fff">爱</text><rect x="450" y="98" width="110" height="38" rx="6" fill="#e7f3ef" stroke="#147b70"/><text x="505" y="122" fill="#147b70">机器</text><rect x="570" y="98" width="110" height="38" rx="6" fill="#e7f3ef" stroke="#147b70"/><text x="625" y="122" fill="#147b70">学习</text></g><path d="M290 142 L630 142" stroke="#c4774b" stroke-width="2.5"/><text x="460" y="160" font-size="12.5" fill="#b5673f" text-anchor="middle">每个位置同时看到两侧所有词</text><text x="60" y="206" font-size="14" fill="#66529e" font-weight="720">解码器（GPT）：只看左侧</text><g font-size="12.5" text-anchor="middle"><rect x="250" y="218" width="90" height="38" rx="6" fill="#efeaf7" stroke="#7863b0"/><text x="295" y="242" fill="#66529e">我</text><rect x="350" y="218" width="90" height="38" rx="6" fill="#efeaf7" stroke="#7863b0"/><text x="395" y="242" fill="#66529e">爱</text><rect x="450" y="218" width="110" height="38" rx="6" fill="#c4774b" stroke="#b5673f"/><text x="505" y="242" fill="#fff">机器</text><rect x="570" y="218" width="110" height="38" rx="6" fill="#f3f7f3" stroke="#d8e2d9"/><text x="625" y="242" fill="#8a9992">学习</text></g><path d="M250 262 H555" stroke="#7863b0" stroke-width="2.5"/><text x="400" y="280" font-size="12.5" fill="#66529e" text-anchor="middle">预测“机器”时只能看到自己与左侧</text><text x="705" y="242" font-size="12.5" fill="#8a9992">（未来被掩码）</text><text x="40" y="300" font-size="13" fill="#57706c">教学示意：色块标出当前预测位置与其可见范围。</text></g></svg></div><figcaption>编码器型模型对每个位置同时可见两侧上下文，适合理解类任务；解码器型模型逐词自回归生成，只能看到左侧，适合生成类任务。示意图。</figcaption></figure></section>
+<section id="sec8" aria-labelledby="title8"><h2 id="title8">08 · 离线实验：纯 Python 核对注意力</h2><p>下面的脚本只用 Python 标准库实现缩放点积注意力，用于确认两件事：每一行注意力权重归一化为 1；除以 <code>√d_k</code> 后 softmax 分布会变平（不那么尖锐）。它不依赖 NumPy 或 PyTorch，可直接运行。</p><pre><code>import math
 
-        <p>NLP的终极挑战是：<strong>语言是离散的、组合的、歧义的、依赖上下文的</strong>。同一句话"我喜欢上了这门课"——在不同上下文中可以是"我喜欢/上了这门课"或"我喜欢上/了这门课"。人类靠常识消歧义，而机器只能靠统计模式。</p>
+def softmax(xs):
+    m = max(xs)
+    exps = [math.exp(x - m) for x in xs]
+    s = sum(exps)
+    return [e / s for e in exps]
 
-        <h2>23.2 第一步：把文字变成数字</h2>
-        <p>模型吃的是数字，你给我的是文字。第一步必须是把文字变成向量。这个转化方式经历了三次重大变革：</p>
+def attend(q, K, V, scale=True):
+    d = len(q)
+    scores = [sum(a * b for a, b in zip(q, k)) for k in K]
+    if scale:
+        scores = [s / math.sqrt(d) for s in scores]
+    w = softmax(scores)
+    out = [sum(wi * vi for wi, vi in zip(w, col)) for col in zip(*V)]
+    return w, out
 
-        <table>
-            <tr><th>方法</th><th>原理</th><th>问题</th></tr>
-            <tr><td>One-Hot / Bag of Words</td><td>每个词是一个维度的0/1或计数</td><td>维度过高（词表多大就多少维），无语义信息</td></tr>
-            <tr><td>Word2Vec / GloVe</td><td>用周围词预测中心词，获得稠密低维向量</td><td>一个词只有一个向量，无法处理多义词</td></tr>
-            <tr><td>Contextual Embedding</td><td>一个词在不同上下文中获得不同向量</td><td>需要预训练大模型，推理成本高</td></tr>
-        </table>
+q = [1.0, 0.0, 1.0]
+K = [[1.0, 0.0, 1.0], [0.0, 1.0, 0.0], [1.0, 1.0, 0.0]]
+V = [[1.0, 0.0], [0.0, 1.0], [1.0, 1.0]]
 
-        <h3>Word2Vec：词向量的"Hello World"</h3>
-        <p>核心思想：一个词的含义由它周围的词决定（"You shall know a word by the company it keeps"，Firth, 1957）。两种训练方式：</p>
-        <ul>
-            <li><strong>CBOW：</strong>用上下文预测中心词（"我___机器学习" → "爱"）</li>
-            <li><strong>Skip-gram：</strong>用中心词预测上下文（"爱" → "我", "机器学习"）</li>
-        </ul>
-
-        <p>Word2Vec训练完后，你会发现：<strong>king - man + woman ≈ queen</strong>。这就是词向量最经典的语义算术——向量空间中的方向编码了语义关系。</p>
-
-        <h2>23.3 Transformer：NLP的"工业革命"</h2>
-        <p>RNN/LSTM的问题在第22章已经铺垫过：无法并行、长程依赖困难。Transformer用<strong>自注意力（Self-Attention）</strong>完全解决了这两个问题。</p>
-
-        <h3>自注意力的直觉</h3>
-        <p>对于输入序列中的每个词，Self-Attention计算它和序列中所有词（包括自己）的"相关性"，然后用这些相关性作为权重，对所有词的信息做加权平均。</p>
-
-        <p>比如句子"The animal didn't cross the street because it was too tired"——"it"应该和"animal"强相关，而不是"street"。Self-Attention自动学会了这种指代消解。</p>
-
-        <h3>多头注意力（Multi-Head Attention）</h3>
-        <p>Q（Query）、K（Key）、V（Value）三个矩阵是Transformer注意力机制的核心。每个"头"看不同的方面：一个头可能关注语法关系，另一个关注语义相似度，另一个关注位置信息。多个头合在一起，模型能从多个角度理解序列。</p>
-
-        <pre><code>import torch
-import torch.nn as nn
-
-class MultiHeadAttention(nn.Module):
-    def __init__(self, d_model=512, n_heads=8):
-        super().__init__()
-        self.d_model = d_model
-        self.n_heads = n_heads
-        self.d_k = d_model // n_heads
-
-        self.W_q = nn.Linear(d_model, d_model)
-        self.W_k = nn.Linear(d_model, d_model)
-        self.W_v = nn.Linear(d_model, d_model)
-        self.W_o = nn.Linear(d_model, d_model)
-
-    def forward(self, Q, K, V, mask=None):
-        batch_size = Q.size(0)
-
-        # 1. 线性变换 + 分头
-        Q = self.W_q(Q).view(batch_size, -1, self.n_heads, self.d_k).transpose(1,2)
-        K = self.W_k(K).view(batch_size, -1, self.n_heads, self.d_k).transpose(1,2)
-        V = self.W_v(V).view(batch_size, -1, self.n_heads, self.d_k).transpose(1,2)
-
-        # 2. 计算注意力分数: softmax(QK^T / sqrt(d_k)) × V
-        scores = torch.matmul(Q, K.transpose(-2, -1)) / (self.d_k ** 0.5)
-        if mask is not None:
-            scores = scores.masked_fill(mask == 0, -1e9)
-        attention = torch.softmax(scores, dim=-1)
-        out = torch.matmul(attention, V)
-
-        # 3. 合并多头 → 输出
-        out = out.transpose(1, 2).contiguous().view(batch_size, -1, self.d_model)
-        return self.W_o(out)
-</code></pre>
-
-        <div class="highlight">
-            <strong>🔑 为什么要除以sqrt(d_k)？</strong>当d_k很大时，QK^T的点积值也会很大，导致softmax后的分布非常"尖锐"（接近one-hot），梯度几乎为零。除以sqrt(d_k)相当于做了缩放，让softmax保持在梯度有效的区域。这是Transformer设计中的一个关键细节——没有它，训练不稳定甚至发散。
-        </div>
-
-        <h2>23.4 BERT：预训练 + 微调的范式革命</h2>
-        <p>2018年BERT的出现彻底改变了NLP的游戏规则。它的核心思想：<strong>先在海量无标注文本上预训练一个通用语言理解模型，然后在下游任务数据上微调</strong>。这个"预训练→微调"的范式成为了NLP的标配。</p>
-
-        <p>BERT的创新点：</p>
-        <ul>
-            <li><strong>双向编码：</strong>传统语言模型只能从左到右（或从右到左）看上下文。BERT同时看两边——用Masked Language Model（MLM）任务，随机遮住一些词让模型预测</li>
-            <li><strong>下一句预测（NSP）：</strong>判断两句话是否是连续的。后来发现这个任务不那么重要（RoBERTa去掉了NSP效果反而更好）</li>
-        </ul>
-
-        <pre><code>from transformers import AutoTokenizer, AutoModelForSequenceClassification
-
-# 加载预训练BERT做中文情感分析
-model_name = "bert-base-chinese"
-tokenizer = AutoTokenizer.from_pretrained(model_name)
-model = AutoModelForSequenceClassification.from_pretrained(model_name, num_labels=2)
-
-# 微调（只需几行代码）
-texts = ["这部电影太棒了", "剧情无聊到想睡觉"]
-labels = [1, 0]
-inputs = tokenizer(texts, padding=True, truncation=True, return_tensors="pt")
-outputs = model(**inputs, labels=torch.tensor(labels))
-loss = outputs.loss
-loss.backward()
-</code></pre>
-
-        <div class="tip">
-            <strong>💡 BERT vs GPT的本质区别：</strong>BERT是编码器（Encoder-only），看双向上下文，擅长"理解"任务（分类、NER、QA）。GPT是解码器（Decoder-only），只看左边上下文（自回归），擅长"生成"任务（续写、对话、翻译）。这就是为什么做文本分类用BERT，做聊天机器人用GPT——架构决定了能力边界。
-        </div>
-
-        <h2>23.5 现代NLP技术栈</h2>
-        <p>2026年的NLP开发者工具箱：</p>
-
-        <table>
-            <tr><th>需求</th><th>工具/模型</th><th>说明</th></tr>
-            <tr><td>文本分类、NER、QA</td><td>BERT, RoBERTa, DeBERTa</td><td>HuggingFace直接微调</td></tr>
-            <tr><td>文本生成、对话</td><td>GPT, LLaMA, Qwen</td><td>开源模型 + LoRA微调</td></tr>
-            <tr><td>文本Embedding</td><td>text-embedding-3, BGE, GTE</td><td>用于检索、语义搜索</td></tr>
-            <tr><td>框架</td><td>HuggingFace Transformers</td><td>几行代码加载任何模型</td></tr>
-        </table>
-
-        <p>NLP的现代图景就讲到这里。下一章我们进入生成式模型——看看AI是如何"创造"新内容的。</p>
-
-        <div class="footer-nav">
-            <a href="22.html">← 上一章</a>
-            <a href="index.html">📖 返回目录</a>
-            <a href="24.html">下一章 →</a>
-        </div>
-    </div>
-</div>
-</div>
-</body>
-</html>
+w_scaled, out = attend(q, K, V, scale=True)
+w_raw, _ = attend(q, K, V, scale=False)
+print(&quot;scaled  &quot;, [round(x, 4) for x in w_scaled])
+print(&quot;unscaled&quot;, [round(x, 4) for x in w_raw])
+assert abs(sum(w_scaled) - 1) &lt; 1e-9
+assert max(w_scaled) &lt; max(w_raw)
+print(&quot;output  &quot;, [round(x, 4) for x in out])</code></pre><p>在本页创作环境中用 Python 3 实际运行，输出为：缩放后权重约为 <code>[0.5329, 0.1679, 0.2992]</code>（和 = 1.0）；不缩放时约为 <code>[0.6652, 0.0900, 0.2447]</code>，明显更尖锐；上下文向量约为 <code>[0.8321, 0.4671]</code>。这只是 3 个词的微小例子，用于说明缩放对分布形状的影响，<strong>不构成对任何真实模型的性能结论</strong>。</p></section>
+<section id="sec9" aria-labelledby="title9"><h2 id="title9">09 · 来源、版本与验收界限</h2><p>架构定义以原始论文为准，预训练细节（如是否使用 NSP）以后续工作为准；模型名称与接口属于特定厂商或开源项目，具体行为随版本变化，不复述二手基准分数。</p><ul class="refs"><li><a href="https://arxiv.org/abs/1301.3781" rel="noopener noreferrer">Mikolov et al., Efficient Estimation of Word Representations（Word2Vec）, 2013</a></li><li><a href="https://arxiv.org/abs/1706.03762" rel="noopener noreferrer">Vaswani et al., Attention Is All You Need（缩放点积与多头注意力）, 2017</a></li><li><a href="https://arxiv.org/abs/1810.04805" rel="noopener noreferrer">Devlin et al., BERT: Pre-training of Deep Bidirectional Transformers, 2018</a></li><li><a href="https://arxiv.org/abs/1907.11692" rel="noopener noreferrer">Liu et al., RoBERTa（去掉 NSP 的讨论）, 2019</a></li><li><a href="https://huggingface.co/docs/transformers/index" rel="noopener noreferrer">Hugging Face Transformers 文档</a></li></ul><p class="note"><strong>验收界限：</strong>词向量几何、注意力权重与可见范围图均为教学示意；“king−man+woman≈queen”是说明性例子，不保证适用于任何模型；第 08 节脚本仅用标准库，已在本页创作环境运行并给出数值，但不代表真实模型行为。</p></section>
+<nav class="article-footer" aria-label="章节导航"><a href="22.html">← 上一章</a><a href="../index.html">全部章节</a><a href="24.html">下一章 →</a></nav></article></main></div><footer class="site-footer"><span>机器学习图解教程 · 第 23 章</span><span>从离散符号到语义向量</span></footer></body></html>
