@@ -1,292 +1,111 @@
-<!DOCTYPE html>
-<html lang="zh-CN">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.5, user-scalable=yes">
-    <title>第20章 深度学习框架实战</title>
-    <style>
-        * { margin:0; padding:0; box-sizing:border-box; }
-        body {
-            background: linear-gradient(135deg, #f5f3ff 0%, #e8f5f0 100%);
-            font-family: system-ui, -apple-system, 'Segoe UI', 'PingFang SC', Roboto, 'Helvetica Neue', sans-serif;
-            padding: 20px;
-        }
-        .double-border {
-            max-width: 1400px;
-            margin: 0 auto;
-            background: #ffffff;
-            border: 2px solid #8b5cf6;
-            border-radius: 24px;
-            box-shadow: 0 20px 30px -15px rgba(0,0,0,0.2), inset 0 1px 0 0 #f5f3ff;
-            overflow: hidden;
-        }
-        .container { display: grid; grid-template-columns: 260px 1fr; gap: 0; }
-        .sidebar {
-            background: #faf8ff; border-right: 2px solid #c4b5fd; padding: 24px 16px;
-        }
-        .sidebar h3 { font-size: 1.4rem; color: #6d28d9; border-left: 5px solid #8b5cf6; padding-left: 15px; margin-bottom: 25px; }
-        .chapter-list { list-style: none; }
-        .chapter-list li { margin-bottom: 6px; }
-        .chapter-list a {
-            display: block; padding: 8px 12px; text-decoration: none;
-            color: #334155; border-radius: 12px; transition: all 0.2s;
-            font-weight: 500; font-size: 0.92rem;
-        }
-        .chapter-list a:hover { background: #ede9fe; transform: translateX(3px); }
-        .chapter-list .active { background: #7c3aed; color: white; box-shadow: 0 2px 5px rgba(124,58,237,0.3); }
-        .main-content { padding: 30px 35px; background: white; }
-        .footer-nav {
-            margin-top: 45px; padding-top: 20px; border-top: 2px solid #c4b5fd;
-            display: flex; justify-content: space-between;
-        }
-        .footer-nav a {
-            padding: 8px 24px; background: #f1f5f9; text-decoration: none;
-            color: #5b21b6; border-radius: 40px; font-weight: 500; transition: 0.2s;
-        }
-        .footer-nav a:hover { background: #ede9fe; transform: translateY(-2px); }
-        h2 { color: #4c1d95; border-left: 6px solid #8b5cf6; padding-left: 15px; margin: 20px 0 15px; font-size: 1.5rem; }
-        h3 { color: #5b21b6; margin: 20px 0 10px; font-size: 1.2rem; }
-        h4 { color: #6d28d9; margin: 15px 0 8px; font-size: 1.05rem; }
-        p { line-height: 1.85; margin: 10px 0; color: #1e293b; }
-        ul, ol { margin: 10px 0 10px 20px; line-height: 1.8; }
-        li { color: #1e293b; margin-bottom: 4px; }
-        pre { background: #1e1035; color: #e8e8f0; padding: 15px; border-radius: 12px; overflow-x: auto; font-family: 'JetBrains Mono', 'Fira Code', monospace; margin: 15px 0; font-size: 0.9rem; line-height: 1.5; }
-        code { background: #f5f3ff; padding: 2px 6px; border-radius: 4px; font-family: 'JetBrains Mono', monospace; font-size: 0.85em; }
-        pre code { background: none; padding: 0; }
-        table { width: 100%; border-collapse: collapse; margin: 15px 0; background: #fafafe; }
-        th, td { border: 1px solid #c4b5fd; padding: 10px; text-align: left; }
-        th { background: #f5f3ff; color: #5b21b6; font-weight: 600; }
-        .tip, .warning, .highlight { padding: 12px 18px; border-radius: 16px; margin: 15px 0; line-height: 1.7; }
-        .tip { background: #e0f2fe; border-left: 6px solid #0ea5e9; }
-        .warning { background: #fee2e2; border-left: 6px solid #ef4444; }
-        .highlight { background: #fef9c3; border: 1px solid #facc15; }
-        strong { color: #1e1b4b; }
-        @media (max-width: 768px) {
-            .container { grid-template-columns: 1fr; }
-            .sidebar { border-right: none; border-bottom: 2px solid #c4b5fd; }
-            body { padding: 10px; }
-            .main-content { padding: 20px; }
-        }
-    </style>
-    <link rel="stylesheet" href="theme.css">
-</head>
-<body>
-<div class="double-border">
-<div class="container">
-    <div class="sidebar">
-        <h3>🤖 课程目录</h3>
-        <ul class="chapter-list">
-            <li><a href="01.html">第1章 机器学习概述</a></li>
-            <li><a href="02.html">第2章 数学基础：线性代数</a></li>
-            <li><a href="03.html">第3章 数学基础：概率统计</a></li>
-            <li><a href="04.html">第4章 数学基础：优化理论</a></li>
-            <li><a href="05.html">第5章 数据预处理与探索</a></li>
-            <li><a href="06.html">第6章 第一个ML项目实战</a></li>
-            <li><a href="07.html">第7章 模型评估与选择</a></li>
-            <li><a href="08.html">第8章 线性回归与正则化</a></li>
-            <li><a href="09.html">第9章 逻辑回归与分类</a></li>
-            <li><a href="10.html">第10章 决策树与随机森林</a></li>
-            <li><a href="11.html">第11章 支持向量机 SVM</a></li>
-            <li><a href="12.html">第12章 朴素贝叶斯与KNN</a></li>
-            <li><a href="13.html">第13章 聚类算法</a></li>
-            <li><a href="14.html">第14章 降维与特征工程</a></li>
-            <li><a href="15.html">第15章 模型调参与AutoML</a></li>
-            <li><a href="16.html">第16章 处理不平衡数据</a></li>
-            <li><a href="17.html">第17章 模型可解释性</a></li>
-            <li><a href="18.html">第18章 ML系统工程化</a></li>
-            <li><a href="19.html">第19章 神经网络基础</a></li>
-            <li><a href="20.html" class="active">第20章 深度学习框架实战</a></li>
-            <li><a href="21.html">第21章 CNN卷积神经网络</a></li>
-            <li><a href="22.html">第22章 RNN与序列模型</a></li>
-            <li><a href="23.html">第23章 NLP自然语言处理</a></li>
-            <li><a href="24.html">第24章 生成式模型</a></li>
-            <li><a href="25.html">第25章 强化学习入门</a></li>
-            <li><a href="26.html">第26章 大语言模型与RAG</a></li>
-            <li><a href="27.html">第27章 模型部署与服务化</a></li>
-            <li><a href="28.html">第28章 毕业项目：端到端ML系统</a></li>
-        </ul>
-    </div>
-    <div class="main-content">
-        <h2>20.1 PyTorch：深度学习的事实标准</h2>
-        <p>2026年，PyTorch已经是深度学习领域毫无争议的王者。它不是在"和TensorFlow竞争"——它已经赢了。学术界近90%的论文用PyTorch实现，工业界的采用率也超过了80%。这一章我们会从零开始，用PyTorch搭建一个完整的神经网络训练pipeline。</p>
-
-        <p>PyTorch的哲学：<strong>Define-by-Run</strong>——计算图在你每次前向传播时动态构建。这意味着你可以用Python原生的if/for/debug，不像TensorFlow 1.x那样需要先定义静态图再执行。这种灵活性对于研究和调试来说是无价的。</p>
-
-        <h2>20.2 Tensor基础：PyTorch的"NumPy on GPU"</h2>
-
-        <pre><code>import torch
-import numpy as np
-
-# 从各种来源创建Tensor
-a = torch.tensor([1, 2, 3])                 # 从list
-b = torch.from_numpy(np.array([4, 5, 6]))   # 从numpy
-c = torch.randn(3, 4)                        # 随机正态分布
-d = torch.zeros(2, 5)                        # 全零
-
-# GPU操作
-if torch.cuda.is_available():
-    a = a.to('cuda')          # 移到GPU
-    a = a.to('cpu')           # 移回CPU
-    device = torch.device('cuda')
-
-# Tensor属性
-print(f"形状: {c.shape}, 数据类型: {c.dtype}, 设备: {c.device}")
-
-# 梯度追踪
-x = torch.tensor([2.0], requires_grad=True)
-y = x ** 2 + 3 * x + 1
-y.backward()
-print(f"dy/dx at x=2: {x.grad}")  # 2*2 + 3 = 7.0
-</code></pre>
-
-        <div class="tip">
-            <strong>💡 autograd的原理：</strong>当你设置<code>requires_grad=True</code>时，PyTorch会在每一步操作时记录计算图。<code>.backward()</code>调用时，从输出节点沿图反向遍历，用链式法则自动计算梯度。这是整个深度学习训练的基石，而你几乎不需要手动干预——这就是框架的力量。
-        </div>
-
-        <h2>20.3 DataLoader：高效的数据管道</h2>
-
-        <pre><code>from torch.utils.data import Dataset, DataLoader
-from sklearn.datasets import make_classification
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="description" content="框架的价值在于把自动微分、设备管理与数据管道标准化。本章用 PyTorch 串起张量、autograd、DataLoader、nn.Module 与训练循环，并强调数值稳定、断点续训与常见 bug。"><title>深度学习框架实战：用 PyTorch 串起一条训练管线 · 机器学习图解教程</title><link rel="stylesheet" href="../assets/css/article.css"></head><body class="article-page"><a class="skip-link" href="#content">跳转至正文</a><header class="site-header"><div class="header-inner"><a class="wordmark" href="../index.html"><span class="mark">M<span>·</span>L</span><span>机器学习图解教程<small>Machine Learning, Explained</small></span></a><nav aria-label="顶部导航"><a href="../index.html">课程目录</a><a href="https://github.com/1998x-stack/machine-learning-tutorial">GitHub</a></nav></div></header><div class="article-shell"><aside class="article-nav"><nav aria-label="文章目录"><details open><summary>本章目录</summary><div class="nav-items"><a href="../index.html">← 全部章节</a><a href="#sec1">框架到底替你做了哪些事</a><a href="#sec2">张量与 autograd</a><a href="#sec3">数据管道：Dataset 与 DataLoader</a><a href="#sec4">定义模型：nn.Module</a><a href="#sec5">训练循环：五个固定动作</a><a href="#sec6">数值稳定：logits 与 log-sum-exp</a><a href="#sec7">断点续训与混合精度</a><a href="#sec8">离线实验：一个小型训练脚本</a><a href="#sec9">来源、版本与验收界限</a></div></details></nav></aside><main class="article-main" id="content"><article><div class="breadcrumb"><a href="../index.html">课程目录</a><span>/</span><span>第 20 章</span></div><header class="article-header"><div class="chapter-number">CHAPTER 20 / 28</div><h1>深度学习框架实战：用 PyTorch 串起一条训练管线</h1><p class="dek">框架的价值在于把自动微分、设备管理与数据管道标准化。本章用 PyTorch 串起张量、autograd、DataLoader、nn.Module 与训练循环，并强调数值稳定、断点续训与常见 bug。</p><div class="lead-question">你几乎从不手写神经网络的梯度——那么框架究竟替你保证了什么，又有哪些坑它并不会替你避免？</div></header>
+<section id="sec1" aria-labelledby="title1"><h2 id="title1">01 · 框架到底替你做了哪些事</h2><p>深度学习框架主要替你做了四件事：<strong>自动微分</strong>（自动计算各参数梯度）、<strong>数值算子</strong>（矩阵乘、卷积、归一化等高效实现）、<strong>设备管理</strong>（CPU/GPU 与内存搬运）与<strong>数据管道</strong>（批处理、打乱、多进程加载）。PyTorch 采用<strong>动态图（define-by-run）</strong>：计算图在每次前向传播时实时构建，因此可以用普通 Python 的 <code>if</code>/<code>for</code> 与断点调试，代价是部分静态优化（如图融合）需要在导出时另行处理。</p><p>框架并不会替你保证：数据没有泄露、损失函数与输出激活没有重复、验证时切到了正确模式、随机种子可复现。这些仍需你自己负责。</p></section>
+<section id="sec2" aria-labelledby="title2"><h2 id="title2">02 · 张量与 autograd</h2><p>张量（tensor）可以理解为“能记录梯度、能放到 GPU 上的多维数组”。把 <code>requires_grad=True</code> 标在需要求导的量上，后续对它的每一步运算都会被记录进计算图；调用 <code>.backward()</code> 时，框架沿图反向应用链式法则，把梯度累加到各叶节点的 <code>.grad</code> 上。</p><figure id="fig-autograd"><div class="figure-scroll"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 330" role="img" aria-labelledby="t20a d20a"><title id="t20a">autograd 计算图：y = x² + 3x + 1</title><desc id="t20a">以 x=2 为例，前向沿图算出 y=11；反向从 y 回传，平方分支导数为 2x=4，线性分支导数为 3，相加得 dy/dx=7。</desc><rect x="1" y="1" width="998" height="328" rx="18" fill="#fffdf9" stroke="#d8e2d9"/><g font-family="system-ui,'PingFang SC','Microsoft YaHei',sans-serif"><text x="40" y="45" font-size="22" fill="#213a37" font-weight="760">前向存值，反向存梯度</text><circle cx="120" cy="175" r="24" fill="#e7f3ef" stroke="#147b70"/><text x="120" y="181" font-size="15" fill="#147b70" text-anchor="middle">x=2</text><rect x="330" y="110" width="150" height="50" rx="9" fill="#f8ede6" stroke="#c4774b"/><text x="405" y="140" font-size="14" fill="#b5673f" text-anchor="middle">x² = 4</text><rect x="330" y="200" width="150" height="50" rx="9" fill="#f8ede6" stroke="#c4774b"/><text x="405" y="230" font-size="14" fill="#b5673f" text-anchor="middle">3x = 6</text><circle cx="620" cy="175" r="26" fill="#efeaf7" stroke="#7863b0"/><text x="620" y="182" font-size="20" fill="#66529e" text-anchor="middle">+</text><circle cx="820" cy="175" r="26" fill="#fdf3f0" stroke="#b5452f"/><text x="820" y="181" font-size="14" fill="#b5452f" text-anchor="middle">y=11</text><g stroke="#a4b2aa" stroke-width="1.6" fill="none"><path d="M144 168 L328 138"/><path d="M144 184 L328 218"/><path d="M480 138 L596 170"/><path d="M480 224 L596 182"/><path d="M646 175 H794"/></g><text x="560" y="140" font-size="12.5" fill="#b5673f">+1</text><g font-size="13" fill="#147b70"><text x="200" y="140">正向 4</text><text x="200" y="228">正向 6</text></g><g stroke="#7863b0" stroke-width="1.8" fill="none" stroke-dasharray="6 4" marker-end="url(#a20r)"><path d="M794 190 H646"/><path d="M596 200 L480 234"/><path d="M596 150 L480 124"/><path d="M328 246 L170 205"/><path d="M328 120 L170 158"/></g><g font-size="13" fill="#66529e"><text x="690" y="210">1</text><text x="520" y="252">1</text><text x="520" y="112">1</text><text x="250" y="262">3x→3</text><text x="250" y="106">x²→2x=4</text></g><text x="40" y="316" font-size="13" fill="#57706c">教学示意：以 y = x² + 3x + 1、x = 2 为例，dy/dx = 2x + 3 = 7。</text><defs><marker id="a20r" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto"><path d="M1 1 L7 4 L1 7" fill="none" stroke="#7863b0" stroke-width="1.8"/></marker></defs></g></svg></div><figcaption>autograd 计算图：前向沿图计算各节点值，反向把局部导数相乘后回传，得到 <code>dy/dx = 2x + 3</code>。框架在做的事正是链式法则的自动实现。示意例子。</figcaption></figure><div class="note"><p><strong>一个易错点：</strong>PyTorch 的梯度是<strong>累加</strong>的。若不清零，下一次 <code>.backward()</code> 会把新梯度加到旧值上——这正是训练循环里必须调用 <code>optimizer.zero_grad()</code> 的原因。</p></div></section>
+<section id="sec3" aria-labelledby="title3"><h2 id="title3">03 · 数据管道：Dataset 与 DataLoader</h2><p>训练时真正拖慢实验的往往是数据读取而非模型计算。PyTorch 把数据访问抽象成 <code>Dataset</code>（负责按索引取一个样本），再由 <code>DataLoader</code> 负责批处理、打乱与并行加载：</p><pre><code>from torch.utils.data import Dataset, DataLoader
 
 class TabularDataset(Dataset):
-    def __init__(self, X, y=None):
-        self.X = torch.FloatTensor(X)
-        self.y = torch.FloatTensor(y) if y is not None else None
-
+    def __init__(self, X, y):
+        self.X = torch.as_tensor(X, dtype=torch.float32)
+        self.y = torch.as_tensor(y, dtype=torch.float32)
     def __len__(self):
         return len(self.X)
+    def __getitem__(self, i):
+        return self.X[i], self.y[i]
 
-    def __getitem__(self, idx):
-        if self.y is not None:
-            return self.X[idx], self.y[idx]
-        return self.X[idx]
-
-# DataLoader自动做batch、shuffle、多进程加载
-dataset = TabularDataset(X_train, y_train)
-loader = DataLoader(dataset, batch_size=64, shuffle=True,
-                    num_workers=2, pin_memory=True)
-</code></pre>
-
-        <h2>20.4 定义模型：nn.Module的三种写法</h2>
-
-        <pre><code>import torch.nn as nn
+loader = DataLoader(
+    TabularDataset(X_train, y_train),
+    batch_size=64, shuffle=True, num_workers=2, pin_memory=True)</code></pre><p>关键区分：<strong><code>shuffle</code> 只能在训练集开启</strong>，验证/测试集应关闭以保证可复现；<code>num_workers</code> 提高吞吐但会增加内存与启动开销，在 Windows 与交互式环境里需注意进程控制。数据增强等随机变换应作用在训练集，不能污染验证集。</p></section>
+<section id="sec4" aria-labelledby="title4"><h2 id="title4">04 · 定义模型：nn.Module</h2><p>模型中所有带参数、需被优化器更新的层都应作为 <code>nn.Module</code> 的属性（而不是临时变量），这样 <code>model.parameters()</code> 才能枚举它们、<code>.to(device)</code> 才能把它们一起搬走。简单的顺序结构可以用 <code>nn.Sequential</code> 拼装：</p><pre><code>import torch.nn as nn
 
 class MLP(nn.Module):
     def __init__(self, input_dim, hidden_dims, output_dim, dropout=0.3):
         super().__init__()
-        layers = []
-        prev_dim = input_dim
-        for h_dim in hidden_dims:
-            layers.extend([
-                nn.Linear(prev_dim, h_dim),
-                nn.BatchNorm1d(h_dim),
-                nn.ReLU(),
-                nn.Dropout(dropout)
-            ])
-            prev_dim = h_dim
-        layers.append(nn.Linear(prev_dim, output_dim))
+        layers, prev = [], input_dim
+        for h in hidden_dims:
+            layers += [nn.Linear(prev, h), nn.BatchNorm1d(h),
+                       nn.ReLU(), nn.Dropout(dropout)]
+            prev = h
+        layers.append(nn.Linear(prev, output_dim))
         self.network = nn.Sequential(*layers)
 
     def forward(self, x):
-        return self.network(x)
+        return self.network(x)   # 输出 logits，不过 sigmoid
 
-model = MLP(input_dim=30, hidden_dims=[128, 64, 32], output_dim=1)
-print(f"参数量: {sum(p.numel() for p in model.parameters()):,}")
-</code></pre>
-
-        <h2>20.5 训练循环：深度学习项目的"心脏"</h2>
-
-        <pre><code>def train_epoch(model, loader, optimizer, criterion, device):
+model = MLP(30, [128, 64, 32], 1)
+print(sum(p.numel() for p in model.parameters()))</code></pre><p>注意最后一层<strong>只输出 logits</strong>，不要手动加 sigmoid：如果损失函数用 <code>BCEWithLogitsLoss</code> 或 <code>CrossEntropyLoss</code>，它们内部已经包含对应的激活，双重套用会让梯度失真。</p></section>
+<section id="sec5" aria-labelledby="title5"><h2 id="title5">05 · 训练循环：五个固定动作</h2><p>一个 epoch 的训练循环几乎总是同样五个动作：清零梯度、前向、算损失、反向、更新。验证阶段则要额外切到 <code>model.eval()</code> 并用 <code>torch.no_grad()</code> 关闭梯度记录。</p><figure id="fig-training-loop"><div class="figure-scroll"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 300" role="img" aria-labelledby="t20b d20b"><title id="t20b">单个训练步的五个动作</title><desc id="t20b">环形流程：零梯度、前向传播、计算损失、反向传播、优化器更新，然后进入下一批数据。</desc><rect x="1" y="1" width="998" height="298" rx="18" fill="#fffdf9" stroke="#d8e2d9"/><g font-family="system-ui,'PingFang SC','Microsoft YaHei',sans-serif"><text x="40" y="45" font-size="22" fill="#213a37" font-weight="760">一个训练步：五个动作循环</text><g><rect x="70" y="110" width="150" height="52" rx="9" fill="#e7f3ef" stroke="#147b70"/><text x="145" y="141" font-size="14" fill="#147b70" text-anchor="middle">zero_grad()</text><rect x="270" y="110" width="150" height="52" rx="9" fill="#f8ede6" stroke="#c4774b"/><text x="345" y="141" font-size="14" fill="#b5673f" text-anchor="middle">前向 forward</text><rect x="470" y="110" width="150" height="52" rx="9" fill="#f8ede6" stroke="#c4774b"/><text x="545" y="141" font-size="14" fill="#b5673f" text-anchor="middle">loss.backward()</text><rect x="670" y="110" width="150" height="52" rx="9" fill="#7863b0" stroke="#66529e"/><text x="745" y="141" font-size="14" fill="#fff" text-anchor="middle">optimizer.step()</text></g><g stroke="#a4b2aa" stroke-width="1.8" fill="none" marker-end="url(#a20b)"><path d="M220 136 H268"/><path d="M420 136 H468"/><path d="M620 136 H668"/></g><path d="M745 162 V220 H145 V162" fill="none" stroke="#a4b2aa" stroke-width="1.8" stroke-dasharray="6 5" marker-end="url(#a20b)"/><text x="445" y="244" font-size="13.5" fill="#57706c" text-anchor="middle">下一批数据（下一个 mini-batch）</text><text x="40" y="288" font-size="13" fill="#57706c">教学示意：每个 mini-batch 重复这五步一次。</text><defs><marker id="a20b" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto"><path d="M1 1 L7 4 L1 7" fill="none" stroke="#a4b2aa" stroke-width="1.8"/></marker></defs></g></svg></div><figcaption>每个 mini-batch 重复五个动作：清零梯度、前向、算损失、反向、更新参数。漏掉其中任何一步（尤其是清零与 eval 模式）都会引入隐蔽错误。流程示意图。</figcaption></figure><pre><code>def train_epoch(model, loader, opt, criterion, device):
     model.train()
-    total_loss = 0
-    for X, y in loader:
-        X, y = X.to(device), y.to(device)
-        optimizer.zero_grad()
-        output = model(X).squeeze()
-        loss = criterion(output, y)
+    total = 0.0
+    for xb, yb in loader:
+        xb, yb = xb.to(device), yb.to(device)
+        opt.zero_grad()
+        logits = model(xb).squeeze(-1)
+        loss = criterion(logits, yb)
         loss.backward()
-        optimizer.step()
-        total_loss += loss.item() * X.size(0)
-    return total_loss / len(loader.dataset)
+        opt.step()
+        total += loss.item() * xb.size(0)
+    return total / len(loader.dataset)
 
+@torch.no_grad()
 def evaluate(model, loader, criterion, device):
     model.eval()
-    total_loss, correct = 0, 0
-    with torch.no_grad():
-        for X, y in loader:
-            X, y = X.to(device), y.to(device)
-            output = model(X).squeeze()
-            loss = criterion(output, y)
-            total_loss += loss.item() * X.size(0)
-            pred = (torch.sigmoid(output) > 0.5).float()
-            correct += (pred == y).sum().item()
-    return total_loss / len(loader.dataset), correct / len(loader.dataset)
-
-# 主训练循环
-device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-model = MLP(30, [128, 64, 32], 1).to(device)
-criterion = nn.BCEWithLogitsLoss()
-optimizer = torch.optim.AdamW(model.parameters(), lr=1e-3, weight_decay=0.01)
-scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=50)
-
-best_val_loss = float('inf')
-for epoch in range(50):
-    train_loss = train_epoch(model, train_loader, optimizer, criterion, device)
-    val_loss, val_acc = evaluate(model, val_loader, criterion, device)
-    scheduler.step()
-
-    if val_loss < best_val_loss:
-        best_val_loss = val_loss
-        torch.save(model.state_dict(), 'best_model.pt')
-
-    print(f"Epoch {epoch+1:3d}: train_loss={train_loss:.4f}, "
-          f"val_loss={val_loss:.4f}, val_acc={val_acc:.4f}")
-</code></pre>
-
-        <div class="warning">
-            <strong>⚠️ 训练循环中的常见bug：</strong>(1) 忘记<code>optimizer.zero_grad()</code>——梯度会累积而不是替换。(2) 验证时忘记<code>model.eval()</code>——Dropout和BN在训练/推理模式下行为不同，torch.no_grad()还不够。(3) BCEWithLogitsLoss自带Sigmoid，模型的输出不要手动加Sigmoid——否则会双重Sigmoid。(4) 在GPU上创建的target和model输出数据类型不匹配——这会导致静默的错误结果。
-        </div>
-
-        <h2>20.6 断点续训与混合精度</h2>
-
-        <pre><code># 保存完整训练状态
-checkpoint = {
-    'epoch': epoch,
-    'model_state_dict': model.state_dict(),
-    'optimizer_state_dict': optimizer.state_dict(),
-    'scheduler_state_dict': scheduler.state_dict(),
-    'best_val_loss': best_val_loss,
+    total, correct = 0.0, 0
+    for xb, yb in loader:
+        xb, yb = xb.to(device), yb.to(device)
+        logits = model(xb).squeeze(-1)
+        total += criterion(logits, yb).item() * xb.size(0)
+        correct += ((torch.sigmoid(logits) &gt; 0.5) == yb.bool()).sum().item()
+    return total / len(loader.dataset), correct / len(loader.dataset)</code></pre><div class="note"><p><strong>训练循环四大坑：</strong>① 忘了 <code>opt.zero_grad()</code>，梯度会累加；② 验证时只加 <code>no_grad()</code> 而忘了 <code>model.eval()</code>，Dropout/BN 仍处于训练行为；③ 输出多乘一次 sigmoid 导致双重激活；④ 张量留在不同设备或不同 dtype，得到静默错误。</p></div></section>
+<section id="sec6" aria-labelledby="title6"><h2 id="title6">06 · 数值稳定：logits 与 log-sum-exp</h2><p>为什么框架坚持让你传 <strong>logits</strong> 而不是概率？因为先算 softmax 再取对数会先产生极小的概率，用浮点数相除、取对数时会损失精度甚至下溢。多分类交叉熵直接对 logits 计算：</p><div class="eq eq-scroll" role="region" tabindex="0" aria-label="交叉熵用 log-sum-exp 直接由 logits 计算，避免先做 softmax 的数值问题"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block" aria-label="log-sum-exp 交叉熵"><mrow><msub><mi>L</mi><mi>CE</mi></msub><mo>=</mo><mo>−</mo><msub><mi>z</mi><mi>y</mi></msub><mo>+</mo><mi>log</mi><munderover><mo>∑</mo><mrow><mi>j</mi><mo>=</mo><mn>1</mn></mrow><mi>C</mi></munderover><msup><mi>e</mi><msub><mi>z</mi><mi>j</mi></msub></msup></mrow></math></div><p>其中 <code>z</code> 是 logits，<code>y</code> 是真实类别，C 是类别数。<code>log Σ e^{z_j}</code> 即 log-sum-exp，实现时会先减去 <code>max(z)</code> 以数值稳定。这也是 <code>CrossEntropyLoss</code> / <code>BCEWithLogitsLoss</code> 内部做的事。</p><p>同理，方差过大的输入、除以接近 0 的值、<code>log(0)</code>、以及混合精度下的极端缩放，都会让 loss 变成 NaN。排查时先定位 NaN 首次出现的位置（逐层打印），而不是盲目调小学习率。</p></section>
+<section id="sec7" aria-labelledby="title7"><h2 id="title7">07 · 断点续训与混合精度</h2><p>只保存 <code>state_dict()</code> 是不够的：要“从断点继续”，必须同时保存优化器与学习率调度器的状态，否则动量与调度进度会丢失。模型架构、配置与随机种子也应一并记录（以便复现）。</p><pre><code>ckpt = {
+    &quot;epoch&quot;: epoch,
+    &quot;model&quot;: model.state_dict(),
+    &quot;optimizer&quot;: opt.state_dict(),
+    &quot;scheduler&quot;: sched.state_dict(),
+    &quot;best_val&quot;: best_val,
 }
-torch.save(checkpoint, 'checkpoint.pt')
+torch.save(ckpt, &quot;ckpt.pt&quot;)
+# 恢复：
+state = torch.load(&quot;ckpt.pt&quot;)
+model.load_state_dict(state[&quot;model&quot;])
+opt.load_state_dict(state[&quot;optimizer&quot;])
+sched.load_state_dict(state[&quot;scheduler&quot;])</code></pre><p><strong>混合精度（AMP）</strong>用 float16/bfloat16 做前向以省显存、加速，但反向时需要梯度缩放防止小梯度下溢。PyTorch 用 <code>torch.amp.autocast</code> 与 <code>GradScaler</code> 封装这一过程。它在 NVIDIA GPU 上收益最明显，CPU 上不一定有加速，且在部分算子或旧硬件上可能不稳定，开启后应重新验证指标。</p></section>
+<section id="sec8" aria-labelledby="title8"><h2 id="title8">08 · 离线实验：一个小型训练脚本</h2><p>下面是一段完整的二分类训练脚本，涵盖数据生成、训练/验证划分、早停与保存最优权重。它需要 PyTorch、NumPy 与 scikit-learn。<strong>本页的离线校验环境未安装这些依赖，因此该脚本标记为未验证</strong>；请将它当作可复制入本地环境运行的模板，而非已运行的结果。</p><pre><code>import numpy as np, torch, torch.nn as nn
+from sklearn.datasets import make_classification
+from sklearn.model_selection import train_test_split
+from torch.utils.data import TensorDataset, DataLoader
 
-# 恢复训练
-checkpoint = torch.load('checkpoint.pt')
-model.load_state_dict(checkpoint['model_state_dict'])
-optimizer.load_state_dict(checkpoint['optimizer_state_dict'])
+torch.manual_seed(20)
+X, y = make_classification(n_samples=4000, n_features=30,
+                           n_informative=12, random_state=20)
+Xtr, Xva, ytr, yva = train_test_split(
+    X, y, test_size=0.25, stratify=y, random_state=20)
+toT = lambda a, t: torch.as_tensor(a, dtype=t)
+ld = lambda Xa, ya, sh: DataLoader(
+    TensorDataset(toT(Xa, torch.float32), toT(ya, torch.float32)),
+    batch_size=64, shuffle=sh)
+train_loader, val_loader = ld(Xtr, ytr, True), ld(Xva, yva, False)
 
-# 混合精度训练（省显存+加速）
-scaler = torch.amp.GradScaler('cuda')
-with torch.amp.autocast('cuda'):
-    output = model(X)
-    loss = criterion(output, y)
-scaler.scale(loss).backward()
-scaler.step(optimizer)
-scaler.update()
-</code></pre>
+model = nn.Sequential(
+    nn.Linear(30, 64), nn.ReLU(), nn.Dropout(0.3),
+    nn.Linear(64, 1))
+crit = nn.BCEWithLogitsLoss()
+opt = torch.optim.AdamW(model.parameters(), lr=1e-3)
 
-        <div class="highlight">
-            <strong>🔑 技能检查：</strong>学完这一章，你应该能独立完成：(1) 用PyTorch定义任意结构的神经网络；(2) 写出完整的训练+验证循环；(3) 使用GPU训练；(4) 保存和恢复模型及训练状态；(5) 理解并能调试训练中的常见问题（loss不降、NaN、过拟合）。这些技能是后续所有深度学习章节的基础。
-        </div>
-
-        <p>PyTorch实战能力已经具备了。下一章我们进入CNN——让计算机"看见"世界的革命性架构。</p>
-
-        <div class="footer-nav">
-            <a href="19.html">← 上一章</a>
-            <a href="index.html">📖 返回目录</a>
-            <a href="21.html">下一章 →</a>
-        </div>
-    </div>
-</div>
-</div>
-</body>
-</html>
+best = float(&quot;inf&quot;)
+for epoch in range(30):
+    model.train()
+    for xb, yb in train_loader:
+        opt.zero_grad()
+        loss = crit(model(xb).squeeze(-1), yb)
+        loss.backward(); opt.step()
+    model.eval()
+    with torch.no_grad():
+        vl = np.mean([crit(model(xb).squeeze(-1), yb).item()
+                      for xb, yb in val_loader])
+    if vl &lt; best:
+        best = vl
+        torch.save(model.state_dict(), &quot;best.pt&quot;)
+print(&quot;best val loss: %.4f&quot; % best)</code></pre><figure id="fig-loss-curves"><div class="figure-scroll"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 340" role="img" aria-labelledby="t20c d20c"><title id="t20c">训练损失与验证损失随 epoch 的变化</title><desc id="t20c">训练损失持续下降；验证损失先下降后在某个 epoch 开始回升，两者分叉处即过拟合起点，也是保存最优权重的时点。</desc><rect x="1" y="1" width="998" height="338" rx="18" fill="#fffdf9" stroke="#d8e2d9"/><g font-family="system-ui,'PingFang SC','Microsoft YaHei',sans-serif"><text x="40" y="45" font-size="22" fill="#213a37" font-weight="760">早停的依据是验证损失，而不是训练损失</text><path d="M80 280 H920 M80 280 V80" fill="none" stroke="#a4b2aa" stroke-width="1.8"/><path d="M80 190 C260 150, 420 120, 920 96" fill="none" stroke="#147b70" stroke-width="2.8"/><path d="M80 190 C240 140, 420 128, 560 138 C700 150, 820 176, 920 210" fill="none" stroke="#c4774b" stroke-width="2.8"/><circle cx="560" cy="138" r="7" fill="#b5452f"/><path d="M560 138 V280" stroke="#7863b0" stroke-width="1.6" stroke-dasharray="5 4"/><text x="568" y="130" font-size="13" fill="#b5452f">验证损失最低点</text><text x="600" y="250" font-size="13" fill="#66529e">此处保存最优权重（早停）</text><text x="800" y="96" font-size="13" fill="#147b70">训练损失</text><text x="820" y="212" font-size="13" fill="#b5673f">验证损失</text><text x="86" y="300" font-size="12.5" fill="#57706c">epoch →</text><text x="40" y="326" font-size="13" fill="#57706c">教学示意：曲线为虚构，非真实训练记录。</text></g></svg></div><figcaption>训练损失继续下降但验证损失回升时，说明模型开始过拟合；通常在验证损失最低处保存权重并提前停止。曲线为教学示意，非真实训练记录。</figcaption></figure></section>
+<section id="sec9" aria-labelledby="title9"><h2 id="title9">09 · 来源、版本与验收界限</h2><p>框架行为（autograd、DataLoader、损失函数、AMP）以 PyTorch 官方文档为准；不同版本的 API 位置可能变化（如 <code>torch.amp</code> 与旧版 <code>torch.cuda.amp</code>），复现时应记录版本。</p><ul class="refs"><li><a href="https://pytorch.org/tutorials/beginner/basics/autogradqs_tutorial.html" rel="noopener noreferrer">PyTorch autograd 入门</a></li><li><a href="https://pytorch.org/docs/stable/data.html" rel="noopener noreferrer">torch.utils.data：Dataset 与 DataLoader</a></li><li><a href="https://pytorch.org/docs/stable/generated/torch.nn.BCEWithLogitsLoss.html" rel="noopener noreferrer">BCEWithLogitsLoss（内置 sigmoid）</a></li><li><a href="https://pytorch.org/docs/stable/generated/torch.nn.CrossEntropyLoss.html" rel="noopener noreferrer">CrossEntropyLoss（内置 log-softmax）</a></li><li><a href="https://pytorch.org/docs/stable/notes/amp_examples.html" rel="noopener noreferrer">PyTorch 混合精度训练示例</a></li><li><a href="https://pytorch.org/docs/stable/notes/randomness.html" rel="noopener noreferrer">PyTorch 可复现性说明</a></li></ul><p class="note"><strong>验收界限：</strong>本章所有曲线、结构与计算图均为教学示意；第 08 节的训练脚本在本页离线校验环境未安装 PyTorch/sklearn，标记为<strong>未验证</strong>；框架采用率等流行度数字因来源而异，不作精确断言。</p></section>
+<nav class="article-footer" aria-label="章节导航"><a href="19.html">← 上一章</a><a href="../index.html">全部章节</a><a href="21.html">下一章 →</a></nav></article></main></div><footer class="site-footer"><span>机器学习图解教程 · 第 20 章</span><span>自动微分、训练循环与数值稳定</span></footer></body></html>

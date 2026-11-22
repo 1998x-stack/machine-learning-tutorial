@@ -40,7 +40,7 @@
 | 14 | [PCA](https://scikit-learn.org/stable/modules/generated/sklearn.decomposition.PCA.html) · [Manifold](https://scikit-learn.org/stable/modules/manifold.html) · [Feature selection](https://scikit-learn.org/stable/modules/feature_selection.html) · [TargetEncoder](https://scikit-learn.org/stable/modules/generated/sklearn.preprocessing.TargetEncoder.html) | t-SNE 不保留全局簇距/密度；目标编码 fit_transform 内部交叉拟合；特征选择必须进入训练折 |
 | 15 | [Grid/Random search](https://scikit-learn.org/stable/modules/grid_search.html) · [Nested CV example](https://scikit-learn.org/stable/auto_examples/model_selection/plot_nested_cross_validation_iris.html) · [Optuna search spaces](https://optuna.readthedocs.io/en/stable/tutorial/10_key_features/002_configurations.html) · [Optuna pruning](https://optuna.readthedocs.io/en/stable/tutorial/10_key_features/003_efficient_optimization_algorithms.html) | 搜索 CV 选择偏差；内层选参、外层评估；非迭代模型不能虚构 pruning 中间步骤 |
 
-## 第四批技术核查 · 16–19
+## 第四批技术核查 · 16–20
 
 以下官方资料核对的是原理、API 与适用条件。本章 SVG 是流程示意或明确声明的人造教学数据，不是实际业务数据集或基准曲线。
 
@@ -50,6 +50,7 @@
 | 17 | [SHAP（Lundberg & Lee, NeurIPS 2017）](https://arxiv.org/abs/1705.07874) · [LIME（Ribeiro et al., KDD 2016）](https://arxiv.org/abs/1602.04938) · [置换重要性](https://scikit-learn.org/stable/modules/permutation_importance.html) · [PDP/ICE](https://scikit-learn.org/stable/modules/partial_dependence.html) · [Interpretable ML](https://christophm.github.io/interpretable-ml-book/) | 重要性口径不同（MDI 偏高基数、置换受相关影响）；置换须在留出折上算；SHAP 依赖背景/基线且可加；LIME 局部且对扰动敏感；PDP/ICE 假设特征独立；所有工具解释预测而非因果 |
 | 18 | [Pipeline / ColumnTransformer](https://scikit-learn.org/stable/modules/compose.html) · [模型持久化](https://scikit-learn.org/stable/model_persistence.html) · [MLflow](https://mlflow.org/docs/latest/index.html) · [Feast](https://feast.dev/) · [Google MLOps 成熟度](https://cloud.google.com/architecture/mlops-continuous-delivery-and-automation-pipelines-in-machine-learning) | 交付物应为含预处理的整体管线；训练-服务偏差靠共享特征定义消除；实验需记录预算与失败；PSI 等漂移阈值须按业务定义而非通用数字；成熟度阶梯是参考而非硬标准 |
 | 19 | [He 初始化](https://arxiv.org/abs/1502.01852) · [Batch Normalization](https://arxiv.org/abs/1502.03167) · [Dropout](https://arxiv.org/abs/1207.0580) · [GELU](https://arxiv.org/abs/1606.08415) · [PyTorch init](https://pytorch.org/docs/stable/nn.init.html) · [BatchNorm1d](https://pytorch.org/docs/stable/generated/torch.nn.BatchNorm1d.html) | 无非线性时多层塌缩为单层线性；Sigmoid/Tanh 饱和导致梯度消失；Xavier 适合 Sigmoid/Tanh、He 适合 ReLU；BN 训练/推理统计量不同、小 batch 方差；ReLU 可能死亡 |
+| 20 | [autograd](https://pytorch.org/tutorials/beginner/basics/autogradqs_tutorial.html) · [DataLoader](https://pytorch.org/docs/stable/data.html) · [BCEWithLogitsLoss](https://pytorch.org/docs/stable/generated/torch.nn.BCEWithLogitsLoss.html) · [CrossEntropyLoss](https://pytorch.org/docs/stable/generated/torch.nn.CrossEntropyLoss.html) · [AMP](https://pytorch.org/docs/stable/notes/amp_examples.html) · [可复现性](https://pytorch.org/docs/stable/notes/randomness.html) | 梯度默认累加、需 zero_grad；eval() 与 no_grad() 不同作用；损失函数内置激活不能重复；log-sum-exp 保证数值稳定；混合精度需重验指标；shuffle 仅训练集 |
 
 ## 跨批次共用事实约束
 
