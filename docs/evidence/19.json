@@ -35,7 +35,7 @@
       "source_url": "https://proceedings.mlr.press/v37/ioffe15.html",
       "locator": "Ioffe & Szegedy (2015)",
       "status": "verified",
-      "notes": "The chapter does not claim BatchNorm is universally best or that its effect has only one explanation."
+      "notes": "The chapter does not claim BatchNorm is universally best; it also distinguishes the biased batch variance used in the forward pass from the unbiased running-variance estimator in PyTorch BatchNorm1d."
     },
     {
       "id": "dropout",
