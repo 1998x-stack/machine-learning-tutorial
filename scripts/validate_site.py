@@ -229,6 +229,8 @@ def main():
             num = path.stem
             if len(audit.mains) != 1 or audit.mains[0].get("id") != "content":
                 error(path, "article requires exactly one main landmark with id=content")
+            elif audit.mains[0].get("tabindex") != "-1":
+                error(path, "article main landmark must be programmatically focusable for skip navigation")
             if len(audit.articles) != 1:
                 error(path, f"article page requires exactly one article landmark, got {len(audit.articles)}")
             if "#content" not in audit.skip_links:
@@ -302,8 +304,12 @@ def main():
     home_audit = audits.get((DOCS / "index.html").resolve())
     if not home_audit or len(home_audit.mains) != 1 or home_audit.mains[0].get("id") != "main":
         ERRORS.append("homepage requires exactly one main landmark with id=main")
+    elif home_audit.mains[0].get("tabindex") != "-1":
+        ERRORS.append("homepage main landmark must be programmatically focusable for skip navigation")
     if not home_audit or "#main" not in home_audit.skip_links:
         ERRORS.append("homepage skip link must target #main")
+    if 'class="route-canvas" tabindex="0" role="region"' not in home:
+        ERRORS.append("homepage learning-route diagram must be a named keyboard-scrollable region")
 
     for i in range(1, 29):
         for legacy in (ROOT / f"{i:02}.html", DOCS / f"{i:02}.html"):
