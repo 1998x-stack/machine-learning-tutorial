@@ -1,0 +1,41 @@
+{
+  "chapter": "06",
+  "claims": [
+    {
+      "id": "california-housing-source",
+      "claim": "The California Housing dataset contains 20,640 census-block-group observations and target values derived from the 1990 California census.",
+      "kind": "dataset",
+      "source_url": "https://scikit-learn.org/stable/modules/generated/sklearn.datasets.fetch_california_housing.html",
+      "locator": "Dataset description, target and source",
+      "status": "verified",
+      "notes": "This is historical data, not a current housing-price feed; first fetch may require network access."
+    },
+    {
+      "id": "group-split",
+      "claim": "GroupShuffleSplit separates samples by group labels so a group does not occur in both sides of a split.",
+      "kind": "implementation",
+      "source_url": "https://scikit-learn.org/stable/modules/generated/sklearn.model_selection.GroupShuffleSplit.html",
+      "locator": "GroupShuffleSplit behavior",
+      "status": "verified",
+      "notes": "A geographic group split tests transfer across groups, not future-time generalization."
+    },
+    {
+      "id": "cross-validation-protocol",
+      "claim": "Cross-validation evaluates candidate procedures across training/validation folds and must match the deployment sampling assumptions.",
+      "kind": "method",
+      "source_url": "https://scikit-learn.org/stable/modules/cross_validation.html",
+      "locator": "Cross-validation iterators",
+      "status": "verified",
+      "notes": "Random folds can be inappropriate for time-ordered or grouped observations."
+    },
+    {
+      "id": "baseline-interpretation",
+      "claim": "A baseline provides a reference score against which more complex estimators can be evaluated.",
+      "kind": "method",
+      "source_url": "https://scikit-learn.org/stable/model_evaluation.html",
+      "locator": "Model evaluation and dummy estimators",
+      "status": "derived",
+      "notes": "A baseline does not establish that a model is useful in the target business process."
+    }
+  ]
+}
