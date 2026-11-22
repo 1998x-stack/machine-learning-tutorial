@@ -32,6 +32,10 @@ class PageAudit(HTMLParser):
         self.math_inside_svg = 0
         self.headings = []
         self.sections = []
+        self.mains = []
+        self.articles = []
+        self.labelledby = []
+        self.skip_links = []
         self.pre_attrs = []
         self.figure_scroll_attrs = []
         self.lang = None
@@ -41,6 +45,14 @@ class PageAudit(HTMLParser):
         a = dict(attrs)
         if tag == "html":
             self.lang = a.get("lang")
+        if tag == "main":
+            self.mains.append(a)
+        if tag == "article":
+            self.articles.append(a)
+        if a.get("aria-labelledby"):
+            self.labelledby.extend(a["aria-labelledby"].split())
+        if "skip-link" in a.get("class", "").split():
+            self.skip_links.append(a.get("href"))
         if a.get("id"):
             self.ids.append(a["id"])
         for key in ("href", "src"):
@@ -186,9 +198,12 @@ def main():
             error(path, "html lang must be zh-CN")
         if audit.ids and len(audit.ids) != len(set(audit.ids)):
             error(path, "duplicate HTML id")
-        h1_count = source.lower().count("<h1")
+        h1_count = audit.headings.count(1)
         if h1_count != 1:
             error(path, f"expected one H1, got {h1_count}")
+        for target in audit.labelledby:
+            if target not in audit.ids:
+                error(path, f"aria-labelledby target #{target} does not exist")
         previous = 0
         for level in audit.headings:
             if previous and level > previous + 1:
@@ -213,8 +228,12 @@ def main():
 
         if path.name != "index.html":
             num = path.stem
-            if "<main id=\"content\"" not in source or "<article" not in source:
-                error(path, "article requires main#content and article landmarks")
+            if len(audit.mains) != 1 or audit.mains[0].get("id") != "content":
+                error(path, "article requires exactly one main landmark with id=content")
+            if len(audit.articles) != 1:
+                error(path, f"article page requires exactly one article landmark, got {len(audit.articles)}")
+            if "#content" not in audit.skip_links:
+                error(path, "skip link must target #content")
             if not re.search(r'<meta name="description" content="[^"]{30,}"', source):
                 error(path, "missing substantive meta description")
             expected_url = f"https://1998x-stack.github.io/machine-learning-tutorial/chapters/{num}.html"
@@ -222,8 +241,6 @@ def main():
                 error(path, "canonical URL missing or incorrect")
             if source.count('property="og:title"') != 1 or source.count('property="og:description"') != 1:
                 error(path, "Open Graph title/description metadata missing")
-            if 'class="skip-link" href="#content"' not in source:
-                error(path, "skip link must target main#content")
             nav = re.search(r'<nav aria-label="文章目录">([\s\S]*?)</nav>', source)
             if not nav:
                 error(path, "missing article table-of-contents nav")
@@ -281,6 +298,11 @@ def main():
         ERRORS.append("homepage must link to every chapter exactly once")
     if 'id="study-paths"' not in home or 'aria-live="polite"' not in home:
         ERRORS.append("homepage must expose goal-based paths and an announced search status")
+    home_audit = audits.get((DOCS / "index.html").resolve())
+    if not home_audit or len(home_audit.mains) != 1 or home_audit.mains[0].get("id") != "main":
+        ERRORS.append("homepage requires exactly one main landmark with id=main")
+    if not home_audit or "#main" not in home_audit.skip_links:
+        ERRORS.append("homepage skip link must target #main")
 
     for i in range(1, 29):
         for legacy in (ROOT / f"{i:02}.html", DOCS / f"{i:02}.html"):
@@ -329,12 +351,22 @@ def main():
     else:
         try:
             urls = ET.parse(sitemap).getroot().findall("{http://www.sitemaps.org/schemas/sitemap/0.9}url")
-            if len(urls) != 29:
-                ERRORS.append(f"sitemap must contain 29 canonical URLs, found {len(urls)}")
+            expected = ["https://1998x-stack.github.io/machine-learning-tutorial/"] + [
+                f"https://1998x-stack.github.io/machine-learning-tutorial/chapters/{i:02}.html"
+                for i in range(1, 29)
+            ]
+            actual = [node.findtext("{http://www.sitemaps.org/schemas/sitemap/0.9}loc") for node in urls]
+            if actual != expected:
+                ERRORS.append("sitemap loc entries must exactly match the 29 canonical URLs in order")
+            if any(not node.findtext("{http://www.sitemaps.org/schemas/sitemap/0.9}lastmod") for node in urls):
+                ERRORS.append("every sitemap URL must include lastmod")
         except ET.ParseError as exc:
             ERRORS.append(f"invalid sitemap XML: {exc}")
-    if not (DOCS / "robots.txt").is_file():
+    robots = DOCS / "robots.txt"
+    if not robots.is_file():
         ERRORS.append("missing docs/robots.txt")
+    elif "https://1998x-stack.github.io/machine-learning-tutorial/sitemap.xml" not in robots.read_text(encoding="utf-8"):
+        ERRORS.append("robots.txt must advertise the canonical sitemap URL")
 
     if ERRORS:
         print("\n".join("ERROR " + item for item in ERRORS))
