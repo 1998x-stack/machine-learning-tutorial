@@ -173,10 +173,10 @@
       "num": "16",
       "title": "处理不平衡数据",
       "topics": [
-        "SMOTE与变体",
-        "类别权重",
-        "异常检测视角",
-        "正确评估指标"
+        "Precision、Recall 与 PR-AUC",
+        "SMOTE 与采样泄漏",
+        "类别权重与阈值成本",
+        "异常检测视角"
       ],
       "file": "16.html"
     },
@@ -184,10 +184,10 @@
       "num": "17",
       "title": "模型可解释性",
       "topics": [
-        "SHAP值原理",
-        "LIME局部解释",
-        "部分依赖图",
-        "解释的陷阱"
+        "Shapley 值与 SHAP",
+        "LIME 局部代理",
+        "PDP 与 ICE",
+        "忠实度、稳定性与因果边界"
       ],
       "file": "17.html"
     },
@@ -195,10 +195,10 @@
       "num": "18",
       "title": "ML系统工程化",
       "topics": [
-        "Pipeline自动化",
-        "MLflow实验管理",
-        "特征存储",
-        "MLOps成熟度"
+        "sklearn Pipeline",
+        "MLflow Tracking 与 Registry",
+        "Feature Store 与 point-in-time join",
+        "CI/CD、CT 与监控"
       ],
       "file": "18.html"
     },
@@ -206,10 +206,10 @@
       "num": "19",
       "title": "神经网络基础",
       "topics": [
-        "感知机",
-        "激活函数对比",
-        "反向传播",
-        "BN/Dropout"
+        "神经元与张量形状",
+        "激活函数与反向传播",
+        "Xavier / He 初始化",
+        "BatchNorm 与 Dropout"
       ],
       "file": "19.html"
     },
@@ -217,10 +217,10 @@
       "num": "20",
       "title": "深度学习框架实战",
       "topics": [
-        "PyTorch基础",
-        "DataLoader",
-        "训练循环",
-        "混合精度"
+        "Tensor 与 Autograd",
+        "Dataset / DataLoader",
+        "nn.Module 与训练循环",
+        "Checkpoint 与 AMP"
       ],
       "file": "20.html"
     },
