@@ -45,3 +45,15 @@
 - Docs 是 Pages 唯一构建工件；相对链接不能越过 `docs/`。指向 `examples/` 源码应直接使用 GitHub 仓库的网页 URL。
 - 随机样本或合成数据的数值结果只能说明定义与算法，不代表真实应用准确率或因果效应。
 - 对生成的公式曲线验证坐标和峰值，对邻域图核验距离、eps/min_samples 计数，对聚类中心核验平均值。未实测的算法性能图一律注明“示意”。
+
+## 第四批技术核查 · 16–20
+
+| 章节 | 一手论文 / 官方资料 | 必须保留的边界 |
+|---|---|---|
+| 16 | [SMOTE 原始论文](https://doi.org/10.1613/jair.953) · [imbalanced-learn Pipeline](https://imbalanced-learn.org/stable/references/generated/imblearn.pipeline.Pipeline.html) · [阈值调优](https://scikit-learn.org/stable/modules/classification_threshold.html) · [分类指标](https://scikit-learn.org/stable/modules/model_evaluation.html) | 采样只在训练折；测试分布不变；AP 与梯形 PR-AUC 区分；阈值由验证集和成本决定 |
+| 17 | [SHAP 原论文](https://proceedings.neurips.cc/paper/2017/hash/8a20a8621978632d76c43dfd28b67767-Abstract.html) · [SHAP TreeExplainer](https://shap.readthedocs.io/en/latest/generated/shap.TreeExplainer.html) · [LIME 原论文](https://doi.org/10.1145/2939672.2939778) · [PDP/ICE](https://scikit-learn.org/stable/modules/partial_dependence.html) | 输出空间与背景分布要明确；相关特征改变归因；局部代理要报告 fidelity；预测解释不是因果解释 |
+| 18 | [MLflow Tracking](https://mlflow.org/docs/latest/tracking/) · [Model Registry](https://www.mlflow.org/docs/latest/registry/) · [Feast](https://docs.feast.dev/) · [Google MLOps](https://docs.cloud.google.com/architecture/mlops-continuous-delivery-and-automation-pipelines-in-machine-learning) · [Hidden Technical Debt](https://proceedings.neurips.cc/paper/2015/hash/86df7dcfd896fcaf2674f757a2463eba-Abstract.html) | 区分 run 与 registry version/alias；point-in-time join 防止未来信息泄漏；MLOps level 是参考框架 |
+| 19 | [Backpropagation](https://www.nature.com/articles/323533a0) · [Xavier](https://proceedings.mlr.press/v9/glorot10a.html) · [He initialization](https://openaccess.thecvf.com/content_iccv_2015/html/He_Delving_Deep_into_Rectifiers_Surpassing_Human-Level_Performance_on_ImageNet_ICCV_2015_paper.html) · [BatchNorm](https://proceedings.mlr.press/v37/ioffe15.html) · [Dropout](https://www.jmlr.org/beta/papers/v15/srivastava14a.html) | 初始化取决于 fan/激活；BN 训练与推理统计不同；Dropout 仅训练时随机失活；梯度与参数更新分离 |
+| 20 | [Autograd](https://docs.pytorch.org/docs/stable/notes/autograd.html) · [DataLoader](https://docs.pytorch.org/docs/stable/data.html) · [Module](https://docs.pytorch.org/docs/stable/generated/torch.nn.Module.html) · [AMP](https://docs.pytorch.org/docs/stable/amp.html) · [Saving/Loading](https://docs.pytorch.org/tutorials/beginner/saving_loading_models.html) | logits/目标形状匹配；eval 与 grad mode 分离；完整续训需要 optimizer/scaler/scheduler 状态；CUDA AMP 不可由 CPU CI 代替 |
+
+每章的详细主张、来源定位、状态和限制记录在 docs/evidence/16.json 至 docs/evidence/20.json。18 幅新 SVG 中，数值与机制示例均为解析推导或教学构造；不冒充外部 benchmark。
