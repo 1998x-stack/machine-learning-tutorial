@@ -5,8 +5,8 @@
       "id": "rnn-shared-state",
       "claim": "A recurrent network applies a shared transition repeatedly over time and passes hidden state between steps.",
       "kind": "research",
-      "source_url": "https://www.deeplearningbook.org/contents/rnn.html",
-      "locator": "Chapter 10: Sequence Modeling",
+      "source_url": "https://www.deeplearningbook.org/contents/rnn",
+      "locator": "Deep Learning, Chapter 10: sequence modeling and recurrent neural networks",
       "status": "verified",
       "notes": "The article states batch/time/feature shapes separately."
     },
