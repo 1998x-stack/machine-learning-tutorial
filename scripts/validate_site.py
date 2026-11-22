@@ -57,7 +57,9 @@ def main():
         if i <= 5:
             check_page(p, require_article=True)
         if not (ROOT / f"{i:02}.html").is_file():
-            ERRORS.append(f"missing legacy redirect {i:02}.html")
+            ERRORS.append(f"missing root legacy redirect {i:02}.html")
+        if not (DOCS / f"{i:02}.html").is_file():
+            ERRORS.append(f"missing Pages legacy redirect {i:02}.html")
     svgs = list((DOCS / "assets" / "svg").rglob("*.svg"))
     for f in svgs:
         try:
