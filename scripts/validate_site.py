@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
 """Evidence, semantic HTML, MathML, SVG, navigation and static-site release gates."""
-import html
 import json
 import re
 import sys
@@ -216,8 +215,8 @@ def main():
             if not fig["media"] or not fig["caption"].strip():
                 error(path, f"figure {i} needs media and a non-empty figcaption")
         for i, alt in enumerate(audit.images, 1):
-            if alt is None or not alt.strip():
-                error(path, f"image {i} has no useful alt text")
+            if alt is None:
+                error(path, f"image {i} is missing the alt attribute (use alt=\"\" for decorative images)")
         for i, attrs in enumerate(audit.pre_attrs, 1):
             if attrs.get("tabindex") != "0" or attrs.get("role") != "region" or not attrs.get("aria-label"):
                 error(path, f"pre block {i} must be a named keyboard-scrollable region")
@@ -296,6 +295,8 @@ def main():
     home_cards = re.findall(r'<a class="lesson-card"[^>]*href="chapters/(\d{2})\.html"', home)
     if sorted(home_cards) != [f"{i:02}" for i in range(1, 29)]:
         ERRORS.append("homepage must link to every chapter exactly once")
+    if '<link rel="canonical" href="https://1998x-stack.github.io/machine-learning-tutorial/">' not in home:
+        ERRORS.append("homepage canonical URL missing or incorrect")
     if 'id="study-paths"' not in home or 'aria-live="polite"' not in home:
         ERRORS.append("homepage must expose goal-based paths and an announced search status")
     home_audit = audits.get((DOCS / "index.html").resolve())
@@ -318,6 +319,19 @@ def main():
         chapter_svgs = list((DOCS / "assets" / "svg" / f"{i:02}").glob("*.svg"))
         if len(chapter_svgs) < (5 if i >= 26 else 3):
             ERRORS.append(f"chapter {i:02}: expected >= {5 if i >= 26 else 3} standalone SVGs")
+
+    # Validate CSS imports and url() assets as well as HTML references.
+    for css in (DOCS / "assets" / "css").rglob("*.css"):
+        text = css.read_text(encoding="utf-8")
+        css_urls = re.findall(r"url\\(\\s*['\\\"]?([^'\\\")]+)", text, re.I)
+        css_imports = re.findall(r"@import\\s+(?:url\\()?\\s*['\\\"]?([^'\\\"\\s)]+)", text, re.I)
+        for raw in css_urls + css_imports:
+            raw = raw.strip()
+            if not raw or raw.startswith(("data:", "http://", "https://", "#")):
+                continue
+            target = (css.parent / unquote(urlsplit(raw).path)).resolve()
+            if not target.is_relative_to(DOCS.resolve()) or not target.is_file():
+                error(css, f"broken local CSS asset/import {raw}")
 
     for i in range(1, 29):
         path = DOCS / "evidence" / f"{i:02}.json"
