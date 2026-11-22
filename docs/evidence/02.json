@@ -1,0 +1,41 @@
+{
+  "chapter": "02",
+  "claims": [
+    {
+      "id": "matrix-product-shape",
+      "claim": "For A with shape (m,p) and B with shape (p,n), matrix multiplication produces C with shape (m,n).",
+      "kind": "derivation",
+      "source_url": "https://numpy.org/doc/stable/reference/generated/numpy.matmul.html",
+      "locator": "matmul shape and broadcasting rules",
+      "status": "derived",
+      "notes": "Broadcasting batch dimensions is distinct from the contracted matrix dimension."
+    },
+    {
+      "id": "svd-factorization",
+      "claim": "The SVD factors a matrix into left singular vectors, singular values, and right singular vectors, with shapes determined by full_matrices.",
+      "kind": "implementation",
+      "source_url": "https://numpy.org/doc/stable/reference/generated/numpy.linalg.svd.html",
+      "locator": "Returns and full_matrices parameter",
+      "status": "verified",
+      "notes": "The tutorial distinguishes reduced and full SVD; singular vectors are not unique under sign flips."
+    },
+    {
+      "id": "pca-centering",
+      "claim": "PCA centers features before finding principal directions and orders components by explained variance.",
+      "kind": "implementation",
+      "source_url": "https://scikit-learn.org/stable/modules/generated/sklearn.decomposition.PCA.html",
+      "locator": "PCA overview and attributes",
+      "status": "verified",
+      "notes": "Whitening changes component scales; PCA does not automatically standardize feature units."
+    },
+    {
+      "id": "low-rank-approximation",
+      "claim": "Truncating the SVD to the leading singular components yields a rank-k approximation under the Frobenius and spectral norm criteria.",
+      "kind": "derivation",
+      "source_url": "https://numpy.org/doc/stable/reference/generated/numpy.linalg.svd.html",
+      "locator": "Singular values and reconstruction",
+      "status": "derived",
+      "notes": "This is a mathematical property, not a guarantee that the compressed features preserve task-relevant information."
+    }
+  ]
+}
