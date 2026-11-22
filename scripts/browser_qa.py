@@ -103,7 +103,7 @@ def main():
     if failures:
         print('\n'.join('ERROR ' + x for x in failures))
         return 1
-    print('PASS 87 viewport-page checks, three search interactions, MathML geometry and SVG images')
+    print('PASS 87 responsive page/viewport checks, 87 skip-link focus checks, print and reduced-motion checks, search/threshold interactions, MathML geometry and SVG images')
     return 0
 
 if __name__ == '__main__':
