@@ -5,7 +5,7 @@
 
 ## Repo map
 - `docs/index.html` 是唯一课程门户；`docs/courses.json` 是章节目录单一来源。
-- `docs/chapters/NN.html` 是 28 篇可独立阅读的教程；01–10 已按新规范精修，11–28 是待逐篇复审的兼容旧稿。
+- `docs/chapters/NN.html` 是 28 篇可独立阅读的教程；01–15 已按新规范精修，16–28 是待逐篇复审的兼容旧稿。
 - `docs/assets/css/{site,article}.css` 管理视觉 token、移动端和打印；勿在每篇重新复制整套 CSS。
 - `docs/assets/svg/NN/` 存放按章节编号的 **独立 SVG**；`docs/assets/js/` 仅增强交互，不承担文章正文内容。
 - 根目录 `index.html`、`NN.html` 是旧 URL 兼容入口，非可编辑正文。
@@ -24,7 +24,7 @@
 10. **Release**: 提交分支与 PR；核对变更清单、CI、部署，再检查实际 Pages 页面。不自动宣称已发布。只在核验完成后标记章节精修完毕。
 
 ## Scope rules
-- 按批次逐章重构，**不要顺手替换** 尚未审查的 11–28 数学内容。
+- 按批次逐章重构，**不要顺手替换** 尚未审查的 16–28 数学内容。
 - `docs/` 是 deployable output/source for this dependency-free static site，无需重复生成的 dist/build 目录。
 - 保持旧 `NN.html` 的导航有效，禁止无迁移说明地删除入口。
 - 不拷贝 Olah 或第三方图标、图像、图表或代码的受限内容。
@@ -34,4 +34,13 @@
 - 优化器、模型选择、交叉验证、概率校准及决策阈值只从训练或验证数据学习，测试数据只允许最终独立报告。
 - SVG 的几何线、统计数值、坐标轴、概率峰值必须经推导或代码校核；第二批每篇至少 3 幅独立 SVG。
 - 新滑块必须具备原生键盘访问、无 JS 默认含义和可见的数字反馈；浏览器 QA 验证其状态变化。
-- `scripts/run_examples.py` 和 `scripts/browser_qa.py` 覆盖前十章；离线检查未执行的外部项目不能标为通过。
+- `scripts/run_examples.py` 和 `scripts/browser_qa.py` 覆盖前十五章；离线检查未执行的外部项目不能标为通过。
+
+## Third-wave gates (11–15)
+- SVM 文章必须区分几何间隔、函数间隔、C 的软间隔惩罚与 gamma 的 RBF 相似性范围；可分情形的解析图不能冒充真实样本决策边界。
+- Naive Bayes 的条件独立属于给定类别的假设；MultinomialNB 输入必须非负。KNN 需要说明样本存储成本、距离尺度和 k 的验证选择。
+- 聚类无标签不得套用分类准确率；DBSCAN 的 min_samples 包含中心样本。Silhouette 与 KMeans inertia 不可被称作自动真值或因果分组。
+- PCA/t-SNE 解决的目标不同；目标编码的 fit_transform 需考虑训练内部交叉拟合及时间/分组边界，测试标签不得参与。
+- 任何搜索预算必须记录候选参数个数、CV 折数及 refit；嵌套 CV 的内层只选择、外层只评估。只有真实报告中间指标的迭代模型才可演示 Optuna pruning。
+- 11–15 每篇至少 3 幅 title/desc/viewBox 完整的独立 SVG，图中的每个数学量或点的邻域分类都应交叉核验。
+- 静态验证只接受部署在 docs/ 内部的相对站内资源；源码示例链接使用 GitHub 官方仓库地址。CI 覆盖前 15 章示例与 48 组页面尺寸。
