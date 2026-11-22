@@ -32,8 +32,8 @@
       "id": "baseline-interpretation",
       "claim": "A baseline provides a reference score against which more complex estimators can be evaluated.",
       "kind": "method",
-      "source_url": "https://scikit-learn.org/stable/model_evaluation.html",
-      "locator": "Model evaluation and dummy estimators",
+      "source_url": "https://scikit-learn.org/stable/modules/model_evaluation.html",
+      "locator": "scikit-learn model evaluation: dummy estimators and baseline interpretation",
       "status": "derived",
       "notes": "A baseline does not establish that a model is useful in the target business process."
     }
