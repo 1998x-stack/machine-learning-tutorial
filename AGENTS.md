@@ -77,3 +77,13 @@
 - 28 工件：训练与服务 Pipeline、schema、阈值、数据/代码/依赖版本、工件 SHA 和回滚目标共同记录。joblib/pickle 只允许加载自己可信创建的产物，SHA 校验不证明工件是安全代码。
 - 26–28 每章至少 5 幅独立 title/desc/viewBox SVG，建立 docs/evidence/26.json 至 28.json；所有 Python 代码块进入 CI，非 Python 的 Dockerfile 用 <pre><samp> 保留，不作为 Python 运行。
 - 全站发布门禁必须运行静态检查、全部正文 59 个 Python 实验、首页和 28 章的 87 组 Chromium 视口测试，并确保 GitHub Pages 部署工作流成功。只有实际检查过的项目才标记为 passed；网络部署、GPU、真实云服务和真实商业效果不得由 CPU 教学 CI 冒充。
+
+## Second-pass maintenance gates (2026-11-23)
+- `docs/courses.json` is the single source for chapter prerequisites/related concepts. Each of the 28 article pages renders its curated links in a `related-concepts` section and the article TOC must link to that section. Keep every link's reason specific; do not generate generic "see also" lists.
+- Each `docs/evidence/NN.json` ledger records at least four claim-level records with `id`, `claim`, `kind`, `source_url`, `locator`, `status`, and `notes`. Status is one of `verified`, `derived`, `illustrative`, or `unverified`. A verified claim must be traceable to an official document, primary paper, or authoritative proof; derived claims must state their derivation; illustrative values must never be described as observed results.
+- Every MathML expression has an accessible name. Display-equation wrappers use `role="group"`, `tabindex="0"`, and a concise `aria-label`; wide equations, code blocks, and dense diagrams scroll locally and are keyboard-focusable.
+- Every article has one `main#content[tabindex="-1"]` and a skip link targeting it. The homepage has one `main#main[tabindex="-1"]`; its route diagram is a named keyboard-scrollable region. Every `aria-labelledby` target must exist.
+- Each chapter declares its canonical URL and Open Graph title/description. `docs/sitemap.xml` must contain the homepage and all 28 canonical lesson URLs in order; `docs/robots.txt` advertises that sitemap.
+- The static gate validates local HTML/CSS assets, fragment links, SVG XML/title/desc/viewBox, MathML structure and names, chapter evidence ledgers, cross-links, and redirects. Do not weaken a check just to get green CI; correct either the markup or the assumption in the test.
+- Browser QA covers the 29 pages at 1440/390/360 px, first-Tab skip-link focus and destination focus, print visibility, reduced-motion behavior, search/threshold interactions, MathML geometry, image decoding, and browser console errors. A green static gate is not a substitute for the browser run.
+- Current API references are version-scoped. On 2026-11-23, scikit-learn stable is 1.9.1 and PyTorch stable docs are 2.15; recheck official release/docs pages before changing these labels or relying on version-specific behavior.

@@ -1,0 +1,41 @@
+{
+  "chapter": "01",
+  "claims": [
+    {
+      "id": "supervised-learning",
+      "claim": "Supervised learning fits a function from labeled examples; the target is supplied during fitting.",
+      "kind": "concept",
+      "source_url": "https://scikit-learn.org/stable/getting_started.html",
+      "locator": "Getting Started: Supervised learning",
+      "status": "verified",
+      "notes": "The chapter uses a small binary classification demonstration, not a benchmark."
+    },
+    {
+      "id": "unsupervised-learning",
+      "claim": "Unsupervised learning seeks structure in observations without a supplied target label.",
+      "kind": "concept",
+      "source_url": "https://scikit-learn.org/stable/getting_started.html",
+      "locator": "Getting Started: Unsupervised learning",
+      "status": "verified",
+      "notes": "Clustering and dimensionality reduction are examples, not a universal taxonomy of all learning."
+    },
+    {
+      "id": "estimator-contract",
+      "claim": "A scikit-learn estimator typically learns state in fit and exposes task-specific prediction or transformation methods.",
+      "kind": "implementation",
+      "source_url": "https://scikit-learn.org/stable/getting_started.html",
+      "locator": "Fitting and predicting; transformers",
+      "status": "verified",
+      "notes": "Exact methods depend on estimator type; not every estimator has predict."
+    },
+    {
+      "id": "generalization-boundary",
+      "claim": "Training fit alone does not estimate performance on unseen data; evaluation must preserve an independent assessment boundary.",
+      "kind": "method",
+      "source_url": "https://scikit-learn.org/stable/common_pitfalls.html",
+      "locator": "Data leakage and model evaluation",
+      "status": "derived",
+      "notes": "The split protocol depends on time, entities, and deployment distribution."
+    }
+  ]
+}

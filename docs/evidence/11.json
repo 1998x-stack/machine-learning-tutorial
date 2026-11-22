@@ -1,0 +1,41 @@
+{
+  "chapter": "11",
+  "claims": [
+    {
+      "id": "svm-margin",
+      "claim": "A hard-margin linear SVM maximizes geometric margin under separability constraints.",
+      "kind": "theorem",
+      "source_url": "https://scikit-learn.org/stable/modules/svm.html",
+      "locator": "Support vector classification formulation",
+      "status": "verified",
+      "notes": "The hard-margin problem assumes linearly separable training data."
+    },
+    {
+      "id": "soft-margin-c",
+      "claim": "The soft-margin C parameter controls the trade-off between margin size and training violations.",
+      "kind": "implementation",
+      "source_url": "https://scikit-learn.org/stable/modules/generated/sklearn.svm.SVC.html",
+      "locator": "C parameter",
+      "status": "verified",
+      "notes": "The optimal value depends on feature scaling and validation protocol."
+    },
+    {
+      "id": "rbf-gamma",
+      "claim": "For the RBF kernel, gamma controls how quickly similarity decays with squared distance.",
+      "kind": "implementation",
+      "source_url": "https://scikit-learn.org/stable/modules/generated/sklearn.svm.SVC.html",
+      "locator": "kernel and gamma parameters",
+      "status": "verified",
+      "notes": "Gamma interacts strongly with feature scale and dimensionality."
+    },
+    {
+      "id": "svm-scaling",
+      "claim": "SVM optimization and kernel distances are sensitive to feature scales, so preprocessing should be fitted inside the training pipeline.",
+      "kind": "method",
+      "source_url": "https://scikit-learn.org/stable/modules/svm.html",
+      "locator": "Practical tips and scaling",
+      "status": "verified",
+      "notes": "The preprocessing fit must remain within each training fold."
+    }
+  ]
+}

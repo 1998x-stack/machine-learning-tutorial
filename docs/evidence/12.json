@@ -1,0 +1,41 @@
+{
+  "chapter": "12",
+  "claims": [
+    {
+      "id": "naive-independence",
+      "claim": "Naive Bayes applies conditional independence assumptions among features given the class.",
+      "kind": "concept",
+      "source_url": "https://scikit-learn.org/stable/modules/naive_bayes.html",
+      "locator": "Naive Bayes models",
+      "status": "verified",
+      "notes": "The assumption is a modeling simplification and is often violated in real data."
+    },
+    {
+      "id": "multinomial-nonnegative",
+      "claim": "MultinomialNB is designed for non-negative feature counts or count-like features.",
+      "kind": "implementation",
+      "source_url": "https://scikit-learn.org/stable/modules/generated/sklearn.naive_bayes.MultinomialNB.html",
+      "locator": "Input requirements and parameters",
+      "status": "verified",
+      "notes": "Negative-valued standardized features are not valid MultinomialNB inputs."
+    },
+    {
+      "id": "laplace-smoothing",
+      "claim": "Additive smoothing prevents zero likelihood for unseen feature events by adding a non-negative alpha pseudo-count.",
+      "kind": "implementation",
+      "source_url": "https://scikit-learn.org/stable/modules/generated/sklearn.naive_bayes.MultinomialNB.html",
+      "locator": "alpha parameter",
+      "status": "verified",
+      "notes": "The choice of alpha changes the model and should be selected without using the test set."
+    },
+    {
+      "id": "knn-distance",
+      "claim": "K-nearest neighbors predicts from nearby stored training examples and is sensitive to the chosen metric and feature scaling.",
+      "kind": "implementation",
+      "source_url": "https://scikit-learn.org/stable/modules/neighbors.html",
+      "locator": "Nearest neighbors algorithms",
+      "status": "verified",
+      "notes": "Inference cost and memory grow with stored samples; tree indexes may degrade in high dimensions."
+    }
+  ]
+}

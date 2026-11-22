@@ -5,10 +5,10 @@
       "id": "mdp-markov",
       "claim": "An MDP specifies states, actions, transition dynamics, rewards and discounting; the Markov property conditions future dynamics on the current state and action.",
       "kind": "textbook",
-      "source_url": "http://incompleteideas.net/book/the-book-2nd.html",
-      "locator": "Chapters 3–4",
+      "source_url": "https://www.incompleteideas.net/book/bookdraft2018mar21.pdf",
+      "locator": "Chapters 3–4, Markov decision processes and Markov property",
       "status": "verified",
-      "notes": "The article distinguishes state from observation and notes POMDP cases."
+      "notes": "The article distinguishes state from observation and notes POMDP cases. The source is the authors' public second-edition complete draft PDF."
     },
     {
       "id": "q-learning-update",

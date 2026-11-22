@@ -1,0 +1,41 @@
+{
+  "chapter": "03",
+  "claims": [
+    {
+      "id": "bayes-rule",
+      "claim": "Bayes theorem relates posterior probability to likelihood, prior, and evidence probability.",
+      "kind": "theorem",
+      "source_url": "https://statproofbook.github.io/P/bayes-th.html",
+      "locator": "Bayes theorem proof",
+      "status": "verified",
+      "notes": "The denominator is the marginal probability of the evidence and must be nonzero."
+    },
+    {
+      "id": "likelihood-not-posterior",
+      "claim": "A likelihood is a function of parameters given observed data; it is not itself a probability distribution over parameters.",
+      "kind": "concept",
+      "source_url": "https://statproofbook.github.io/D/map.html",
+      "locator": "MAP definition and likelihood",
+      "status": "verified",
+      "notes": "A Bayesian posterior additionally requires a prior and normalization."
+    },
+    {
+      "id": "map-estimator",
+      "claim": "Maximum a posteriori estimation selects a parameter maximizing the posterior density, equivalently likelihood times prior for fixed observations.",
+      "kind": "theorem",
+      "source_url": "https://statproofbook.github.io/D/map.html",
+      "locator": "MAP definition",
+      "status": "verified",
+      "notes": "MAP can depend on parameterization and is not generally equal to posterior mean."
+    },
+    {
+      "id": "probability-calibration",
+      "claim": "A calibrated classifier's predicted probabilities correspond to observed event frequencies over suitable groups of predictions.",
+      "kind": "evaluation",
+      "source_url": "https://scikit-learn.org/stable/modules/calibration.html",
+      "locator": "Probability calibration and reliability diagrams",
+      "status": "verified",
+      "notes": "Calibration is distinct from ranking discrimination and may vary across populations."
+    }
+  ]
+}

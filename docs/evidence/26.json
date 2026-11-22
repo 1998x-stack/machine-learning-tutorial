@@ -78,7 +78,7 @@
       "claim": "The text's tiny retrieval experiment uses scikit-learn character n-gram TF-IDF, not semantic embeddings or a production vector database.",
       "kind": "toy",
       "source_url": "https://scikit-learn.org/stable/modules/feature_extraction.html",
-      "locator": "TfidfVectorizer feature mapping",
+      "locator": "scikit-learn feature extraction: text vectorization and TfidfVectorizer",
       "status": "illustrative",
       "notes": "Synthetic enterprise policy snippets are fabricated teaching inputs; access filtering is simplified and not a security implementation."
     }

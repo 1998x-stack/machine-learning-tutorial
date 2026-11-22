@@ -1,0 +1,41 @@
+{
+  "chapter": "04",
+  "claims": [
+    {
+      "id": "gradient-step",
+      "claim": "A gradient-descent update moves parameters opposite the objective gradient, scaled by a learning rate.",
+      "kind": "derivation",
+      "source_url": "https://developers.google.com/machine-learning/crash-course/linear-regression/gradient-descent",
+      "locator": "Gradient descent update",
+      "status": "verified",
+      "notes": "The objective and gradient must be defined with respect to the updated parameter."
+    },
+    {
+      "id": "learning-rate-stability",
+      "claim": "An excessively large learning rate can overshoot or diverge, while an excessively small one can make optimization slow.",
+      "kind": "method",
+      "source_url": "https://developers.google.com/machine-learning/crash-course/linear-regression/hyperparameters",
+      "locator": "Learning rate",
+      "status": "verified",
+      "notes": "Stable ranges depend on objective curvature, scaling, and optimizer."
+    },
+    {
+      "id": "optimizer-families",
+      "claim": "Full-batch, stochastic/minibatch, and adaptive optimizers differ in gradient sampling and update state.",
+      "kind": "implementation",
+      "source_url": "https://pytorch.org/docs/stable/optim.html",
+      "locator": "Optimizer classes and algorithms",
+      "status": "verified",
+      "notes": "An optimizer name alone does not establish convergence or generalization."
+    },
+    {
+      "id": "adamw-decoupling",
+      "claim": "AdamW applies weight decay separately from Adam's adaptive gradient update rather than treating it as the same L2 penalty in the gradient.",
+      "kind": "implementation",
+      "source_url": "https://docs.pytorch.org/docs/stable/generated/torch.optim.AdamW.html",
+      "locator": "PyTorch AdamW: decoupled weight decay and optimizer parameters",
+      "status": "verified",
+      "notes": "The distinction depends on optimizer formulation; do not conflate every weight-decay option."
+    }
+  ]
+}

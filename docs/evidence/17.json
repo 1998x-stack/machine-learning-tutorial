@@ -15,7 +15,7 @@
       "claim": "For a single output, base value plus SHAP values reconstructs the explained model output up to approximation error.",
       "kind": "implementation",
       "source_url": "https://shap.readthedocs.io/en/latest/generated/shap.Explanation.html",
-      "locator": "Explanation additivity relationship",
+      "locator": "SHAP Explanation: base_values plus feature attributions reconstruct model output",
       "status": "verified",
       "notes": "The explained output need not equal predict_proba; output space must be recorded."
     },

@@ -1,0 +1,41 @@
+{
+  "chapter": "14",
+  "claims": [
+    {
+      "id": "pca-variance",
+      "claim": "PCA components are orthogonal directions ordered by explained variance in the centered training data.",
+      "kind": "implementation",
+      "source_url": "https://scikit-learn.org/stable/modules/generated/sklearn.decomposition.PCA.html",
+      "locator": "components_ and explained_variance_ratio_",
+      "status": "verified",
+      "notes": "PCA does not automatically standardize features to unit variance."
+    },
+    {
+      "id": "tsne-neighborhood",
+      "claim": "t-SNE focuses on preserving local neighborhood similarities and does not make plotted global distances or cluster sizes directly interpretable.",
+      "kind": "implementation",
+      "source_url": "https://scikit-learn.org/stable/modules/manifold.html#t-sne",
+      "locator": "scikit-learn t-SNE guide: local structure, stochastic optimization and limits on global geometry",
+      "status": "verified",
+      "notes": "Embedding shape and appearance can vary with perplexity, initialization, seed and sample."
+    },
+    {
+      "id": "target-encoder-crossfit",
+      "claim": "TargetEncoder.fit_transform uses internal cross-fitting; fit(X,y).transform(X) can leak target information into training representations.",
+      "kind": "implementation",
+      "source_url": "https://scikit-learn.org/stable/modules/generated/sklearn.preprocessing.TargetEncoder.html",
+      "locator": "fit_transform and cross-fitting notes",
+      "status": "verified",
+      "notes": "Default random folds may be inappropriate for temporal or grouped data."
+    },
+    {
+      "id": "feature-selection-folds",
+      "claim": "Supervised feature selection must be fitted within each training fold to avoid using validation or test targets.",
+      "kind": "method",
+      "source_url": "https://scikit-learn.org/stable/modules/feature_selection.html",
+      "locator": "Feature selection and Pipeline",
+      "status": "verified",
+      "notes": "Feature selection and hyperparameter choices are part of the learned procedure."
+    }
+  ]
+}

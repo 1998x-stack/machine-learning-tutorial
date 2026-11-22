@@ -20,6 +20,7 @@ def main():
                                         device_scale_factor=1)
                 errors = []
                 page.on('pageerror', lambda e: errors.append(str(e)))
+                page.on('console', lambda msg: errors.append(f'console error: {msg.text}') if msg.type == 'error' else None)
                 page.goto(path.as_uri(), wait_until='load')
                 # Lazy-loaded below-the-fold SVGs must be decoded before
                 # classifying them as broken at a mobile-sized viewport.
@@ -53,6 +54,27 @@ def main():
                 dest = OUT / name
                 dest.mkdir(parents=True, exist_ok=True)
                 page.screenshot(path=str(dest / (path.stem + '.png')), animations='disabled')
+                # Verify the first keyboard stop is the skip link and activation
+                # transfers focus to the intended main landmark.
+                page.keyboard.press('Tab')
+                skip_focused = page.evaluate("document.activeElement.classList.contains('skip-link')")
+                if not skip_focused:
+                    failures.append(f'{name} {path.name}: first Tab does not focus the skip link')
+                page.keyboard.press('Enter')
+                expected_main = 'main' if path.name == 'index.html' else 'content'
+                focused_id = page.evaluate('document.activeElement && document.activeElement.id')
+                if focused_id != expected_main:
+                    failures.append(f'{name} {path.name}: skip link focus target is {focused_id!r}, expected {expected_main!r}')
+                if name == 'desktop':
+                    page.emulate_media(media='print')
+                    print_visible = page.locator('main').evaluate("el => getComputedStyle(el).display !== 'none' && el.getClientRects().length > 0")
+                    if not print_visible:
+                        failures.append(f'{name} {path.name}: main content is hidden in print media')
+                    page.emulate_media(media='screen', reduced_motion='reduce')
+                    motion = page.evaluate("getComputedStyle(document.documentElement).scrollBehavior")
+                    if motion != 'auto':
+                        failures.append(f'{name} {path.name}: reduced-motion scroll behavior is {motion!r}')
+                    page.emulate_media(media='screen', reduced_motion='no-preference')
                 if path.name == '07.html':
                     slider = page.locator('#threshold-07')
                     if slider.count() != 1:
@@ -81,7 +103,7 @@ def main():
     if failures:
         print('\n'.join('ERROR ' + x for x in failures))
         return 1
-    print('PASS 87 viewport-page checks, three search interactions, MathML geometry and SVG images')
+    print('PASS 87 responsive page/viewport checks, 87 skip-link focus checks, print and reduced-motion checks, search/threshold interactions, MathML geometry and SVG images')
     return 0
 
 if __name__ == '__main__':

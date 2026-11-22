@@ -1,0 +1,41 @@
+{
+  "chapter": "08",
+  "claims": [
+    {
+      "id": "ridge-objective",
+      "claim": "Ridge regression minimizes squared residual loss plus an L2 penalty on coefficients.",
+      "kind": "implementation",
+      "source_url": "https://scikit-learn.org/stable/modules/generated/sklearn.linear_model.Ridge.html",
+      "locator": "Objective and alpha",
+      "status": "verified",
+      "notes": "Intercept handling and sample weighting affect the exact objective form."
+    },
+    {
+      "id": "lasso-objective",
+      "claim": "Lasso minimizes squared residual loss plus an L1 coefficient penalty, which can produce exact zeros.",
+      "kind": "implementation",
+      "source_url": "https://scikit-learn.org/stable/modules/generated/sklearn.linear_model.Lasso.html",
+      "locator": "Objective and coordinate descent",
+      "status": "verified",
+      "notes": "Feature scaling and correlated predictors affect selected coefficients."
+    },
+    {
+      "id": "elastic-net-objective",
+      "claim": "Elastic Net combines L1 and L2 penalties using an l1_ratio parameter.",
+      "kind": "implementation",
+      "source_url": "https://scikit-learn.org/stable/modules/generated/sklearn.linear_model.ElasticNet.html",
+      "locator": "Objective and l1_ratio",
+      "status": "verified",
+      "notes": "Its regularization strength is not directly comparable to Ridge alpha without accounting for formulation."
+    },
+    {
+      "id": "scale-before-penalty",
+      "claim": "Coefficient penalties are sensitive to feature scale, so standardization is usually important for comparable regularization across numeric features.",
+      "kind": "method",
+      "source_url": "https://scikit-learn.org/stable/modules/linear_model.html",
+      "locator": "Linear models and regularization",
+      "status": "derived",
+      "notes": "Do not standardize one-hot or sparse features blindly without considering representation and model."
+    }
+  ]
+}

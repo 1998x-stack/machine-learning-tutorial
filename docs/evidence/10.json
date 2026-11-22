@@ -1,0 +1,41 @@
+{
+  "chapter": "10",
+  "claims": [
+    {
+      "id": "tree-impurity",
+      "claim": "Decision-tree split selection can use impurity criteria such as Gini or entropy for classification.",
+      "kind": "implementation",
+      "source_url": "https://scikit-learn.org/stable/modules/tree.html",
+      "locator": "Classification criteria",
+      "status": "verified",
+      "notes": "Impurity reduction is a local split criterion, not proof of causal relevance."
+    },
+    {
+      "id": "random-forest-ensemble",
+      "claim": "A random forest aggregates randomized decision trees trained on subsampled data and feature subsets.",
+      "kind": "implementation",
+      "source_url": "https://scikit-learn.org/stable/modules/ensemble.html#forests-of-randomized-trees",
+      "locator": "Random forests",
+      "status": "verified",
+      "notes": "The exact bootstrap and feature-sampling settings depend on estimator parameters."
+    },
+    {
+      "id": "oob-estimation",
+      "claim": "Out-of-bag predictions use samples omitted from a tree's bootstrap sample and can provide an internal estimate when bootstrap is enabled.",
+      "kind": "implementation",
+      "source_url": "https://scikit-learn.org/stable/modules/generated/sklearn.ensemble.RandomForestClassifier.html",
+      "locator": "bootstrap and oob_score parameters",
+      "status": "verified",
+      "notes": "OOB is not automatically a replacement for a deployment-matched untouched test set."
+    },
+    {
+      "id": "permutation-importance",
+      "claim": "Permutation importance measures score degradation after shuffling a feature on an evaluation dataset.",
+      "kind": "implementation",
+      "source_url": "https://scikit-learn.org/stable/modules/permutation_importance.html",
+      "locator": "Permutation feature importance",
+      "status": "verified",
+      "notes": "Correlated features can mask each other's importance; importance is model- and dataset-specific."
+    }
+  ]
+}

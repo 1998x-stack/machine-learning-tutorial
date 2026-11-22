@@ -1,0 +1,41 @@
+{
+  "chapter": "13",
+  "claims": [
+    {
+      "id": "kmeans-inertia",
+      "claim": "KMeans minimizes within-cluster sum of squared distances to assigned centroids and can converge to local minima.",
+      "kind": "implementation",
+      "source_url": "https://scikit-learn.org/stable/modules/generated/sklearn.cluster.KMeans.html",
+      "locator": "inertia and n_init",
+      "status": "verified",
+      "notes": "Inertia decreases with more clusters and is not a universal cluster-count criterion."
+    },
+    {
+      "id": "dbscan-density",
+      "claim": "DBSCAN identifies density-connected regions using eps neighborhoods and min_samples core-point conditions.",
+      "kind": "implementation",
+      "source_url": "https://scikit-learn.org/stable/modules/generated/sklearn.cluster.DBSCAN.html",
+      "locator": "eps and min_samples",
+      "status": "verified",
+      "notes": "min_samples includes the point itself; scale and density variation matter."
+    },
+    {
+      "id": "silhouette-score",
+      "claim": "Silhouette compares within-cluster cohesion with nearest alternative-cluster separation for labeled cluster assignments.",
+      "kind": "implementation",
+      "source_url": "https://scikit-learn.org/stable/modules/generated/sklearn.metrics.silhouette_score.html",
+      "locator": "Silhouette coefficient",
+      "status": "verified",
+      "notes": "It is undefined for degenerate labelings and can favor particular geometric structures."
+    },
+    {
+      "id": "unsupervised-evaluation",
+      "claim": "Internal clustering scores do not establish that clusters are meaningful business segments or causal groups.",
+      "kind": "method",
+      "source_url": "https://scikit-learn.org/stable/modules/clustering.html",
+      "locator": "Clustering performance evaluation",
+      "status": "derived",
+      "notes": "Human interpretation, stability and downstream validation are still required."
+    }
+  ]
+}

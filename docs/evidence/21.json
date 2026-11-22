@@ -68,8 +68,8 @@
       "id": "augmentation-label",
       "claim": "A data augmentation is valid only when its transformation preserves the task label semantics.",
       "kind": "method",
-      "source_url": "https://pytorch.org/vision/stable/transforms.html",
-      "locator": "TorchVision transforms overview",
+      "source_url": "https://docs.pytorch.org/vision/stable/transforms.html",
+      "locator": "TorchVision transforms: image transformations and preprocessing pipeline",
       "status": "verified",
       "notes": "Horizontal flipping is not label-preserving for every visual domain."
     }
