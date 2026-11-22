@@ -105,3 +105,19 @@
 | OWASP | [LLM Prompt Injection Prevention](https://cheatsheetseries.owasp.org/cheatsheets/LLM_Prompt_Injection_Prevention_Cheat_Sheet.html) | 文本筛选和 prompt 分隔不是安全边界；授权、参数校验、最小权限及审批必须由模型外部的可信代码执行 |
 
 逐条主张及定位记录在 `docs/evidence/01.json` 至 `28.json`。页面代码示例和图中的教学数据均为小规模合成/离线实验；本轮 API 复核不意味着已在 GPU、云服务或真实生产数据上验证。
+
+## 第二轮补充：逐条主张的精确 API 与章节定位
+
+下列链接已同步加入相应章节的可见参考文献列表，并与 `docs/evidence/NN.json` 中的 claim ID 对齐。
+
+| 章节 | 补充来源 | 对应核查点 |
+|---|---|---|
+| 02 | [NumPy matmul](https://numpy.org/doc/stable/reference/generated/numpy.matmul.html) | 收缩维度、输出 shape 与批量广播 |
+| 04 | [PyTorch AdamW](https://docs.pytorch.org/docs/stable/generated/torch.optim.AdamW.html) | weight decay 与自适应动量更新解耦 |
+| 06 | [scikit-learn model evaluation](https://scikit-learn.org/stable/modules/model_evaluation.html) | dummy baseline 与评分解释 |
+| 07 | [scikit-learn confusion_matrix](https://scikit-learn.org/stable/modules/generated/sklearn.metrics.confusion_matrix.html) | 标签顺序、真值行/预测列与归一化 |
+| 14 | [scikit-learn t-SNE guide](https://scikit-learn.org/stable/modules/manifold.html#t-sne) | 局部结构目标、随机性与全局几何边界 |
+| 17 | [SHAP Explanation](https://shap.readthedocs.io/en/latest/generated/shap.Explanation.html) | base value 与 feature attribution 的加和关系 |
+| 21 | [TorchVision transforms](https://docs.pytorch.org/vision/stable/transforms.html) | 图像变换与预处理契约 |
+| 22 | [Deep Learning, Chapter 10](https://www.deeplearningbook.org/contents/rnn) | RNN 状态共享、展开计算图与 BPTT |
+| 26 | [scikit-learn feature extraction](https://scikit-learn.org/stable/modules/feature_extraction.html) | TfidfVectorizer 的文本特征映射 |
