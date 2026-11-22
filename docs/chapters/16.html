@@ -1,199 +1,54 @@
-<!DOCTYPE html>
-<html lang="zh-CN">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.5, user-scalable=yes">
-    <title>第16章 处理不平衡数据</title>
-    <style>
-        * { margin:0; padding:0; box-sizing:border-box; }
-        body {
-            background: linear-gradient(135deg, #f5f3ff 0%, #e8f5f0 100%);
-            font-family: system-ui, -apple-system, 'Segoe UI', 'PingFang SC', Roboto, 'Helvetica Neue', sans-serif;
-            padding: 20px;
-        }
-        .double-border {
-            max-width: 1400px;
-            margin: 0 auto;
-            background: #ffffff;
-            border: 2px solid #8b5cf6;
-            border-radius: 24px;
-            box-shadow: 0 20px 30px -15px rgba(0,0,0,0.2), inset 0 1px 0 0 #f5f3ff;
-            overflow: hidden;
-        }
-        .container { display: grid; grid-template-columns: 260px 1fr; gap: 0; }
-        .sidebar {
-            background: #faf8ff; border-right: 2px solid #c4b5fd; padding: 24px 16px;
-        }
-        .sidebar h3 { font-size: 1.4rem; color: #6d28d9; border-left: 5px solid #8b5cf6; padding-left: 15px; margin-bottom: 25px; }
-        .chapter-list { list-style: none; }
-        .chapter-list li { margin-bottom: 6px; }
-        .chapter-list a {
-            display: block; padding: 8px 12px; text-decoration: none;
-            color: #334155; border-radius: 12px; transition: all 0.2s;
-            font-weight: 500; font-size: 0.92rem;
-        }
-        .chapter-list a:hover { background: #ede9fe; transform: translateX(3px); }
-        .chapter-list .active { background: #7c3aed; color: white; box-shadow: 0 2px 5px rgba(124,58,237,0.3); }
-        .main-content { padding: 30px 35px; background: white; }
-        .footer-nav {
-            margin-top: 45px; padding-top: 20px; border-top: 2px solid #c4b5fd;
-            display: flex; justify-content: space-between;
-        }
-        .footer-nav a {
-            padding: 8px 24px; background: #f1f5f9; text-decoration: none;
-            color: #5b21b6; border-radius: 40px; font-weight: 500; transition: 0.2s;
-        }
-        .footer-nav a:hover { background: #ede9fe; transform: translateY(-2px); }
-        h2 { color: #4c1d95; border-left: 6px solid #8b5cf6; padding-left: 15px; margin: 20px 0 15px; font-size: 1.5rem; }
-        h3 { color: #5b21b6; margin: 20px 0 10px; font-size: 1.2rem; }
-        h4 { color: #6d28d9; margin: 15px 0 8px; font-size: 1.05rem; }
-        p { line-height: 1.85; margin: 10px 0; color: #1e293b; }
-        ul, ol { margin: 10px 0 10px 20px; line-height: 1.8; }
-        li { color: #1e293b; margin-bottom: 4px; }
-        pre { background: #1e1035; color: #e8e8f0; padding: 15px; border-radius: 12px; overflow-x: auto; font-family: 'JetBrains Mono', 'Fira Code', monospace; margin: 15px 0; font-size: 0.9rem; line-height: 1.5; }
-        code { background: #f5f3ff; padding: 2px 6px; border-radius: 4px; font-family: 'JetBrains Mono', monospace; font-size: 0.85em; }
-        pre code { background: none; padding: 0; }
-        table { width: 100%; border-collapse: collapse; margin: 15px 0; background: #fafafe; }
-        th, td { border: 1px solid #c4b5fd; padding: 10px; text-align: left; }
-        th { background: #f5f3ff; color: #5b21b6; font-weight: 600; }
-        .tip, .warning, .highlight { padding: 12px 18px; border-radius: 16px; margin: 15px 0; line-height: 1.7; }
-        .tip { background: #e0f2fe; border-left: 6px solid #0ea5e9; }
-        .warning { background: #fee2e2; border-left: 6px solid #ef4444; }
-        .highlight { background: #fef9c3; border: 1px solid #facc15; }
-        strong { color: #1e1b4b; }
-        @media (max-width: 768px) {
-            .container { grid-template-columns: 1fr; }
-            .sidebar { border-right: none; border-bottom: 2px solid #c4b5fd; }
-            body { padding: 10px; }
-            .main-content { padding: 20px; }
-        }
-    </style>
-    <link rel="stylesheet" href="theme.css">
-</head>
-<body>
-<div class="double-border">
-<div class="container">
-    <div class="sidebar">
-        <h3>🤖 课程目录</h3>
-        <ul class="chapter-list">
-            <li><a href="01.html">第1章 机器学习概述</a></li>
-            <li><a href="02.html">第2章 数学基础：线性代数</a></li>
-            <li><a href="03.html">第3章 数学基础：概率统计</a></li>
-            <li><a href="04.html">第4章 数学基础：优化理论</a></li>
-            <li><a href="05.html">第5章 数据预处理与探索</a></li>
-            <li><a href="06.html">第6章 第一个ML项目实战</a></li>
-            <li><a href="07.html">第7章 模型评估与选择</a></li>
-            <li><a href="08.html">第8章 线性回归与正则化</a></li>
-            <li><a href="09.html">第9章 逻辑回归与分类</a></li>
-            <li><a href="10.html">第10章 决策树与随机森林</a></li>
-            <li><a href="11.html">第11章 支持向量机 SVM</a></li>
-            <li><a href="12.html">第12章 朴素贝叶斯与KNN</a></li>
-            <li><a href="13.html">第13章 聚类算法</a></li>
-            <li><a href="14.html">第14章 降维与特征工程</a></li>
-            <li><a href="15.html">第15章 模型调参与AutoML</a></li>
-            <li><a href="16.html" class="active">第16章 处理不平衡数据</a></li>
-            <li><a href="17.html">第17章 模型可解释性</a></li>
-            <li><a href="18.html">第18章 ML系统工程化</a></li>
-            <li><a href="19.html">第19章 神经网络基础</a></li>
-            <li><a href="20.html">第20章 深度学习框架实战</a></li>
-            <li><a href="21.html">第21章 CNN卷积神经网络</a></li>
-            <li><a href="22.html">第22章 RNN与序列模型</a></li>
-            <li><a href="23.html">第23章 NLP自然语言处理</a></li>
-            <li><a href="24.html">第24章 生成式模型</a></li>
-            <li><a href="25.html">第25章 强化学习入门</a></li>
-            <li><a href="26.html">第26章 大语言模型与RAG</a></li>
-            <li><a href="27.html">第27章 模型部署与服务化</a></li>
-            <li><a href="28.html">第28章 毕业项目：端到端ML系统</a></li>
-        </ul>
-    </div>
-    <div class="main-content">
-        <h2>16.1 当"大多数"淹没了"少数"</h2>
-        <p>现实世界中最有趣的预测问题几乎都是不平衡的：欺诈交易（0.1%）、疾病筛查（1%）、用户转化（3%）、设备故障（0.5%）。在这些场景中，一个"全预测正常"的模型就能拿到99%+的准确率——毫无意义。</p>
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="description" content="不平衡数据不是先改数据再训练，而是先想清楚“漏报”和“误报”的代价各是多少，再把重采样、类别权重与阈值放进不会泄漏验证数据的流程里。"><title>处理不平衡数据：让代价先于算法 · 机器学习图解教程</title><link rel="stylesheet" href="../assets/css/article.css"></head><body class="article-page"><a class="skip-link" href="#content">跳转至正文</a><header class="site-header"><div class="header-inner"><a class="wordmark" href="../index.html"><span class="mark">M<span>·</span>L</span><span>机器学习图解教程<small>Machine Learning, Explained</small></span></a><nav aria-label="顶部导航"><a href="../index.html">课程目录</a><a href="https://github.com/1998x-stack/machine-learning-tutorial">GitHub</a></nav></div></header><div class="article-shell"><aside class="article-nav"><nav aria-label="文章目录"><details open><summary>本章目录</summary><div class="nav-items"><a href="../index.html">← 全部章节</a><a href="#sec1">先看清“不平衡”到底改变了什么</a><a href="#sec2">把业务代价写成公式</a><a href="#sec3">重采样：过采样、欠采样与 SMOTE</a><a href="#sec4">重采样必须待在训练折内部</a><a href="#sec5">类别权重与代价敏感学习</a><a href="#sec6">阈值与 PR 曲线：从分数到决策</a><a href="#sec7">极端稀有：分类还是异常检测</a><a href="#sec8">离线实验：同一套切分比较三种策略</a><a href="#sec9">来源、版本与验收界限</a></div></details></nav></aside><main class="article-main" id="content"><article><div class="breadcrumb"><a href="../index.html">课程目录</a><span>/</span><span>第 16 章</span></div><header class="article-header"><div class="chapter-number">CHAPTER 16 / 28</div><h1>处理不平衡数据：让代价先于算法</h1><p class="dek">不平衡数据不是先改数据再训练，而是先想清楚“漏报”和“误报”的代价各是多少，再把重采样、类别权重与阈值放进不会泄漏验证数据的流程里。</p><div class="lead-question">当正类只占 0.5% 时，一个“永远判负”的模型准确率仍有 99.5%——那为什么我们反而要先问：漏掉一个正类，究竟要付出多少代价？</div></header>
+<section id="sec1" aria-labelledby="title1"><h2 id="title1">01 · 先看清“不平衡”到底改变了什么</h2><p>“不平衡”指分类任务里各类样本数相差悬殊：欺诈交易、罕见疾病、设备故障、点击转化都可能只有千分之几的正类。它带来的后果不是“模型学不会”，而是<strong>总体准确率这个指标失去分辨力</strong>：当正类占 0.5% 时，一个把所有样本都判为负类的常数模型，准确率就是 99.5%。因此第一步不是换算法，而是换指标、换视角。</p><p>真正决定成败的是三件事：<strong>要优化的代价</strong>（漏报与误报哪个更贵）、<strong>训练数据分布</strong>（哪些改动只应发生在训练折）与<strong>决策阈值</strong>（分数多高才判为正类）。这三者彼此独立，混在一起调往往事倍功半。</p><figure id="fig-imbalance-ratio"><div class="figure-scroll"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 430" role="img" aria-labelledby="t16a d16a"><title id="t16a">稀少正类下的点阵与常数模型混淆矩阵</title><desc id="d16a">左侧 100 个样本中正类仅 3 个（青绿），其余为负类（灰）；右侧显示全判负的常数模型混淆矩阵：TP=0、FN=3、FP=0、TN=97，准确率 97% 但召回为 0。</desc><rect x="1" y="1" width="998" height="428" rx="18" fill="#fffdf9" stroke="#d8e2d9"/><g font-family="system-ui,'PingFang SC','Microsoft YaHei',sans-serif"><text x="40" y="46" font-size="22" fill="#213a37" font-weight="760">同样的“高准确率”，含义可以完全不同</text><text x="40" y="86" font-size="16" fill="#147b70" font-weight="740">真实样本：正类 3 / 100</text><g><rect x="40" y="104" width="18" height="18" fill="#147b70"/><text x="66" y="118" font-size="14" fill="#57706c">正类（青绿）</text><rect x="170" y="104" width="18" height="18" fill="#cdd6d0"/><text x="196" y="118" font-size="14" fill="#57706c">负类（灰）</text></g><g></g><text x="760" y="86" font-size="16" fill="#c4774b" font-weight="740">常数模型：全部判为负类</text><g stroke="#fff" stroke-width="2"><rect x="40" y="150" width="20" height="20" fill="#147b70"/><rect x="62" y="150" width="20" height="20" fill="#cdd6d0"/><rect x="84" y="150" width="20" height="20" fill="#cdd6d0"/><rect x="106" y="150" width="20" height="20" fill="#cdd6d0"/><rect x="128" y="150" width="20" height="20" fill="#cdd6d0"/><rect x="150" y="150" width="20" height="20" fill="#cdd6d0"/><rect x="172" y="150" width="20" height="20" fill="#cdd6d0"/><rect x="194" y="150" width="20" height="20" fill="#cdd6d0"/><rect x="216" y="150" width="20" height="20" fill="#cdd6d0"/><rect x="238" y="150" width="20" height="20" fill="#cdd6d0"/><rect x="40" y="172" width="20" height="20" fill="#cdd6d0"/><rect x="62" y="172" width="20" height="20" fill="#cdd6d0"/><rect x="84" y="172" width="20" height="20" fill="#cdd6d0"/><rect x="106" y="172" width="20" height="20" fill="#cdd6d0"/><rect x="128" y="172" width="20" height="20" fill="#cdd6d0"/><rect x="150" y="172" width="20" height="20" fill="#cdd6d0"/><rect x="172" y="172" width="20" height="20" fill="#cdd6d0"/><rect x="194" y="172" width="20" height="20" fill="#cdd6d0"/><rect x="216" y="172" width="20" height="20" fill="#cdd6d0"/><rect x="238" y="172" width="20" height="20" fill="#cdd6d0"/><rect x="40" y="194" width="20" height="20" fill="#cdd6d0"/><rect x="62" y="194" width="20" height="20" fill="#cdd6d0"/><rect x="84" y="194" width="20" height="20" fill="#cdd6d0"/><rect x="106" y="194" width="20" height="20" fill="#cdd6d0"/><rect x="128" y="194" width="20" height="20" fill="#cdd6d0"/><rect x="150" y="194" width="20" height="20" fill="#cdd6d0"/><rect x="172" y="194" width="20" height="20" fill="#147b70"/><rect x="194" y="194" width="20" height="20" fill="#cdd6d0"/><rect x="216" y="194" width="20" height="20" fill="#cdd6d0"/><rect x="238" y="194" width="20" height="20" fill="#cdd6d0"/><rect x="40" y="216" width="20" height="20" fill="#cdd6d0"/><rect x="62" y="216" width="20" height="20" fill="#cdd6d0"/><rect x="84" y="216" width="20" height="20" fill="#cdd6d0"/><rect x="106" y="216" width="20" height="20" fill="#cdd6d0"/><rect x="128" y="216" width="20" height="20" fill="#cdd6d0"/><rect x="150" y="216" width="20" height="20" fill="#cdd6d0"/><rect x="172" y="216" width="20" height="20" fill="#cdd6d0"/><rect x="194" y="216" width="20" height="20" fill="#cdd6d0"/><rect x="216" y="216" width="20" height="20" fill="#cdd6d0"/><rect x="238" y="216" width="20" height="20" fill="#cdd6d0"/><rect x="40" y="238" width="20" height="20" fill="#cdd6d0"/><rect x="62" y="238" width="20" height="20" fill="#147b70"/><rect x="84" y="238" width="20" height="20" fill="#cdd6d0"/><rect x="106" y="238" width="20" height="20" fill="#cdd6d0"/><rect x="128" y="238" width="20" height="20" fill="#cdd6d0"/><rect x="150" y="238" width="20" height="20" fill="#cdd6d0"/><rect x="172" y="238" width="20" height="20" fill="#cdd6d0"/><rect x="194" y="238" width="20" height="20" fill="#cdd6d0"/><rect x="216" y="238" width="20" height="20" fill="#cdd6d0"/><rect x="238" y="238" width="20" height="20" fill="#cdd6d0"/><rect x="40" y="260" width="20" height="20" fill="#cdd6d0"/><rect x="62" y="260" width="20" height="20" fill="#cdd6d0"/><rect x="84" y="260" width="20" height="20" fill="#cdd6d0"/><rect x="106" y="260" width="20" height="20" fill="#cdd6d0"/><rect x="128" y="260" width="20" height="20" fill="#cdd6d0"/><rect x="150" y="260" width="20" height="20" fill="#cdd6d0"/><rect x="172" y="260" width="20" height="20" fill="#cdd6d0"/><rect x="194" y="260" width="20" height="20" fill="#cdd6d0"/><rect x="216" y="260" width="20" height="20" fill="#cdd6d0"/><rect x="238" y="260" width="20" height="20" fill="#cdd6d0"/></g><text x="560" y="140" font-size="15" fill="#57706c">预测</text><text x="600" y="168" font-size="14" fill="#254840" font-weight="700">正</text><text x="700" y="168" font-size="14" fill="#254840" font-weight="700">负</text><text x="505" y="210" font-size="14" fill="#254840" font-weight="700">实际正</text><rect x="580" y="185" width="80" height="52" fill="#f3f7f3" stroke="#d8e2d9"/><rect x="660" y="185" width="80" height="52" fill="#fdeee7" stroke="#d8e2d9"/><text x="608" y="217" font-size="18" fill="#147b70" font-weight="760">TP 0</text><text x="688" y="217" font-size="18" fill="#c4774b" font-weight="760">FN 3</text><text x="505" y="262" font-size="14" fill="#254840" font-weight="700">实际负</text><rect x="580" y="237" width="80" height="52" fill="#f3f7f3" stroke="#d8e2d9"/><rect x="660" y="237" width="80" height="52" fill="#f3f7f3" stroke="#d8e2d9"/><text x="608" y="269" font-size="18" fill="#57706c" font-weight="760">FP 0</text><text x="688" y="269" font-size="18" fill="#57706c" font-weight="760">TN 97</text><text x="505" y="330" font-size="14" fill="#304442">准确率 = (0+97)/100 = 97%　｜　召回 = 0/(0+3) = 0</text><text x="40" y="316" font-size="14" fill="#57706c">每个小方块代表一个样本；正类稀少导致“全判负”也能拿到高准确率。</text><text x="40" y="400" font-size="14" fill="#57706c">教学示意：计数为虚构示例，不代表真实数据集。</text></g></svg></div><figcaption>用点阵展示极度不平衡的两个类：100 个样本中正类仅 3 个。右侧的全判负常数模型准确率高达 97%，召回却为 0。图为教学示意，不是某个真实数据集的分布。</figcaption></figure><p>注意“不平衡”本身没有统一阈值。同样 1% 的正类，在样本量很大、两类都近似线性可分时可能并不难；而在样本量很小、正类噪声很大时才真正棘手。<strong>不要一看到比例失衡就立刻重采样</strong>，先确认原始指标是否已经能用、验证方案是否可靠。</p></section>
+<section id="sec2" aria-labelledby="title2"><h2 id="title2">02 · 把业务代价写成公式</h2><p>把决策写清楚，最自然的方式是<strong>期望代价</strong>。设样本为 x，模型输出正类概率 <code>p(x)</code>，阈值为 t；当 <code>p(x) ≥ t</code> 时判为正类。记漏报（真实为正、判为负）的单次代价为 <code>C_FN</code>，误报（真实为负、判为正）的单次代价为 <code>C_FP</code>。则对单个样本，判正与判负的期望代价分别为：</p><div class="eq eq-scroll" role="region" tabindex="0" aria-label="判正类的期望代价等于漏报代价乘以该样本为正的概率；判负类的期望代价等于误报代价乘以该样本为负的概率"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block" aria-label="判决代价：E＋ 与 E－ 的表达式"><mrow><msub><mi>E</mi><mrow><mo>+</mo></mrow></msub><mo>=</mo><msub><mi>C</mi><mrow><mi>F</mi><mi>N</mi></mrow></msub><mo>·</mo><mi>p</mi><mo>(</mo><mi>x</mi><mo>)</mo><mo>,</mo><mspace width="1em"/><msub><mi>E</mi><mrow><mo>−</mo></mrow></msub><mo>=</mo><msub><mi>C</mi><mrow><mi>F</mi><mi>P</mi></mrow></msub><mo>·</mo><mo>(</mo><mn>1</mn><mo>−</mo><mi>p</mi><mo>(</mo><mi>x</mi><mo>)</mo><mo>)</mo></mrow></math></div><p>令 <code>E₊ &gt; E₋</code> 即得最优判决：当 <code>p(x) &gt; C_FP / (C_FP + C_FN)</code> 时判正。这说明<strong>最优阈值由代价比决定，而不是固定 0.5</strong>。若漏报代价是误报的 9 倍，最优阈值就是 0.1。类别权重与阈值调优，本质都在逼近这个代价比。</p><div class="note"><p><strong>适用条件：</strong>上式假设每个样本的代价相同、概率估计无偏。真实系统里概率往往未校准，且代价可能随样本变化（大额交易与小额交易不同）。此时应把 <code>C_FP</code>、<code>C_FN</code> 写成关于样本的函数，或改用直接优化业务指标的决策规则。</p></div><p>与之配套的评估指标必须同时看到两类错误。<strong>平衡准确率</strong>（balanced accuracy）取各类召回率的平均，<strong>Fβ</strong> 则用 β 调节对召回与精确的侧重：F1 等权，β&gt;1 偏召回，β&lt;1 偏精确。它们都能在类别失衡时保持分辨力，而 accuracy 不能。</p></section>
+<section id="sec3" aria-labelledby="title3"><h2 id="title3">03 · 重采样：过采样、欠采样与 SMOTE</h2><p>重采样直接改变训练集的两类比例，分三条路线：</p><ul><li><strong>随机欠采样</strong>：丢弃部分多数类样本。训练快、内存小，但可能删掉有信息量的样本，且结果对“删哪些”敏感。</li><li><strong>随机过采样</strong>：复制少数类样本。不丢信息，但重复点会让模型更容易记住它们，加剧过拟合。</li><li><strong>SMOTE</strong>：在少数类近邻之间做线性插值，生成新的合成点，而不是复制原样本。它增加了少数类区域的“体积感”，但也可能在两类交界处或噪声点之间造出并不存在的样本。</li></ul><figure id="fig-resampling-smote"><div class="figure-scroll"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 400" role="img" aria-labelledby="t16b d16b"><title id="t16b">原始数据、随机过采样与 SMOTE 的点分布对比</title><desc id="d16b">三个面板：原始数据中少数类青绿点只有三个；随机过采样复制这些点（虚线环表示重复）；SMOTE 在两个真实近邻连线上生成新的合成点（赭色空心）。</desc><rect x="1" y="1" width="998" height="398" rx="18" fill="#fffdf9" stroke="#d8e2d9"/><g font-family="system-ui,'PingFang SC','Microsoft YaHei',sans-serif"><text x="40" y="45" font-size="22" fill="#213a37" font-weight="760">三种重采样在特征空间里做了什么</text><rect x="40" y="70" width="286" height="270" rx="10" fill="#fff" stroke="#d8e2d9"/><text x="60" y="100" font-size="16" fill="#147b70" font-weight="740">原始数据</text><path d="M62 316 V112 M62 316 H308" fill="none" stroke="#a4b2aa" stroke-width="1.6"/><g fill="#cdd6d0"><circle cx="92" cy="292" r="5"/><circle cx="124" cy="272" r="5"/><circle cx="154" cy="300" r="5"/><circle cx="204" cy="290" r="5"/><circle cx="244" cy="282" r="5"/><circle cx="284" cy="298" r="5"/><circle cx="104" cy="244" r="5"/><circle cx="164" cy="234" r="5"/><circle cx="224" cy="244" r="5"/><circle cx="274" cy="230" r="5"/></g><g fill="#147b70"><circle cx="210" cy="156" r="6"/><circle cx="256" cy="186" r="6"/><circle cx="262" cy="140" r="6"/></g><text x="60" y="360" font-size="13" fill="#57706c">正类 3 个，负类 10 个</text><rect x="357" y="70" width="286" height="270" rx="10" fill="#fff" stroke="#d8e2d9"/><text x="377" y="100" font-size="16" fill="#c4774b" font-weight="740">随机过采样</text><path d="M379 316 V112 M379 316 H625" fill="none" stroke="#a4b2aa" stroke-width="1.6"/><g fill="#cdd6d0"><circle cx="409" cy="292" r="5"/><circle cx="441" cy="272" r="5"/><circle cx="471" cy="300" r="5"/><circle cx="521" cy="290" r="5"/><circle cx="561" cy="282" r="5"/><circle cx="591" cy="298" r="5"/><circle cx="421" cy="244" r="5"/><circle cx="481" cy="234" r="5"/><circle cx="541" cy="244" r="5"/><circle cx="591" cy="230" r="5"/></g><g fill="#147b70"><circle cx="527" cy="156" r="6"/><circle cx="573" cy="186" r="6"/><circle cx="579" cy="140" r="6"/></g><g fill="none" stroke="#147b70" stroke-width="1.4" stroke-dasharray="3 3"><circle cx="527" cy="156" r="11"/><circle cx="573" cy="186" r="11"/><circle cx="579" cy="140" r="11"/></g><text x="377" y="360" font-size="13" fill="#57706c">复制少数类（虚线环=重复）</text><rect x="674" y="70" width="286" height="270" rx="10" fill="#fff" stroke="#d8e2d9"/><text x="694" y="100" font-size="16" fill="#7863b0" font-weight="740">SMOTE 插值</text><path d="M696 316 V112 M696 316 H942" fill="none" stroke="#a4b2aa" stroke-width="1.6"/><g fill="#cdd6d0"><circle cx="726" cy="292" r="5"/><circle cx="758" cy="272" r="5"/><circle cx="788" cy="300" r="5"/><circle cx="838" cy="290" r="5"/><circle cx="878" cy="282" r="5"/><circle cx="908" cy="298" r="5"/><circle cx="738" cy="244" r="5"/><circle cx="798" cy="234" r="5"/><circle cx="858" cy="244" r="5"/><circle cx="908" cy="230" r="5"/></g><path d="M844 156 L890 186 L896 140 Z" fill="none" stroke="#147b70" stroke-width="1.3" stroke-dasharray="4 4"/><g fill="#147b70"><circle cx="844" cy="156" r="6"/><circle cx="890" cy="186" r="6"/><circle cx="896" cy="140" r="6"/></g><g fill="none" stroke="#c4774b" stroke-width="1.6"><circle cx="860" cy="166" r="5"/><circle cx="876" cy="177" r="5"/><circle cx="892" cy="167" r="5"/><circle cx="894" cy="151" r="5"/><circle cx="870" cy="148" r="5"/></g><text x="694" y="360" font-size="13" fill="#57706c">青绿=真实点，赭色空心=合成点</text><text x="40" y="382" font-size="14" fill="#57706c">教学示意：坐标为虚构，合成点落在两个真实近邻的连线上。</text></g></svg></div><figcaption>三种重采样在特征空间里的效果。随机过采样复制少数类点（虚线环），SMOTE 则在一个真实少数类点与一个随机同类近邻的连线上插值，产生赭色空心合成点。图为教学示意，坐标虚构。</figcaption></figure><p>SMOTE 的合成样本一般写作两个少数类近邻的凸组合：</p><div class="eq eq-scroll" role="region" tabindex="0" aria-label="SMOTE 在少数类近邻之间插值生成新样本"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block" aria-label="SMOTE 插值公式"><mrow><msub><mi>x</mi><mi>new</mi></msub><mo>=</mo><msub><mi>x</mi><mi>i</mi></msub><mo>+</mo><mi>δ</mi><mo>·</mo><mo>(</mo><msub><mi>x</mi><mi>nn</mi></msub><mo>−</mo><msub><mi>x</mi><mi>i</mi></msub><mo>)</mo><mo>,</mo><mspace width="1em"/><mi>δ</mi><mo>∼</mo><mi>U</mi><mo>(</mo><mn>0</mn><mo>,</mo><mn>1</mn><mo>)</mo></mrow></math></div><p>其中 <code>x_i</code> 是一个真实少数类样本，<code>x_nn</code> 是它随机选中的同类近邻，δ 在 0 到 1 之间均匀采样，因此合成点落在这两点的连线上。可见 SMOTE 依赖距离度量：<strong>特征必须先做合理缩放</strong>，否则欧氏距离会被量纲大的特征主导。</p><div class="note"><p><strong>常见误区：</strong>SMOTE 不是“免费的数据增强”。它只在数值特征空间有效，对类别特征需改用 SMOTENC；它也可能放大噪声，因此常与清理边界的变体（如 Tomek Links、Edited Nearest Neighbors）配合，而不是单独盲目使用。</p></div></section>
+<section id="sec4" aria-labelledby="title4"><h2 id="title4">04 · 重采样必须待在训练折内部</h2><p>这是本章最重要的一条工程红线：<strong>任何重采样只能作用在训练数据上，绝不能碰验证集或测试集</strong>。原因很直接：验证/测试集的作用是估量模型在真实分布下的表现，如果把少数类复制或插值进验证集，你就凭空抬高了少数类权重，得到的分数不再对应部署环境。</p><p>更隐蔽的错误是在交叉验证<em>之前</em>就对整份数据做了重采样，再把重采样后的数据切分。这样同一个合成点的“父母”可能一个落在训练折、一个落在验证折，验证分数便被邻近信息污染。正确的做法是把重采样当成预处理，和模型一起装进<code>Pipeline</code>，让交叉验证每次只在训练折上拟合重采样器。</p><figure id="fig-cv-resampling"><div class="figure-scroll"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 400" role="img" aria-labelledby="t16d d16d"><title id="t16d">重采样放在切分之前与之后的流程对比</title><desc id="t16d">左侧流程先对全量数据重采样再切分，合成点的近邻可能落入验证折造成泄漏；右侧先切分，只在训练折内重采样，验证折保持原始分布。</desc><rect x="1" y="1" width="998" height="398" rx="18" fill="#fffdf9" stroke="#d8e2d9"/><g font-family="system-ui,'PingFang SC','Microsoft YaHei',sans-serif"><text x="40" y="45" font-size="22" fill="#213a37" font-weight="760">重采样必须待在训练折内部</text><rect x="40" y="68" width="430" height="300" rx="12" fill="#fdf3f0" stroke="#e6b7a6"/><text x="62" y="100" font-size="16" fill="#b5452f" font-weight="740">先重采样，再切分（会泄漏）</text><g><rect x="62" y="126" width="110" height="46" rx="8" fill="#e7f3ef" stroke="#147b70"/><text x="117" y="154" font-size="14" fill="#147b70" text-anchor="middle">全量数据</text></g><path d="M174 149 H204" stroke="#a4b2aa" stroke-width="1.8" marker-end="url(#a16d)"/><g><rect x="206" y="126" width="110" height="46" rx="8" fill="#f8ede6" stroke="#c4774b"/><text x="261" y="154" font-size="14" fill="#b5673f" text-anchor="middle">重采样</text></g><path d="M318 149 H348" stroke="#a4b2aa" stroke-width="1.8" marker-end="url(#a16d)"/><g><rect x="350" y="126" width="100" height="46" rx="8" fill="#efeaf7" stroke="#7863b0"/><text x="400" y="154" font-size="14" fill="#66529e" text-anchor="middle">切分</text></g><path d="M375 174 V222 M400 174 V222" stroke="#a4b2aa" stroke-width="1.6"/><g><rect x="70" y="224" width="150" height="46" rx="8" fill="#e7f3ef" stroke="#147b70"/><text x="145" y="252" font-size="13.5" fill="#147b70" text-anchor="middle">训练折（含合成点）</text></g><g><rect x="250" y="224" width="190" height="46" rx="8" fill="#fdeee7" stroke="#d9543a"/><text x="345" y="252" font-size="13.5" fill="#b5452f" text-anchor="middle">验证折被污染</text></g><text x="70" y="320" font-size="13.5" fill="#b5452f">合成点的“父母”可能一个在训练、一个在验证，</text><text x="70" y="344" font-size="13.5" fill="#b5452f">验证分数因此不再对应真实分布。</text><rect x="530" y="68" width="430" height="300" rx="12" fill="#f1f8f4" stroke="#bcd6c8"/><text x="552" y="100" font-size="16" fill="#147b70" font-weight="740">先切分，只在训练折重采样</text><g><rect x="552" y="126" width="100" height="46" rx="8" fill="#e7f3ef" stroke="#147b70"/><text x="602" y="154" font-size="14" fill="#147b70" text-anchor="middle">全量数据</text></g><path d="M654 149 H684" stroke="#a4b2aa" stroke-width="1.8" marker-end="url(#a16d)"/><g><rect x="686" y="126" width="100" height="46" rx="8" fill="#efeaf7" stroke="#7863b0"/><text x="736" y="154" font-size="14" fill="#66529e" text-anchor="middle">切分</text></g><path d="M710 174 V222 M762 174 V222" stroke="#a4b2aa" stroke-width="1.6"/><g><rect x="620" y="224" width="130" height="46" rx="8" fill="#e7f3ef" stroke="#147b70"/><text x="685" y="252" font-size="13.5" fill="#147b70" text-anchor="middle">训练折</text></g><g><rect x="770" y="224" width="170" height="46" rx="8" fill="#fdf3f0" stroke="#c4774b"/><text x="855" y="252" font-size="13.5" fill="#b5673f" text-anchor="middle">验证折（原分布）</text></g><path d="M685 270 V300" stroke="#a4b2aa" stroke-width="1.6" marker-end="url(#a16d)"/><g><rect x="620" y="302" width="130" height="42" rx="8" fill="#f8ede6" stroke="#c4774b"/><text x="685" y="328" font-size="13.5" fill="#b5673f" text-anchor="middle">重采样 → 模型</text></g><text x="770" y="328" font-size="13" fill="#57706c">验证不参与采样</text><text x="40" y="386" font-size="14" fill="#57706c">教学示意图：展示流程逻辑，不对应具体运行结果。</text><defs><marker id="a16d" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto"><path d="M1 1 L7 4 L1 7" fill="none" stroke="#a4b2aa" stroke-width="1.6"/></marker></defs></g></svg></div><figcaption>左侧流程先对全量数据重采样再切分，合成点与验证样本共享近邻，验证分数被污染；右侧先切分，只在训练折内重采样，验证折保持原始分布。两种流程的唯一区别就是重采样发生的位置。流程示意图。</figcaption></figure><p>在 scikit-learn 生态里，<code>imbalanced-learn</code> 提供的采样器实现了 <code>fit_resample</code> 接口，可以放进它的 <code>Pipeline</code>，从而保证 <code>predict</code> 阶段不发生采样。评估口径也应相应调整：在原始验证/测试集上用平衡准确率、PR-AUC、召回率等对两类都敏感的指标，而不是重采样后的分布下的 accuracy。</p><div class="note"><p><strong>验证要点：</strong>若你发现自己报告的验证分数远高于目录/线上表现，先查两件事——预处理（标准化、目标编码、重采样）是否漏在交叉验证之外；特征是否包含了只有事后才知道的信息。</p></div></section>
+<section id="sec5" aria-labelledby="title5"><h2 id="title5">05 · 类别权重与代价敏感学习</h2><p>与重采样并列的另一种思路是<strong>不改数据，改损失</strong>：把少数类样本对损失的贡献乘上一个更大的权重，使模型在拟合时更在意它。多数线性模型、SVM 和树模型都支持 <code>class_weight</code>；树模型还可通过 <code>scale_pos_weight</code>、给每样本一个 <code>sample_weight</code> 来实现。</p><p>以逻辑回归的加权对数损失为例，正类权重为 <code>w₊</code>、负类权重为 <code>w₋</code>：</p><div class="eq eq-scroll" role="region" tabindex="0" aria-label="加权对数损失：每个样本的损失按它所属类别的权重缩放"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block" aria-label="加权对数损失公式"><mrow><mi>L</mi><mo>=</mo><mfrac><mn>1</mn><mi>N</mi></mfrac><munderover><mo>∑</mo><mrow><mi>i</mi><mo>=</mo><mn>1</mn></mrow><mi>N</mi></munderover><mrow><mo>[</mo><mrow><msub><mi>w</mi><msub><mi>y</mi><mi>i</mi></msub></msub><mo>·</mo><mi>ℓ</mi><mo>(</mo><msub><mi>y</mi><mi>i</mi></msub><mo>,</mo><mover><mi>y</mi><mo>^</mo></mover><mo>(</mo><msub><mi>x</mi><mi>i</mi></msub><mo>)</mo><mo>)</mo></mrow><mo>]</mo></mrow></mrow></math></div><p><code>class_weight="balanced"</code> 让权重反比于类别频率，即 <code>w_c ∝ N / (K · N_c)</code>，K 是类别数、<code>N_c</code> 是该类样本数。它与“把少数类过采样到平衡”在期望意义上有相近的缩放效果，却<strong>不真的增加训练集行数</strong>，因此在数据量有限时往往更省时间。两者对已校准概率的影响都需要注意：加权会系统性移动输出概率，后续若要用阈值决策，应重新校准或直接在验证集上选阈值。</p><table><thead><tr><th>策略</th><th>优点</th><th>代价与风险</th></tr></thead><tbody><tr><td>重采样（过采样 / SMOTE）</td><td>对大多数模型通用；改变样本几何直观</td><td>增大训练量；SMOTE 可能造出噪声点</td></tr><tr><td>类别权重 / 代价敏感</td><td>不增行数；直连代价比</td><td>概率会偏移；部分模型不支持逐样本权重</td></tr><tr><td>仅调阈值</td><td>实现最简单；不动训练</td><td>无法改善排序质量，只能移动工作点</td></tr></tbody></table><p>这三种手段并不互斥。常见顺序是：先用类别权重拿到基线，检查排序质量（PR-AUC），若排序本身不够再考虑 SMOTE 等重采样，最后用验证集确定阈值。</p></section>
+<section id="sec6" aria-labelledby="title6"><h2 id="title6">06 · 阈值与 PR 曲线：从分数到决策</h2><p>分类器通常先给出一个分数（如概率），阈值再把它转成标签。<strong>排序质量</strong>与<strong>工作点</strong>是两回事：前者由模型决定，后者由阈值决定。在不平衡任务里，用阈值换来更高召回几乎总会牺牲精确，关键是找到业务能接受的平衡点。</p><p>把不同阈值下的（召回，精确）连起来就是 PR 曲线；曲线下的面积 PR-AUC 在正类稀少时比 ROC-AUC 更能反映实际难度，因为 ROC 的假正率分母是庞大的负类数，轻微的正类改善就会被淡化。选择阈值时，应在<strong>验证集</strong>上按第 02 节的代价比或目标指标确定，绝不能用测试集来“挑一个好看的阈值”。</p><figure id="fig-pr-threshold"><div class="figure-scroll"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 400" role="img" aria-labelledby="t16c d16c"><title id="t16c">精确率-召回率曲线与两个阈值工作点</title><desc id="t16c">坐标横轴为召回率、纵轴为精确率。曲线单调下降；点 A 对应高阈值（高精确、低召回），点 B 对应低阈值（高召回、低精确）。降低阈值会沿曲线向右下移动。</desc><rect x="1" y="1" width="998" height="398" rx="18" fill="#fffdf9" stroke="#d8e2d9"/><g font-family="system-ui,'PingFang SC','Microsoft YaHei',sans-serif"><text x="40" y="45" font-size="22" fill="#213a37" font-weight="760">阈值只是沿 PR 曲线移动工作点</text><path d="M80 340 H520 M80 340 V90" fill="none" stroke="#a4b2aa" stroke-width="1.8"/><g font-size="13" fill="#57706c"><text x="500" y="366" text-anchor="end">召回率 →</text><text x="70" y="96" text-anchor="end">精确</text><text x="70" y="112" text-anchor="end">率</text></g><path d="M80 90 L168 103 L300 145 L388 190 L454 228 L520 290" fill="none" stroke="#c4774b" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/><circle cx="212" cy="115" r="7" fill="#147b70"/><text x="224" y="112" font-size="15" fill="#147b70" font-weight="740">A：高阈值</text><text x="224" y="132" font-size="13" fill="#57706c">精确高，召回低</text><circle cx="454" cy="228" r="7" fill="#7863b0"/><text x="360" y="252" font-size="15" fill="#7863b0" font-weight="740">B：低阈值</text><text x="360" y="272" font-size="13" fill="#57706c">召回高，精确低</text><path d="M222 140 Q330 210 442 220" fill="none" stroke="#a4b2aa" stroke-width="1.5" stroke-dasharray="5 4" marker-end="url(#a16)"/><text x="250" y="188" font-size="13" fill="#57706c">降低阈值</text><text x="560" y="96" font-size="16" fill="#213a37" font-weight="740">选择依据</text><text x="560" y="130" font-size="14" fill="#304442">阈值 t 越低，越多样本被判为正：</text><text x="560" y="158" font-size="14" fill="#304442">→ 召回↑，但误报↑、精确↓。</text><text x="560" y="196" font-size="14" fill="#304442">最优阈值由代价比决定：</text><text x="560" y="226" font-size="15" fill="#c4774b" font-weight="720">t* = C_FP / (C_FP + C_FN)</text><text x="560" y="268" font-size="14" fill="#304442">且必须在验证集上选，</text><text x="560" y="296" font-size="14" fill="#304442">不能在测试集上“挑好看”。</text><text x="40" y="382" font-size="14" fill="#57706c">教学示意：曲线形状为虚构，非实测模型；A、B 仅说明阈值移动方向。</text><defs><marker id="a16" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto"><path d="M1 1 L7 4 L1 7" fill="none" stroke="#a4b2aa" stroke-width="1.5"/></marker></defs></g></svg></div><figcaption>精确率-召回率曲线上的两个工作点：提高阈值向 A 移动（更精确、更少召回），降低阈值向 B 移动。最优工作点由漏报/误报代价比决定，且必须在验证集上选定。曲线为教学示意。</figcaption></figure><div class="note"><p><strong>实践提醒：</strong>阈值要在验证集上选，再报告其在独立测试集上的结果，并且要说明所选代价比从何而来（业务口径、人工审核成本或误报引起的流失）。只给一个 F1 数字而不说明阈值来源，会让复制者无法复现。</p></div></section>
+<section id="sec7" aria-labelledby="title7"><h2 id="title7">07 · 极端稀有：分类还是异常检测</h2><p>当正类极其稀少（如低于 0.1%）或正类模式不断变化时，把它当成二分类问题往往效率很低：可用于学习的正类样本太少，而“异常”本身没有固定样子。这时可以换一个建模视角——<strong>异常检测</strong>。孤立森林（Isolation Forest）、局部离群因子（LOF）、One-Class SVM 等算法主要在“正常样本”上描述“正常长什么样”，再把偏离这个描述的样本标为异常。</p><p>两者的哲学不同：分类学习的是 <code>x → {正, 负}</code>，要求能见到足够的正例；异常检测学习的是“正常的密度或边界”，把新样本与它比较。当欺诈手法不断演化、正常行为反而相对稳定时，后者往往更鲁棒，但代价是<strong>它通常不会给出校准的概率</strong>，且对“多少算异常”的阈值依旧敏感。</p><div class="note"><p><strong>选择依据：</strong>只要能有足够正例并且知道了正例的多种形态，就用分类 + 不均衡处理；如果正例极少、形态不可知，或攻击模式会持续漂移，就先试异常检测。两者也可组合：用异常分数作为分类器的额外特征。</p></div></section>
+<section id="sec8" aria-labelledby="title8"><h2 id="title8">08 · 离线实验：同一套切分比较三种策略</h2><p>下面用 <code>make_classification</code> 生成一个固定种子的不平衡二分类数据，先划出独立测试集，再在开发集上比较三种策略：不加权基线、<code>class_weight="balanced"</code>、以及在验证集上把阈值调到目标召回。所有选择只用开发数据，最后才在测试集上报告一次。需要 Python 3.10+、NumPy 与 scikit-learn。</p><pre><code>import numpy as np
+from sklearn.datasets import make_classification
+from sklearn.linear_model import LogisticRegression
+from sklearn.model_selection import train_test_split
+from sklearn.pipeline import make_pipeline
+from sklearn.preprocessing import StandardScaler
+from sklearn.metrics import (
+    precision_recall_curve, average_precision_score,
+    recall_score, precision_score)
 
-        <p>我在金融科技公司做反欺诈的时候，正样本（欺诈）只占0.15%。一开始用默认的随机森林，recall只有不到10%——模型几乎找不到任何欺诈交易。后来经过一系列处理，recall提到了85%且precision保持在30%。这个经历让我对不平衡问题有了切实的体会：<strong>不平衡不是一个"调调参数"的小问题，它决定了你的模型是否有实用价值</strong>。</p>
+X, y = make_classification(
+    n_samples=4000, n_features=12, n_informative=6,
+    weights=[0.97, 0.03], flip_y=0.01, random_state=16)
+Xdev, Xtest, ydev, ytest = train_test_split(
+    X, y, test_size=0.3, stratify=y, random_state=16)
+Xtr, Xval, ytr, yval = train_test_split(
+    Xdev, ydev, test_size=0.3, stratify=ydev, random_state=16)
 
-        <h2>16.2 重采样：最简单直接的方案</h2>
+base = make_pipeline(StandardScaler(),
+    LogisticRegression(max_iter=1000)).fit(Xtr, ytr)
+balanced = make_pipeline(StandardScaler(),
+    LogisticRegression(max_iter=1000,
+        class_weight=&quot;balanced&quot;)).fit(Xtr, ytr)
 
-        <table>
-            <tr><th>方法</th><th>做法</th><th>风险</th></tr>
-            <tr><td>欠采样（Under-sampling）</td><td>减少多数类样本，使两类数量接近</td><td>丢弃大量有价值数据</td></tr>
-            <tr><td>过采样（Over-sampling）</td><td>复制少数类样本</td><td>严重过拟合（模型记住重复样本）</td></tr>
-        </table>
+# 在验证集上按目标召回选择阈值，不使用测试集
+prob = balanced.predict_proba(Xval)[:, 1]
+prec, rec, thr = precision_recall_curve(yval, prob)
+# 选达到 0.8 召回的候选中精确率最高者对应的阈值
+target = 0.8
+idx = np.where(rec[:-1] &gt;= target)[0]
+best = idx[np.argmax(prec[idx])] if len(idx) else np.argmax(prec[:-1])
+chosen = thr[best]
 
-        <p>朴素的重采样问题很大。但有两个改进版非常有效：</p>
-
-        <h3>SMOTE</h3>
-        <p>SMOTE不是简单复制少数类样本，而是在两个少数类样本之间"插值"生成新的合成样本。这样生成的样本不是原始样本的精确副本，增加了多样性。</p>
-
-        <h3>Tomek Links / Edited Nearest Neighbors</h3>
-        <p>欠采样的改进版：只删除那些"可能是噪声"的多数类样本（比如周围全是少数类的多数类样本），而不是盲目随机删除。</p>
-
-        <pre><code>from imblearn.over_sampling import SMOTE
-from imblearn.under_sampling import TomekLinks
-from imblearn.combine import SMOTETomek
-from imblearn.pipeline import Pipeline as ImbPipeline
-
-# SMOTE + Tomek Links组合（先过采样，再清洗边界）
-smote_tomek = SMOTETomek(smote=SMOTE(random_state=42),
-                         tomek=TomekLinks())
-
-# 必须只在训练集上做重采样！
-X_train_resampled, y_train_resampled = smote_tomek.fit_resample(X_train, y_train)
-print(f"原始训练集: {dict(zip(*np.unique(y_train, return_counts=True)))}")
-print(f"重采样后: {dict(zip(*np.unique(y_train_resampled, return_counts=True)))}")
-
-# 使用Pipeline确保重采样只在训练时发生
-pipeline = ImbPipeline([
-    ('smote', SMOTE(random_state=42)),
-    ('classifier', RandomForestClassifier(random_state=42))
-])
-pipeline.fit(X_train, y_train)
-</code></pre>
-
-        <div class="warning">
-            <strong>⚠️ 绝对不要对测试集做重采样！</strong>测试集必须保持原始分布。重采样的目的是改变训练数据的分布让模型更关注少数类，但评估必须反映真实世界的数据分布。使用imblearn的Pipeline可以自动保证重采样只在fit时生效，predict时不生效。
-        </div>
-
-        <h2>16.3 类别权重：不改变数据，改变关注度</h2>
-        <p>另一种思路：不改变数据分布，而是让模型在计算损失时对少数类的错误给予更大的惩罚。大多数sklearn模型支持<code>class_weight='balanced'</code>参数。XGBoost/LightGBM用<code>scale_pos_weight</code>。</p>
-
-        <table>
-            <tr><th>方法</th><th>优点</th><th>缺点</th></tr>
-            <tr><td>重采样（SMOTE等）</td><td>对任何模型有效，改变数据分布直观</td><td>增加训练数据量和时间，可能引入噪声</td></tr>
-            <tr><td>类别权重</td><td>不增加训练量，实现简单</td><td>部分模型不支持，权重选择需要经验</td></tr>
-        </table>
-
-        <p>实战中我通常两种方法都试：先用<code>class_weight='balanced'</code>快速跑一个基线，如果效果不够好，再上SMOTE。很多情况下，<strong>类别权重 + 合适的阈值调优</strong>就已经足够解决大部分不平衡问题。</p>
-
-        <h2>16.4 异常检测视角：换个思路</h2>
-        <p>如果少数类极端稀少（< 0.1%），与其把它们当"少数类"用分类模型，不如把它们当"异常值"用异常检测算法。孤立森林（Isolation Forest）、LOF（局部离群因子）、One-Class SVM——这些算法专门训练在"正常样本"上，然后识别偏离正常的样本。</p>
-
-        <p>异常检测的哲学和分类不同：分类试图学习"X → 正常/异常"的映射，异常检测试图学习"什么是正常"，然后说"不符合这个模式的都是异常"。当异常模式多种多样（比如欺诈手法不断变化），异常检测往往比分类更鲁棒。</p>
-
-        <h2>16.5 评估指标：请抛弃Accuracy</h2>
-        <p>在不平衡数据上，accuracy完全不可用。应该用什么取决于你的业务目标：</p>
-
-        <table>
-            <tr><th>业务场景</th><th>核心指标</th><th>为什么</th></tr>
-            <tr><td>癌症筛查</td><td>Recall（召回率）</td><td>漏诊一个癌症患者后果严重</td></tr>
-            <tr><td>垃圾邮件过滤</td><td>Precision（精确率）</td><td>误删重要邮件用户会发疯</td></tr>
-            <tr><td>欺诈检测</td><td>F1或Fβ (β=0.5)</td><td>兼顾误报（人工审核成本）和漏报（损失）</td></tr>
-            <tr><td>任何不平衡</td><td>AUC-ROC, AUC-PR</td><td>综合评估排序能力</td></tr>
-        </table>
-
-        <div class="highlight">
-            <strong>🔑 实战建议：</strong>处理不平衡数据的推荐顺序：(1) 先设定正确的评估指标（不是accuracy）；(2) 用class_weight训练基线；(3) 如果少数类样本≥几千，尝试SMOTE及其变体（BorderlineSMOTE, ADASYN）；(4) 调阈值，找到P/R的最佳平衡点；(5) 如果少数类极少（<100），考虑异常检测或数据增强。记住：<strong>永远先在原始测试集上评估，再做任何处理</strong>。
-        </div>
-
-        <p>不平衡数据是个大话题，但核心原则就这些。下一章我们进入模型可解释性——让你的模型不再是"黑盒"。</p>
-
-        <div class="footer-nav">
-            <a href="15.html">← 上一章</a>
-            <a href="index.html">📖 返回目录</a>
-            <a href="17.html">下一章 →</a>
-        </div>
-    </div>
-</div>
-</div>
-</body>
-</html>
+for name, model in [("base", base), ("balanced", balanced)]:
+    pr = model.predict(Xtest)
+    print(name, "recall=%.3f" % recall_score(ytest, pr),
+          "precision=%.3f" % precision_score(ytest, pr))
+# 对 balanced 应用开发集选出的阈值
+test_prob = balanced.predict_proba(Xtest)[:, 1]
+pr_t = (test_prob &gt;= chosen).astype(int)
+print("balanced+thr", "recall=%.3f" % recall_score(ytest, pr_t),
+      "precision=%.3f" % precision_score(ytest, pr_t))
+print("val AP=%.3f" % average_precision_score(yval, prob))
+assert precision_recall_curve(yval, prob)[0].shape[0] == len(thr) + 1</code></pre><p>这段代码的目的不是给出“哪种方法一定更好”的结论，而是展示评估边界：三个结果都来自同一个测试集、同一套切分，阈值来自验证集而非测试集。若想加入 SMOTE，需要额外安装 <code>imbalanced-learn</code>，并把采样器放进 <code>imblearn.pipeline.Pipeline</code>，使其只作用于每个训练折；本离线示例未运行该部分，不声称已验证。</p></section>
+<section id="sec9" aria-labelledby="title9"><h2 id="title9">09 · 来源、版本与验收界限</h2><p>重采样器的行为、SMOTE 的近邻插值细节，以及 scikit-learn 的指标定义都以官方文档为准；不同版本的默认参数可能变化，复现时请记录版本。本节引用的 SMOTE 为 Chawla 等人 2002 年的原始论文。</p><ul class="refs"><li><a href="https://doi.org/10.1613/jair.953" rel="noopener noreferrer">Chawla et al., SMOTE: Synthetic Minority Over-sampling Technique, JAIR 2002</a></li><li><a href="https://imbalanced-learn.org/stable/user_guide.html" rel="noopener noreferrer">imbalanced-learn 用户指南：采样器接口与 Pipeline</a></li><li><a href="https://scikit-learn.org/stable/modules/generated/sklearn.linear_model.LogisticRegression.html" rel="noopener noreferrer">scikit-learn LogisticRegression 的 class_weight 参数</a></li><li><a href="https://scikit-learn.org/stable/modules/model_evaluation.html" rel="noopener noreferrer">scikit-learn 模型评估：平衡准确率与 PR 指标</a></li><li><a href="https://scikit-learn.org/stable/modules/generated/sklearn.metrics.precision_recall_curve.html" rel="noopener noreferrer">precision_recall_curve 的返回结构与阈值约定</a></li></ul><p class="note"><strong>验收界限：</strong>本章所有比例、曲线与合成点均为教学示意，不是真实业务数据集或基准实验；代码示例应在本地实际运行后才可声称得到具体数值。</p></section>
+<nav class="article-footer" aria-label="章节导航"><a href="15.html">← 上一章</a><a href="../index.html">全部章节</a><a href="17.html">下一章 →</a></nav></article></main></div><footer class="site-footer"><span>机器学习图解教程 · 第 16 章</span><span>代价、重采样与阈值的诚实流程</span></footer></body></html>

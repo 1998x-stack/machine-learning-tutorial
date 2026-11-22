@@ -40,6 +40,14 @@
 | 14 | [PCA](https://scikit-learn.org/stable/modules/generated/sklearn.decomposition.PCA.html) · [Manifold](https://scikit-learn.org/stable/modules/manifold.html) · [Feature selection](https://scikit-learn.org/stable/modules/feature_selection.html) · [TargetEncoder](https://scikit-learn.org/stable/modules/generated/sklearn.preprocessing.TargetEncoder.html) | t-SNE 不保留全局簇距/密度；目标编码 fit_transform 内部交叉拟合；特征选择必须进入训练折 |
 | 15 | [Grid/Random search](https://scikit-learn.org/stable/modules/grid_search.html) · [Nested CV example](https://scikit-learn.org/stable/auto_examples/model_selection/plot_nested_cross_validation_iris.html) · [Optuna search spaces](https://optuna.readthedocs.io/en/stable/tutorial/10_key_features/002_configurations.html) · [Optuna pruning](https://optuna.readthedocs.io/en/stable/tutorial/10_key_features/003_efficient_optimization_algorithms.html) | 搜索 CV 选择偏差；内层选参、外层评估；非迭代模型不能虚构 pruning 中间步骤 |
 
+## 第四批技术核查 · 16
+
+以下官方资料核对的是原理、API 与适用条件。本章 SVG 是流程示意或明确声明的人造教学数据，不是实际业务数据集或基准曲线。
+
+| 章节 | 一手/官方来源 | 边界和关键纠错 |
+| --- | --- | --- |
+| 16 | [SMOTE（Chawla et al., JAIR 2002）](https://doi.org/10.1613/jair.953) · [imbalanced-learn 用户指南](https://imbalanced-learn.org/stable/user_guide.html) · [LogisticRegression class_weight](https://scikit-learn.org/stable/modules/generated/sklearn.linear_model.LogisticRegression.html) · [模型评估：平衡准确率与 PR 指标](https://scikit-learn.org/stable/modules/model_evaluation.html) · [precision_recall_curve](https://scikit-learn.org/stable/modules/generated/sklearn.metrics.precision_recall_curve.html) | 重采样只能作用于训练折；SMOTE 依赖距离度量与缩放；类别权重会移动概率、需重新选阈值；阈值与代价比在验证集上定，不能用测试集挑选；极端稀有可改走异常检测视角 |
+
 ## 跨批次共用事实约束
 
 - Docs 是 Pages 唯一构建工件；相对链接不能越过 `docs/`。指向 `examples/` 源码应直接使用 GitHub 仓库的网页 URL。
