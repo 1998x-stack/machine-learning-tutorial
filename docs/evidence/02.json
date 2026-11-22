@@ -6,7 +6,7 @@
       "claim": "For A with shape (m,p) and B with shape (p,n), matrix multiplication produces C with shape (m,n).",
       "kind": "derivation",
       "source_url": "https://numpy.org/doc/stable/reference/generated/numpy.matmul.html",
-      "locator": "matmul shape and broadcasting rules",
+      "locator": "NumPy matmul: matrix product shape, contracted dimensions and batch broadcasting",
       "status": "derived",
       "notes": "Broadcasting batch dimensions is distinct from the contracted matrix dimension."
     },
