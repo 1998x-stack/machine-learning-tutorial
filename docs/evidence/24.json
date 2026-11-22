@@ -1,0 +1,68 @@
+{
+  "chapter": "24",
+  "claims": [
+    {
+      "id": "gan-minimax",
+      "claim": "The original GAN framework jointly trains generator and discriminator in a two-player minimax game.",
+      "kind": "research",
+      "source_url": "https://arxiv.org/abs/1406.2661",
+      "locator": "Objective and training algorithm",
+      "status": "verified",
+      "notes": "The code demonstrates one synthetic alternating update, not image generation."
+    },
+    {
+      "id": "gan-nonsaturating",
+      "claim": "The non-saturating generator objective is a common practical alternative to the original minimax generator loss.",
+      "kind": "research",
+      "source_url": "https://arxiv.org/abs/1406.2661",
+      "locator": "Section 3 and training discussion",
+      "status": "verified",
+      "notes": "The article labels it as a training variant rather than the original minimax expression."
+    },
+    {
+      "id": "vae-elbo",
+      "claim": "VAE optimizes a variational lower bound comprising expected reconstruction log likelihood minus KL divergence to the prior.",
+      "kind": "research",
+      "source_url": "https://arxiv.org/abs/1312.6114",
+      "locator": "Variational lower bound and reparameterization",
+      "status": "verified",
+      "notes": "The executable demonstration uses a Bernoulli decoder likelihood."
+    },
+    {
+      "id": "vae-reparameterization",
+      "claim": "For Gaussian approximate posterior, z=μ+σ⊙ε with ε sampled independently permits pathwise gradients through μ and σ.",
+      "kind": "research",
+      "source_url": "https://arxiv.org/abs/1312.6114",
+      "locator": "Reparameterization trick",
+      "status": "verified",
+      "notes": "Toy tensor dimensions are checked, not presented as learned image quality."
+    },
+    {
+      "id": "ddpm-forward",
+      "claim": "The DDPM forward process admits closed-form sampling x_t=√ᾱ_t x_0+√(1−ᾱ_t)ε.",
+      "kind": "research",
+      "source_url": "https://arxiv.org/abs/2006.11239",
+      "locator": "Forward process and simplified training objective",
+      "status": "verified",
+      "notes": "The code checks noisy tensor shape and schedule values."
+    },
+    {
+      "id": "latent-diffusion",
+      "claim": "Latent Diffusion applies diffusion in a learned compressed representation to reduce high-resolution pixel-space computation.",
+      "kind": "research",
+      "source_url": "https://arxiv.org/abs/2112.10752",
+      "locator": "Latent diffusion formulation",
+      "status": "verified",
+      "notes": "The article notes dependence on the representation model."
+    },
+    {
+      "id": "autoregressive-factorization",
+      "claim": "Autoregressive generation factorizes a sequence distribution into next-token conditional probabilities.",
+      "kind": "research",
+      "source_url": "https://arxiv.org/abs/1706.03762",
+      "locator": "Autoregressive decoder factorization",
+      "status": "verified",
+      "notes": "Temperature and top-p are described as decoding choices, not changes to the learned model."
+    }
+  ]
+}

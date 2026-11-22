@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 460" role="img" aria-labelledby="nlp-self-attn-title nlp-self-attn-desc">
+<title id="nlp-self-attn-title">缩放点积自注意力的数据流</title><desc id="nlp-self-attn-desc">输入 X 分别投影为 Q、K、V；QK 转置得到位置相关分数，按 key 维 softmax 后对 V 加权。</desc>
+<defs>
+ <marker id="nlp-self-attn-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 Z" fill="#55736d"/></marker>
+ <marker id="nlp-self-attn-orange" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L10 5 L0 10 Z" fill="#bc6a47"/></marker>
+ <style>text{font-family:Inter,ui-sans-serif,system-ui,"Noto Sans CJK SC",sans-serif;fill:#203b38}.title{font-size:22px;font-weight:750}.label{font-size:16px;font-weight:650}.small{font-size:13px;fill:#536b66}.tiny{font-size:12px;fill:#536b66}.box{fill:#fffdf8;stroke:#a9bdb3;stroke-width:2}.green{fill:#e3f1eb;stroke:#16786f;stroke-width:2}.orange{fill:#f8e9df;stroke:#bc6a47;stroke-width:2}.purple{fill:#eee9f7;stroke:#7863b0;stroke-width:2}.amber{fill:#f7f0dc;stroke:#9b7533;stroke-width:2}.line{fill:none;stroke:#55736d;stroke-width:2.5;marker-end:url(#nlp-self-attn-arrow)}.oline{fill:none;stroke:#bc6a47;stroke-width:2.5;marker-end:url(#nlp-self-attn-orange)}.dash{stroke-dasharray:7 6}</style>
+</defs><rect width="900" height="460" rx="22" fill="#fbfaf6"/>
+<text x="40" y="42" class="title">Self-Attention：每个位置读取同一序列中的其他位置</text>
+<rect x="70" y="165" width="125" height="80" rx="12" class="green"/><text x="132" y="198" text-anchor="middle" class="label">X</text><text x="132" y="225" text-anchor="middle" class="small">B × T × d</text>
+<path d="M195 205 H250 V105 H300" class="line"/><path d="M250 205 V205 H300" class="line"/><path d="M250 205 V305 H300" class="line"/>
+<rect x="315" y="75" width="135" height="60" rx="12" class="purple"/><text x="382" y="112" text-anchor="middle" class="label">Q = XWQ</text>
+<rect x="315" y="175" width="135" height="60" rx="12" class="purple"/><text x="382" y="212" text-anchor="middle" class="label">K = XWK</text>
+<rect x="315" y="275" width="135" height="60" rx="12" class="orange"/><text x="382" y="312" text-anchor="middle" class="label">V = XWV</text>
+<path d="M450 105 H500 V165 H545" class="line"/><path d="M450 205 H500 V165" class="line"/>
+<rect x="560" y="130" width="145" height="70" rx="12" class="orange"/><text x="632" y="160" text-anchor="middle" class="label">QKᵀ / √dₖ</text><text x="632" y="184" text-anchor="middle" class="small">B × T × T</text>
+<path d="M705 165 H750" class="line"/><rect x="765" y="130" width="100" height="70" rx="12" class="green"/><text x="815" y="160" text-anchor="middle" class="label">Softmax</text><text x="815" y="184" text-anchor="middle" class="small">沿 key 轴</text>
+<path d="M815 205 V250 H700" class="line"/><path d="M450 305 H700 V250" class="line"/><rect x="560" y="285" width="145" height="70" rx="12" class="purple"/><text x="632" y="315" text-anchor="middle" class="label">A × V</text><text x="632" y="339" text-anchor="middle" class="small">B × T × dᵥ</text>
+<text x="70" y="410" class="small">多头注意力并行执行多个低维投影，再拼接并通过输出投影；注意力权重不是天然的解释。</text>
+</svg>

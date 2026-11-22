@@ -228,10 +228,10 @@
       "num": "21",
       "title": "CNN卷积神经网络",
       "topics": [
-        "卷积与池化",
-        "ResNet残差连接",
-        "迁移学习",
-        "数据增强"
+        "卷积互相关、输出尺寸与参数量",
+        "感受野、池化与平移等变",
+        "ResNet 恒等/投影捷径与 bottleneck",
+        "迁移学习、预处理与标签保持增强"
       ],
       "file": "21.html"
     },
@@ -239,10 +239,10 @@
       "num": "22",
       "title": "RNN与序列模型",
       "topics": [
-        "LSTM门控机制",
-        "GRU简化版",
-        "Seq2Seq架构",
-        "Attention机制"
+        "RNN 状态递推与 BPTT",
+        "现代 LSTM 门控与原始版本边界",
+        "GRU、Seq2Seq 与 teacher forcing",
+        "Bahdanau Attention 与变长 mask"
       ],
       "file": "22.html"
     },
@@ -250,10 +250,10 @@
       "num": "23",
       "title": "NLP自然语言处理",
       "topics": [
-        "Word2Vec",
-        "Transformer",
-        "BERT预训练",
-        "现代NLP技术栈"
+        "文本规范化、子词 Tokenizer 与 mask",
+        "Word2Vec CBOW/Skip-gram/负采样",
+        "Transformer 自注意力与因果掩码",
+        "BERT MLM/NSP、RoBERTa 与 GPT"
       ],
       "file": "23.html"
     },
@@ -261,10 +261,10 @@
       "num": "24",
       "title": "生成式模型",
       "topics": [
-        "GAN对抗训练",
-        "VAE潜在空间",
-        "Diffusion Models",
-        "自回归生成"
+        "自回归概率分解与 top-p 采样",
+        "GAN minimax 与非饱和生成器目标",
+        "VAE ELBO 与重参数化",
+        "DDPM 前向加噪、反向去噪与 Latent Diffusion"
       ],
       "file": "24.html"
     },
@@ -272,10 +272,10 @@
       "num": "25",
       "title": "强化学习入门",
       "topics": [
-        "MDP框架",
-        "Q-Learning",
-        "DQN经验回放",
-        "Policy Gradient"
+        "MDP、回报与 Bellman 方程",
+        "Q-Learning、ε-greedy 与 TD 更新",
+        "DQN replay buffer、target network 与 Double DQN",
+        "REINFORCE、Actor-Critic 与 PPO"
       ],
       "file": "25.html"
     },

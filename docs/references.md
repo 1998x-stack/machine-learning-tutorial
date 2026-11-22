@@ -57,3 +57,15 @@
 | 20 | [Autograd](https://docs.pytorch.org/docs/stable/notes/autograd.html) · [DataLoader](https://docs.pytorch.org/docs/stable/data.html) · [Module](https://docs.pytorch.org/docs/stable/generated/torch.nn.Module.html) · [AMP](https://docs.pytorch.org/docs/stable/amp.html) · [Saving/Loading](https://docs.pytorch.org/tutorials/beginner/saving_loading_models.html) | logits/目标形状匹配；eval 与 grad mode 分离；完整续训需要 optimizer/scaler/scheduler 状态；CUDA AMP 不可由 CPU CI 代替 |
 
 每章的详细主张、来源定位、状态和限制记录在 docs/evidence/16.json 至 docs/evidence/20.json。18 幅新 SVG 中，数值与机制示例均为解析推导或教学构造；不冒充外部 benchmark。
+
+## 第五批技术核查 · 21–25
+
+| 章节 | 一手论文 / 官方资料 | 必须保留的边界 |
+|---|---|---|
+| 21 | [ResNet 原论文](https://arxiv.org/abs/1512.03385) · [PyTorch Conv2d](https://docs.pytorch.org/docs/stable/generated/torch.nn.Conv2d.html) · [TorchVision ResNet-50 权重与 transforms](https://docs.pytorch.org/vision/main/models/generated/torchvision.models.resnet50.html) · [TorchVision 模型总览](https://docs.pytorch.org/vision/main/models.html) | 互相关与严格卷积区分；输出尺寸考虑 stride/padding/dilation/groups；3.57% 是原论文集成 top-5 结果；V1.5 stride 与 V2 resize 232/crop 224 需注明 |
+| 22 | [LSTM 原论文](https://doi.org/10.1162/neco.1997.9.8.1735) · [Forget gate 后续工作](https://doi.org/10.1162/089976600300015015) · [GRU / RNN Encoder–Decoder](https://arxiv.org/abs/1406.1078) · [Bahdanau Attention](https://arxiv.org/abs/1409.0473) · [Transformer](https://arxiv.org/abs/1706.03762) | 原始 LSTM 与现代 forget-gate 版本分开；GRU 门控约定说明；BPTT 梯度连乘；attention 权重不是因果解释；Transformer 自回归推理仍逐 token |
+| 23 | [Word2Vec](https://arxiv.org/abs/1301.3781) · [Transformer](https://arxiv.org/abs/1706.03762) · [BERT](https://arxiv.org/abs/1810.04805) · [RoBERTa](https://arxiv.org/abs/1907.11692) · [Hugging Face Tokenizer](https://huggingface.co/docs/transformers/main_classes/tokenizer) | tokenizer 与模型权重配套；BERT 原始 MLM/NSP 与 RoBERTa 后续设置区分；双向 encoder 与 causal decoder 的可见上下文不同 |
+| 24 | [GAN](https://arxiv.org/abs/1406.2661) · [VAE](https://arxiv.org/abs/1312.6114) · [DDPM](https://arxiv.org/abs/2006.11239) · [Latent Diffusion](https://arxiv.org/abs/2112.10752) · [GPT-2 report](https://openai.com/index/better-language-models/) | 原始 GAN minimax 与 non-saturating loss 区分；VAE 的 ELBO 和 KL 方向正确；DDPM 噪声日程与时间步一致；Latent Diffusion 的收益受编码器表达能力约束 |
+| 25 | [Sutton & Barto](http://incompleteideas.net/book/the-book-2nd.html) · [Q-Learning](https://doi.org/10.1007/BF00992698) · [DQN](https://www.nature.com/articles/nature14236) · [Double DQN](https://arxiv.org/abs/1509.06461) · [REINFORCE](https://doi.org/10.1162/neco.1992.4.2.229) · [PPO](https://arxiv.org/abs/1707.06347) · [Gymnasium Env API](https://gymnasium.farama.org/main/api/env/) | 表格 Q-learning 收敛依赖充分探索等条件；DQN target/replay 不保证任意任务稳定；terminated 与 truncated 区分；PPO clipping 不是严格信赖域保证 |
+
+详细主张、来源定位、状态和限制记录在 `docs/evidence/21.json` 至 `25.json`。新增 20 幅 SVG 是原创机制图；19 个 Python 示例使用随机/合成小张量核验形状和更新规则，不构成论文复现或生产模型性能结论。

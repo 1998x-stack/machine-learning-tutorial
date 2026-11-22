@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 460" role="img" aria-labelledby="rl-bellman-title rl-bellman-desc">
+<title id="rl-bellman-title">MDP 状态转移与 Bellman 价值递推</title><desc id="rl-bellman-desc">动作改变状态分布；状态价值等于即时奖励与折扣后的下一状态价值期望。</desc>
+<defs>
+ <marker id="rl-bellman-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 Z" fill="#55736d"/></marker>
+ <marker id="rl-bellman-orange" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L10 5 L0 10 Z" fill="#bc6a47"/></marker>
+ <style>text{font-family:Inter,ui-sans-serif,system-ui,"Noto Sans CJK SC",sans-serif;fill:#203b38}.title{font-size:22px;font-weight:750}.label{font-size:16px;font-weight:650}.small{font-size:13px;fill:#536b66}.tiny{font-size:12px;fill:#536b66}.box{fill:#fffdf8;stroke:#a9bdb3;stroke-width:2}.green{fill:#e3f1eb;stroke:#16786f;stroke-width:2}.orange{fill:#f8e9df;stroke:#bc6a47;stroke-width:2}.purple{fill:#eee9f7;stroke:#7863b0;stroke-width:2}.amber{fill:#f7f0dc;stroke:#9b7533;stroke-width:2}.line{fill:none;stroke:#55736d;stroke-width:2.5;marker-end:url(#rl-bellman-arrow)}.oline{fill:none;stroke:#bc6a47;stroke-width:2.5;marker-end:url(#rl-bellman-orange)}.dash{stroke-dasharray:7 6}</style>
+</defs><rect width="900" height="460" rx="22" fill="#fbfaf6"/>
+<text x="40" y="42" class="title">Bellman 方程把长期回报拆成一步与后续价值</text>
+<rect x="65" y="145" width="140" height="75" rx="12" class="green"/><text x="135" y="190" text-anchor="middle" class="label">状态 s</text>
+<path d="M205 180 H285" class="line"/><rect x="300" y="145" width="130" height="75" rx="12" class="orange"/><text x="365" y="190" text-anchor="middle" class="label">动作 a</text><path d="M430 180 H510" class="line"/>
+<rect x="525" y="110" width="145" height="75" rx="12" class="purple"/><text x="597" y="155" text-anchor="middle" class="label">s′₁, r₁</text><rect x="525" y="220" width="145" height="75" rx="12" class="purple"/><text x="597" y="265" text-anchor="middle" class="label">s′₂, r₂</text>
+<path d="M510 180 L525 145" class="line"/><path d="M510 180 L525 255" class="line"/>
+<rect x="715" y="145" width="140" height="75" rx="12" class="amber"/><text x="785" y="190" text-anchor="middle" class="label">未来价值</text><path d="M670 145 H710" class="line"/><path d="M670 255 H690 V220 H710" class="line"/>
+<text x="65" y="355" class="small">Vπ(s) = Eπ[rₜ₊₁ + γ Vπ(sₜ₊₁) | sₜ=s]</text><text x="65" y="390" class="small">Q*(s,a) = E[r + γ maxₐ′ Q*(s′,a′) | s,a]</text><text x="65" y="430" class="small">期望同时覆盖转移随机性与策略随机性；终止状态不再 bootstrap。</text>
+</svg>

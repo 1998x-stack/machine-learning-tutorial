@@ -54,7 +54,7 @@ def main():
         if not p.is_file():
             ERRORS.append(f"missing {p}")
             continue
-        if i <= 20:
+        if i <= 25:
             check_page(p, require_article=True, min_figures=3 if i >= 11 else 2)
         if not (ROOT / f"{i:02}.html").is_file():
             ERRORS.append(f"missing root legacy redirect {i:02}.html")
@@ -72,13 +72,13 @@ def main():
                 ERRORS.append(f"{f.relative_to(ROOT)}: missing SVG desc")
         except ET.ParseError as e:
             ERRORS.append(f"{f.relative_to(ROOT)}: invalid SVG {e}")
-    for i in range(11, 21):
+    for i in range(11, 26):
         chapter_svgs = list((DOCS / "assets" / "svg" / f"{i:02}").glob("*.svg"))
         if len(chapter_svgs) < 3:
             ERRORS.append(f"chapter {i:02}: expected >=3 standalone SVG files")
-    if len(svgs) < 59:
-        ERRORS.append(f"expected >=58 chapter diagrams plus homepage map (59 SVGs), found {len(svgs)}")
-    for i in range(16, 21):
+    if len(svgs) < 79:
+        ERRORS.append(f"expected >=78 chapter diagrams plus homepage map (79 SVGs), found {len(svgs)}")
+    for i in range(16, 26):
         evidence = DOCS / "evidence" / f"{i:02}.json"
         if not evidence.is_file():
             ERRORS.append(f"missing evidence ledger {evidence.relative_to(ROOT)}")
@@ -97,7 +97,7 @@ def main():
     if ERRORS:
         print("\n".join("ERROR " + s for s in ERRORS))
         return 1
-    print(f"PASS: 28 lessons, 20 updated article pages, {len(svgs)} valid standalone SVGs, local assets resolved")
+    print(f"PASS: 28 lessons, 25 updated article pages, {len(svgs)} valid standalone SVGs, local assets resolved")
     return 0
 
 if __name__ == "__main__":

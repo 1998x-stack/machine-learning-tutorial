@@ -1,180 +1,67 @@
-<!DOCTYPE html>
-<html lang="zh-CN">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.5, user-scalable=yes">
-    <title>第24章 生成式模型</title>
-    <style>
-        * { margin:0; padding:0; box-sizing:border-box; }
-        body {
-            background: linear-gradient(135deg, #f5f3ff 0%, #e8f5f0 100%);
-            font-family: system-ui, -apple-system, 'Segoe UI', 'PingFang SC', Roboto, 'Helvetica Neue', sans-serif;
-            padding: 20px;
-        }
-        .double-border {
-            max-width: 1400px;
-            margin: 0 auto;
-            background: #ffffff;
-            border: 2px solid #8b5cf6;
-            border-radius: 24px;
-            box-shadow: 0 20px 30px -15px rgba(0,0,0,0.2), inset 0 1px 0 0 #f5f3ff;
-            overflow: hidden;
-        }
-        .container { display: grid; grid-template-columns: 260px 1fr; gap: 0; }
-        .sidebar {
-            background: #faf8ff; border-right: 2px solid #c4b5fd; padding: 24px 16px;
-        }
-        .sidebar h3 { font-size: 1.4rem; color: #6d28d9; border-left: 5px solid #8b5cf6; padding-left: 15px; margin-bottom: 25px; }
-        .chapter-list { list-style: none; }
-        .chapter-list li { margin-bottom: 6px; }
-        .chapter-list a {
-            display: block; padding: 8px 12px; text-decoration: none;
-            color: #334155; border-radius: 12px; transition: all 0.2s;
-            font-weight: 500; font-size: 0.92rem;
-        }
-        .chapter-list a:hover { background: #ede9fe; transform: translateX(3px); }
-        .chapter-list .active { background: #7c3aed; color: white; box-shadow: 0 2px 5px rgba(124,58,237,0.3); }
-        .main-content { padding: 30px 35px; background: white; }
-        .footer-nav {
-            margin-top: 45px; padding-top: 20px; border-top: 2px solid #c4b5fd;
-            display: flex; justify-content: space-between;
-        }
-        .footer-nav a {
-            padding: 8px 24px; background: #f1f5f9; text-decoration: none;
-            color: #5b21b6; border-radius: 40px; font-weight: 500; transition: 0.2s;
-        }
-        .footer-nav a:hover { background: #ede9fe; transform: translateY(-2px); }
-        h2 { color: #4c1d95; border-left: 6px solid #8b5cf6; padding-left: 15px; margin: 20px 0 15px; font-size: 1.5rem; }
-        h3 { color: #5b21b6; margin: 20px 0 10px; font-size: 1.2rem; }
-        h4 { color: #6d28d9; margin: 15px 0 8px; font-size: 1.05rem; }
-        p { line-height: 1.85; margin: 10px 0; color: #1e293b; }
-        ul, ol { margin: 10px 0 10px 20px; line-height: 1.8; }
-        li { color: #1e293b; margin-bottom: 4px; }
-        pre { background: #1e1035; color: #e8e8f0; padding: 15px; border-radius: 12px; overflow-x: auto; font-family: 'JetBrains Mono', 'Fira Code', monospace; margin: 15px 0; font-size: 0.9rem; line-height: 1.5; }
-        code { background: #f5f3ff; padding: 2px 6px; border-radius: 4px; font-family: 'JetBrains Mono', monospace; font-size: 0.85em; }
-        pre code { background: none; padding: 0; }
-        table { width: 100%; border-collapse: collapse; margin: 15px 0; background: #fafafe; }
-        th, td { border: 1px solid #c4b5fd; padding: 10px; text-align: left; }
-        th { background: #f5f3ff; color: #5b21b6; font-weight: 600; }
-        .tip, .warning, .highlight { padding: 12px 18px; border-radius: 16px; margin: 15px 0; line-height: 1.7; }
-        .tip { background: #e0f2fe; border-left: 6px solid #0ea5e9; }
-        .warning { background: #fee2e2; border-left: 6px solid #ef4444; }
-        .highlight { background: #fef9c3; border: 1px solid #facc15; }
-        strong { color: #1e1b4b; }
-        @media (max-width: 768px) {
-            .container { grid-template-columns: 1fr; }
-            .sidebar { border-right: none; border-bottom: 2px solid #c4b5fd; }
-            body { padding: 10px; }
-            .main-content { padding: 20px; }
-        }
-    </style>
-    <link rel="stylesheet" href="theme.css">
-</head>
-<body>
-<div class="double-border">
-<div class="container">
-    <div class="sidebar">
-        <h3>🤖 课程目录</h3>
-        <ul class="chapter-list">
-            <li><a href="01.html">第1章 机器学习概述</a></li>
-            <li><a href="02.html">第2章 数学基础：线性代数</a></li>
-            <li><a href="03.html">第3章 数学基础：概率统计</a></li>
-            <li><a href="04.html">第4章 数学基础：优化理论</a></li>
-            <li><a href="05.html">第5章 数据预处理与探索</a></li>
-            <li><a href="06.html">第6章 第一个ML项目实战</a></li>
-            <li><a href="07.html">第7章 模型评估与选择</a></li>
-            <li><a href="08.html">第8章 线性回归与正则化</a></li>
-            <li><a href="09.html">第9章 逻辑回归与分类</a></li>
-            <li><a href="10.html">第10章 决策树与随机森林</a></li>
-            <li><a href="11.html">第11章 支持向量机 SVM</a></li>
-            <li><a href="12.html">第12章 朴素贝叶斯与KNN</a></li>
-            <li><a href="13.html">第13章 聚类算法</a></li>
-            <li><a href="14.html">第14章 降维与特征工程</a></li>
-            <li><a href="15.html">第15章 模型调参与AutoML</a></li>
-            <li><a href="16.html">第16章 处理不平衡数据</a></li>
-            <li><a href="17.html">第17章 模型可解释性</a></li>
-            <li><a href="18.html">第18章 ML系统工程化</a></li>
-            <li><a href="19.html">第19章 神经网络基础</a></li>
-            <li><a href="20.html">第20章 深度学习框架实战</a></li>
-            <li><a href="21.html">第21章 CNN卷积神经网络</a></li>
-            <li><a href="22.html">第22章 RNN与序列模型</a></li>
-            <li><a href="23.html">第23章 NLP自然语言处理</a></li>
-            <li><a href="24.html" class="active">第24章 生成式模型</a></li>
-            <li><a href="25.html">第25章 强化学习入门</a></li>
-            <li><a href="26.html">第26章 大语言模型与RAG</a></li>
-            <li><a href="27.html">第27章 模型部署与服务化</a></li>
-            <li><a href="28.html">第28章 毕业项目：端到端ML系统</a></li>
-        </ul>
-    </div>
-    <div class="main-content">
-        <h2>24.1 从"识别"到"创造"</h2>
-        <p>前面学的所有模型都是<strong>判别式模型</strong>——给定输入X，预测标签Y（P(Y|X)）。判别式模型关心的是"边界在哪里"。而生成式模型关心的是"数据是什么样的"——它学习数据本身的联合分布P(X,Y)或P(X)，从而能够<strong>生成新的、合理的样本</strong>。</p>
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="description" content="生成模型试图学习数据分布并产生新样本。GAN 通过对抗博弈学习隐式分布，VAE 优化潜变量模型的变分下界，Diffusion 学习逐步去噪，自回归模型按条件概率逐步生成 token。"><title>生成式模型：GAN、VAE、Diffusion 与自回归采样 · 机器学习图解教程</title><link rel="stylesheet" href="../assets/css/article.css"></head><body class="article-page"><a class="skip-link" href="#content">跳转至正文</a><header class="site-header"><div class="header-inner"><a class="wordmark" href="../index.html"><span class="mark">M<span>·</span>L</span><span>机器学习图解教程<small>Machine Learning, Explained</small></span></a><nav aria-label="顶部导航"><a href="../index.html">课程目录</a><a href="https://github.com/1998x-stack/machine-learning-tutorial">GitHub</a></nav></div></header><div class="article-shell"><aside class="article-nav"><nav aria-label="文章目录"><details open><summary>本章目录</summary><div class="nav-items"><a href="../index.html">← 全部章节</a><a href="#sec1">生成建模：学习分布而非标签</a><a href="#sec2">自回归模型：链式法则与采样</a><a href="#sec3">GAN：生成器与判别器的对抗目标</a><a href="#sec4">VAE：潜在分布与变分下界</a><a href="#sec5">Diffusion：逐步加噪与学习反向过程</a><a href="#sec6">生成模型的评估与选择</a><a href="#references">来源与边界</a></div></details></nav></aside><main class="article-main" id="content"><article><div class="breadcrumb"><a href="../index.html">课程目录</a><span>/</span><span>第 24 章</span></div><header class="article-header"><div class="chapter-number">CHAPTER 24 / 28</div><h1>生成式模型：GAN、VAE、Diffusion 与自回归采样</h1><p class="dek">生成模型试图学习数据分布并产生新样本。GAN 通过对抗博弈学习隐式分布，VAE 优化潜变量模型的变分下界，Diffusion 学习逐步去噪，自回归模型按条件概率逐步生成 token。</p><div class="lead-question">生成模型究竟在学习什么？为什么 GAN、VAE、扩散模型和 GPT 的训练目标看起来完全不同，却都能生成样本？</div></header><section id="sec1" aria-labelledby="title1"><h2 id="title1">01 · 生成建模：学习分布而非标签</h2><p>判别式任务通常关注 <code>P(y|x)</code>：给定输入预测标签。生成式建模则试图描述数据本身的分布，例如 <code>P(x)</code> 或联合分布 <code>P(x,z)</code>，从而可以采样出新样本。这个目标不意味着每个生成样本都真实、正确或有用；“看起来合理”也不等于事实可靠。</p><figure><div class="figure-scroll"><img src="../assets/svg/24/generative-families.svg" width="900" height="460" loading="lazy" alt="自回归、VAE、GAN 和 Diffusion 四类生成建模路径及其目标。"></div><figcaption>不同家族的概率建模方式、训练目标、采样成本和可计算似然能力并不相同。</figcaption></figure><p>比较生成模型时，先问四件事：概率密度是否显式可计算？是否引入潜变量？训练目标是似然、变分下界还是对抗目标？生成一次样本需要几步、多少显存和多少采样计算？</p></section><section id="sec2" aria-labelledby="title2"><h2 id="title2">02 · 自回归模型：链式法则与采样</h2><p>自回归模型使用概率链式法则分解联合分布。文本生成中，每一步根据已经生成的前缀预测下一个 token；训练通常用 teacher forcing，把真实前缀送入模型。</p><div class="eq" role="group" tabindex="0" aria-label="序列联合概率按条件概率链式分解"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block" aria-label="序列联合概率按条件概率链式分解"><mrow><mi>p</mi><mo>(</mo><msub><mi>x</mi><mrow><mn>1</mn><mo>:</mo><mi>T</mi></mrow></msub><mo>)</mo><mo>=</mo><munderover><mo>∏</mo><mrow><mi>t</mi><mo>=</mo><mn>1</mn></mrow><mi>T</mi></munderover><mi>p</mi><mo>(</mo><msub><mi>x</mi><mi>t</mi></msub><mo>|</mo><msub><mi>x</mi><mrow><mo>&lt;</mo><mi>t</mi></mrow></msub><mo>)</mo></mrow></math></div><p>温度 T 对 logits 除以 T 后再 softmax：低温度使分布更尖锐，高温度使其更平坦。Top-k 保留概率最高的 k 个候选；top-p 保留累计概率达到阈值的一组候选。它们是解码策略，不会改变模型学到的条件分布本身，也不保证输出质量单调提升。</p><pre><code>import torch
 
-        <p>2022年Stable Diffusion和Midjourney让AI绘画引爆全球，2022年末ChatGPT展示了文本生成的能力上限。生成式模型不再是实验室里的玩具，它们正在重塑创意产业、软件开发和科学发现。</p>
+def top_p_sample(logits, p=0.9, temperature=1.0):
+    if temperature &lt;= 0:
+        raise ValueError("temperature must be positive")
+    probs = torch.softmax(logits / temperature, dim=-1)
+    sorted_probs, sorted_ids = torch.sort(probs, descending=True)
+    cumulative = sorted_probs.cumsum(dim=-1)
+    remove = cumulative - sorted_probs &gt;= p  # 保留跨过阈值的那个 token
+    sorted_probs = sorted_probs.masked_fill(remove, 0.0)
+    filtered = torch.zeros_like(probs).scatter_(0, sorted_ids, sorted_probs)
+    filtered = filtered / filtered.sum()
+    return torch.multinomial(filtered, num_samples=1)
 
-        <h2>24.2 GAN：两个网络的对弈</h2>
-        <p>GAN（生成对抗网络）可能是深度学习中最有创意的想法。Ian Goodfellow在2014年的酒吧里想到了这个主意：让两个网络互相对抗——<strong>生成器（Generator）</strong>试图伪造逼真的样本，<strong>判别器（Discriminator）</strong>试图区分真假。两者不断升级，最终生成器变得能以假乱真。</p>
+logits = torch.tensor([2.0, 1.3, 0.4, -0.5])
+torch.manual_seed(24)
+sample = top_p_sample(logits, p=0.85, temperature=0.8)
+print("sampled token id:", sample.item())</code></pre></section><section id="sec3" aria-labelledby="title3"><h2 id="title3">03 · GAN：生成器与判别器的对抗目标</h2><p>GAN 同时训练生成器 G 和判别器 D。G 把随机噪声 z 映射为样本；D 估计样本来自真实数据还是生成器。原始 minimax 目标是：</p><div class="eq" role="group" tabindex="0" aria-label="GAN 的原始极小极大目标"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block" aria-label="GAN 的原始极小极大目标"><mrow><msub><mi>min</mi><mi>G</mi></msub><mspace width="0.5em"/><msub><mi>max</mi><mi>D</mi></msub><mspace width="0.5em"/><mi>V</mi><mo>(</mo><mi>D</mi><mo>,</mo><mi>G</mi><mo>)</mo><mo>=</mo><msub><mi>E</mi><mrow><mi>x</mi><mo>∼</mo><msub><mi>p</mi><mi>data</mi></msub></mrow></msub><mo>[</mo><mi>log</mi><mi>D</mi><mo>(</mo><mi>x</mi><mo>)</mo><mo>]</mo><mo>+</mo><msub><mi>E</mi><mrow><mi>z</mi><mo>∼</mo><mi>p</mi><mi>(</mi><mi>z</mi><mi>)</mi></mrow></msub><mo>[</mo><mi>log</mi><mo>(</mo><mn>1</mn><mo>−</mo><mi>D</mi><mo>(</mo><mi>G</mi><mo>(</mo><mi>z</mi><mo>)</mo><mo>)</mo><mo>)</mo><mo>]</mo></mrow></math></div><figure><div class="figure-scroll"><img src="../assets/svg/24/gan-game.svg" width="900" height="460" loading="lazy" alt="噪声经过 Generator 产生假样本，与真实样本一起送入 Discriminator；两者按不同目标交替更新。"></div><figcaption>图示是原始 GAN 的计算关系；非饱和生成器损失是常见的训练目标改写。</figcaption></figure><p>实际训练常用非饱和生成器损失 <code>−E[log D(G(z))]</code>，以改善早期梯度。GAN 的训练是一个耦合优化问题，学习率、模型容量和更新频率会相互影响；模式坍塌意味着生成器只覆盖数据分布的一部分。不能简单地说判别器越强越好，也不能保证训练一定达到理论纳什均衡。</p><pre><code>import torch
+from torch import nn
 
-        <p>这就像一个造假钞的和一个验钞员在博弈——造假钞的技术越来越高明，验钞员的眼睛也越来越挑剔。最终，假钞和真钞难以区分。</p>
+G = nn.Sequential(nn.Linear(5, 16), nn.ReLU(), nn.Linear(16, 1))
+D = nn.Sequential(nn.Linear(1, 16), nn.ReLU(), nn.Linear(16, 1))
+opt_g = torch.optim.Adam(G.parameters(), lr=1e-3)
+opt_d = torch.optim.Adam(D.parameters(), lr=1e-3)
+criterion = nn.BCEWithLogitsLoss()
+real = torch.randn(32, 1) * 0.8 + 2.0
+z = torch.randn(32, 5)
+fake = G(z).detach()
+d_loss = criterion(D(real), torch.ones(32, 1)) + criterion(D(fake), torch.zeros(32, 1))
+opt_d.zero_grad(); d_loss.backward(); opt_d.step()
+for parameter in D.parameters():
+    parameter.requires_grad_(False)
+z = torch.randn(32, 5)
+g_loss = criterion(D(G(z)), torch.ones(32, 1))
+opt_g.zero_grad(); g_loss.backward(); opt_g.step()
+for parameter in D.parameters():
+    parameter.requires_grad_(True)
+print("D loss:", round(d_loss.item(), 4), "G loss:", round(g_loss.item(), 4))</code></pre></section><section id="sec4" aria-labelledby="title4"><h2 id="title4">04 · VAE：潜在分布与变分下界</h2><p>VAE 假设数据由潜变量 z 生成：先从先验 <code>p(z)</code> 采样，再从条件分布 <code>pθ(x|z)</code> 生成样本。真实后验 <code>pθ(z|x)</code> 通常难以直接计算，编码器用 <code>qφ(z|x)</code> 近似。训练最大化 ELBO：</p><div class="eq" role="group" tabindex="0" aria-label="VAE 证据下界由重建对数似然期望减去近似后验与先验之间的 KL 散度"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block" aria-label="VAE 证据下界由重建对数似然期望减去近似后验与先验之间的 KL 散度"><mrow><mi>ELBO</mi><mo>=</mo><msub><mi>E</mi><mrow><mi>q</mi><mi>φ</mi><mo>(</mo><mi>z</mi><mo>|</mo><mi>x</mi><mo>)</mo></mrow></msub><mo>[</mo><mi>log</mi><msub><mi>p</mi><mi>θ</mi></msub><mo>(</mo><mi>x</mi><mo>|</mo><mi>z</mi><mo>)</mo><mo>]</mo><mo>−</mo><mi>KL</mi><mo>(</mo><msub><mi>q</mi><mi>φ</mi></msub><mo>(</mo><mi>z</mi><mo>|</mo><mi>x</mi><mo>)</mo><mo>‖</mo><mi>p</mi><mo>(</mo><mi>z</mi><mo>)</mo><mo>)</mo></mrow></math></div><figure><div class="figure-scroll"><img src="../assets/svg/24/vae-latent.svg" width="900" height="460" loading="lazy" alt="Encoder 输出均值和方差，重参数化生成潜变量 z，再由 Decoder 重建输入。"></div><figcaption>重参数化把随机噪声 ε 与可学习参数分离，使梯度可以通过 μ 和 σ 回传。</figcaption></figure><p>若 <code>qφ(z|x)=N(μ,σ²)</code>，可用 <code>z=μ+σ⊙ε</code>、<code>ε∼N(0,I)</code> 重参数化。重建项衡量样本重建质量；KL 项把近似后验拉向先验，使潜空间更可采样。KL 权重过大可能导致 posterior collapse；β-VAE 改变了重建与正则项的权衡，不是“免费提高 disentanglement”。</p><pre><code>import torch
+from torch import nn
+import torch.nn.functional as F
 
-        <p>GAN训练的难点：</p>
-        <ul>
-            <li><strong>训练不稳定：</strong>生成器和判别器需要微妙的平衡。如果判别器太强，生成器梯度消失学不到东西。如果生成器太强，判别器被"骗过"，也无法提供有用的反馈信号</li>
-            <li><strong>模式坍塌（Mode Collapse）：</strong>生成器学会了一个"安全"的模式，然后无论什么噪声输入都生成几乎相同的样本</li>
-        </ul>
+batch, input_dim, latent_dim = 8, 20, 5
+x = torch.rand(batch, input_dim)
+encoder = nn.Linear(input_dim, 2 * latent_dim)
+decoder = nn.Linear(latent_dim, input_dim)
+mu, logvar = encoder(x).chunk(2, dim=-1)
+std = torch.exp(0.5 * logvar)
+z = mu + std * torch.randn_like(std)
+reconstruction_logits = decoder(z)
+reconstruction = F.binary_cross_entropy_with_logits(reconstruction_logits, x, reduction="none").sum(-1).mean()
+kl = -0.5 * (1 + logvar - mu.square() - logvar.exp()).sum(-1).mean()
+loss = reconstruction + kl
+loss.backward()
+assert torch.isfinite(loss) and tuple(z.shape) == (batch, latent_dim)
+print("reconstruction:", round(reconstruction.item(), 3), "KL:", round(kl.item(), 3))</code></pre></section><section id="sec5" aria-labelledby="title5"><h2 id="title5">05 · Diffusion：逐步加噪与学习反向过程</h2><p>DDPM 定义一个固定的前向马尔可夫链，逐步向数据添加高斯噪声；神经网络学习反向条件分布，从噪声逐步恢复样本。令 <code>αt=1−βt</code>、<code>ᾱt=∏s≤t αs</code>，可以直接从 x₀ 采样任意时间步：</p><div class="eq" role="group" tabindex="0" aria-label="扩散前向过程的闭式采样公式"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block" aria-label="扩散前向过程的闭式采样公式"><mrow><msub><mi>x</mi><mi>t</mi></msub><mo>=</mo><msqrt><msub><mover><mi>α</mi><mo>¯</mo></mover><mi>t</mi></msub></msqrt><msub><mi>x</mi><mn>0</mn></msub><mo>+</mo><msqrt><mn>1</mn><mo>−</mo><msub><mover><mi>α</mi><mo>¯</mo></mover><mi>t</mi></msub></msqrt><mi>ε</mi><mo>,</mo><mspace width="0.8em"/><mi>ε</mi><mo>∼</mo><mi>N</mi><mo>(</mo><mn>0</mn><mo>,</mo><mi>I</mi><mo>)</mo></mrow></math></div><figure><div class="figure-scroll"><img src="../assets/svg/24/diffusion-chain.svg" width="900" height="460" loading="lazy" alt="前向过程从真实样本逐步添加噪声，反向过程从噪声开始逐步去噪得到样本。"></div><figcaption>图中时间步是机制示意；真实采样可能使用数十至数千步或加速采样器。</figcaption></figure><p>常见训练目标让网络根据 <code>x_t</code> 与时间步 t 预测加入的噪声 ε，并最小化噪声预测误差。反向采样时，模型每一步估计去噪方向并结合噪声日程更新样本。Latent Diffusion 先把图像编码到较低分辨率潜空间，再在那里执行扩散，以降低高分辨率像素空间的计算成本；代价是结果受潜空间编码器表达能力约束。</p><pre><code>import torch
 
-        <div class="warning">
-            <strong>⚠️ GAN在2026年的地位：</strong>GAN在图像生成领域已经被扩散模型（Diffusion Models）大幅超越。GAN生成的图片在多样性上不如扩散模型，而且训练极其困难。但GAN的思想——两个网络对抗训练——已经渗透到了机器学习的方方面面（如对抗训练、域适应）。G
-        AN是重要的思想遗产，但如果你今天要做一个图像生成项目，应该用Diffusion而不是GAN。
-        </div>
-
-        <h2>24.3 VAE：优雅的数学框架</h2>
-        <p>变分自编码器（VAE）用完全不同的思路做生成。它不是对抗，而是学到一个从简单分布（如标准正态）到数据分布的映射。VAE的核心洞察：</p>
-        <ol>
-            <li><strong>编码器</strong>将输入映射到一个<strong>概率分布</strong>（不是固定向量，而是均值和方差）</li>
-            <li>从该分布采样一个<strong>潜在向量</strong>z</li>
-            <li><strong>解码器</strong>从z重建输入</li>
-        </ol>
-
-        <p>VAE的损失函数有两项：<strong>重建损失</strong>（生成的图像像不像原图）+ <strong>KL散度</strong>（潜在分布是否接近标准正态）。KL项起到正则化作用，保证潜在空间是连续和平滑的——两个相近的z生成相近的输出。这是VAE能"插值"生成平滑过渡的原因。</p>
-
-        <h2>24.4 Diffusion Models：2020年代的王者</h2>
-        <p>扩散模型是目前最强大的图像生成技术，Stable Diffusion、DALL-E 3、Midjourney都建立在此之上。它的核心思想非常优雅：</p>
-
-        <p style="text-align:center; font-size:1.1rem;"><strong>前向过程：逐步给一张真实图片加噪声，直到变成纯噪声</strong></p>
-        <p style="text-align:center; font-size:1.1rem;"><strong>反向过程：训练一个神经网络，学会从噪声中逐步还原出图片</strong></p>
-
-        <p>一旦学会了"去噪"的能力，你就可以从纯随机噪声出发，逐步降噪，生成一张全新的图片。再加一个文本提示控制去噪的方向——就得到了文本到图像生成（Text-to-Image）。</p>
-
-        <table>
-            <tr><th>模型</th><th>核心技术</th><th>特点</th></tr>
-            <tr><td>DDPM</td><td>基础扩散模型</td><td>奠基性工作，但采样慢（需要1000步）</td></tr>
-            <tr><td>Stable Diffusion</td><td>在潜空间做扩散（Latent Diffusion）</td><td>大幅降低计算量，让文生图走向大众</td></tr>
-            <tr><td>DALL-E 3</td><td>扩散 + 强大的文本编码器</td><td>文本理解能力最强</td></tr>
-        </table>
-
-        <div class="highlight">
-            <strong>🔑 为什么Diffusion比GAN好？</strong>(1) 训练稳定——不需要对抗训练，只需最小化一个简单的去噪MSE损失。(2) 覆盖多样性好——不会模式坍塌，能生成数据集中多样的模式。(3) 理论基础优雅——扩散过程可以被理解为学习数据分布的梯度场（score function）。(4) 条件控制灵活——文本、图像、语义图都能自然融入作为条件信号。
-        </div>
-
-        <h2>24.5 自回归生成：GPT的核心</h2>
-        <p>文本生成的主流方式是<strong>自回归</strong>：一个词一个词地预测下一个token。GPT就是这样工作的——给定之前的文本，预测下一个词，然后把这个词加入文本，再预测下下个词。</p>
-
-        <p>自回归生成的关键：</p>
-        <ul>
-            <li><strong>采样策略：</strong>贪心解码（每次选概率最大的）太保守，beam search稍好但容易重复。现代做法用top-p（nucleus）采样或top-k采样，在多样性和质量间平衡</li>
-            <li><strong>温度（Temperature）：</strong>T < 1让分布更尖锐（更确定但更保守），T > 1让分布更平坦（更随机更创意）</li>
-        </ul>
-
-        <p>好了，生成式模型的三大范式（GAN/VAE/Diffusion）就讲到这里。下一章我们进入强化学习——让AI在试错中学习。</p>
-
-        <div class="footer-nav">
-            <a href="23.html">← 上一章</a>
-            <a href="index.html">📖 返回目录</a>
-            <a href="25.html">下一章 →</a>
-        </div>
-    </div>
-</div>
-</div>
-</body>
-</html>
+steps = 100
+betas = torch.linspace(1e-4, 0.02, steps)
+alphas = 1.0 - betas
+alpha_bar = torch.cumprod(alphas, dim=0)
+x0 = torch.randn(4, 3, 16, 16)
+noise = torch.randn_like(x0)
+t = torch.tensor([0, 9, 49, 99])
+a_bar = alpha_bar[t].view(-1, 1, 1, 1)
+xt = a_bar.sqrt() * x0 + (1.0 - a_bar).sqrt() * noise
+assert xt.shape == x0.shape and torch.isfinite(xt).all()
+print("noisy batch:", tuple(xt.shape), "alpha_bar:", a_bar.flatten().round(decimals=4).tolist())</code></pre></section><section id="sec6" aria-labelledby="title6"><h2 id="title6">06 · 生成模型的评估与选择</h2><p>生成模型不能只用训练 loss 评价。需要同时检查样本质量、多样性、覆盖度、条件遵循、分布外行为、延迟和资源成本。FID 等分布级指标依赖特征提取器和样本集，不能完整代表人类感知质量；单张“好看”的样本也不能证明模型覆盖了真实数据分布。</p><table><thead><tr><th>需求</th><th>常见路线</th><th>重点风险</th></tr></thead><tbody><tr><td>长文本与代码续写</td><td>自回归 Transformer</td><td>事实性、解码偏差、长上下文成本</td></tr><tr><td>可控潜变量与压缩表示</td><td>VAE 及变体</td><td>重建模糊、后验坍塌、先验错配</td></tr><tr><td>高保真隐式生成</td><td>GAN 及对抗变体</td><td>模式坍塌、训练不稳定、覆盖率</td></tr><tr><td>高质量条件图像生成</td><td>Diffusion / Latent Diffusion</td><td>采样步数、条件控制、推理成本</td></tr></tbody></table><p>“扩散模型已经全面取代 GAN”或“某类模型永远最好”都过于绝对。不同数据、约束和生成任务的最优折中不同；工程选择要通过目标数据上的对照实验确认。</p></section><section id="references" aria-labelledby="ref-title"><h2 id="ref-title">来源、实现版本与适用边界</h2><p>论文用于核对算法定义与历史主张；官方文档用于核对 API 行为。图中的张量和数值若未明确引用论文实验，均为构造的教学示例，不代表 benchmark 或生产效果。</p><ul class="refs"><li><a href="https://arxiv.org/abs/1406.2661" rel="noopener noreferrer">Goodfellow et al. (2014), Generative Adversarial Nets</a></li><li><a href="https://arxiv.org/abs/1312.6114" rel="noopener noreferrer">Kingma & Welling (2013/2014), Auto-Encoding Variational Bayes</a></li><li><a href="https://arxiv.org/abs/2006.11239" rel="noopener noreferrer">Ho, Jain & Abbeel (2020), Denoising Diffusion Probabilistic Models</a></li><li><a href="https://arxiv.org/abs/2112.10752" rel="noopener noreferrer">Rombach et al. (2022), High-Resolution Image Synthesis with Latent Diffusion Models</a></li><li><a href="https://openai.com/index/better-language-models/" rel="noopener noreferrer">Radford et al. (2019), Language Models are Unsupervised Multitask Learners (GPT-2)</a></li></ul></section><nav class="article-footer" aria-label="章节导航"><a href="23.html">← 上一章</a><a href="../index.html">全部章节</a><a href="25.html">下一章 →</a></nav></article></main></div><footer class="site-footer"><span>机器学习图解教程 · 第 24 章</span><span>从计算机制到可验证的工程实现</span></footer></body></html>

@@ -5,7 +5,7 @@
 
 ## Repo map
 - `docs/index.html` 是唯一课程门户；`docs/courses.json` 是章节目录单一来源。
-- `docs/chapters/NN.html` 是 28 篇可独立阅读的教程；01–20 已按新规范精修，21–28 是待逐篇复审的兼容旧稿。
+- `docs/chapters/NN.html` 是 28 篇可独立阅读的教程；01–25 已按新规范精修，26–28 是待逐篇复审的兼容旧稿。
 - `docs/assets/css/{site,article}.css` 管理视觉 token、移动端和打印；勿在每篇重新复制整套 CSS。
 - `docs/assets/svg/NN/` 存放按章节编号的 **独立 SVG**；`docs/assets/js/` 仅增强交互，不承担文章正文内容。
 - 根目录 `index.html`、`NN.html` 是旧 URL 兼容入口，非可编辑正文。
@@ -24,7 +24,7 @@
 10. **Release**: 提交分支与 PR；核对变更清单、CI、部署，再检查实际 Pages 页面。不自动宣称已发布。只在核验完成后标记章节精修完毕。
 
 ## Scope rules
-- 按批次逐章重构，**不要顺手替换** 尚未审查的 21–28 数学内容。
+- 按批次逐章重构，**不要顺手替换** 尚未审查的 26–28 数学内容。
 - `docs/` 是 deployable output/source for this dependency-free static site，无需重复生成的 dist/build 目录。
 - 保持旧 `NN.html` 的导航有效，禁止无迁移说明地删除入口。
 - 不拷贝 Olah 或第三方图标、图像、图表或代码的受限内容。
@@ -34,7 +34,7 @@
 - 优化器、模型选择、交叉验证、概率校准及决策阈值只从训练或验证数据学习，测试数据只允许最终独立报告。
 - SVG 的几何线、统计数值、坐标轴、概率峰值必须经推导或代码校核；第二批每篇至少 3 幅独立 SVG。
 - 新滑块必须具备原生键盘访问、无 JS 默认含义和可见的数字反馈；浏览器 QA 验证其状态变化。
-- `scripts/run_examples.py` 和 `scripts/browser_qa.py` 覆盖前二十章；离线检查未执行的外部项目不能标为通过。
+- `scripts/run_examples.py` 和 `scripts/browser_qa.py` 覆盖前二十五章；离线检查未执行的外部项目不能标为通过。
 
 ## Third-wave gates (11–15)
 - SVM 文章必须区分几何间隔、函数间隔、C 的软间隔惩罚与 gamma 的 RBF 相似性范围；可分情形的解析图不能冒充真实样本决策边界。
@@ -43,7 +43,7 @@
 - PCA/t-SNE 解决的目标不同；目标编码的 fit_transform 需考虑训练内部交叉拟合及时间/分组边界，测试标签不得参与。
 - 任何搜索预算必须记录候选参数个数、CV 折数及 refit；嵌套 CV 的内层只选择、外层只评估。只有真实报告中间指标的迭代模型才可演示 Optuna pruning。
 - 11–15 每篇至少 3 幅 title/desc/viewBox 完整的独立 SVG，图中的每个数学量或点的邻域分类都应交叉核验。
-- 静态验证只接受部署在 docs/ 内部的相对站内资源；源码示例链接使用 GitHub 官方仓库地址。CI 覆盖前 20 章示例与 63 组页面/视口组合。
+- 静态验证只接受部署在 docs/ 内部的相对站内资源；源码示例链接使用 GitHub 官方仓库地址。CI 覆盖前 25 章示例与 78 组页面/视口组合。
 
 ## Fourth-wave gates (16–20)
 - 不平衡分类必须分别解释基率、排序指标、阈值与错误成本；SMOTE 只能在每个训练折内部拟合，验证/测试数据保持原始分布。AP 不得无条件写成梯形 PR-AUC。
@@ -52,4 +52,14 @@
 - 神经网络每个公式标明张量形状；区分反向传播求梯度与优化器更新；Xavier/He 公式必须说明 fan 与激活假设；BN/Dropout 的 train/eval 行为不可混淆。
 - PyTorch 必须区分 model.eval() 与 inference_mode/no_grad；BCEWithLogitsLoss/CrossEntropyLoss 接收 logits；Checkpoint 需包含优化器状态；AMP 说明设备、dtype、GradScaler 和 unscale/clip 顺序。
 - 16–20 每章至少 3 幅独立 SVG，并建立 docs/evidence/NN.json 逐条登记重要主张、来源定位和 verified/derived/illustrative 状态。
-- CI 必须执行前 20 章全部正文代码块，覆盖首页+前 20 章在 1440/390/360px 的 63 组浏览器检查，并验证新证据台账 JSON。
+- CI 必须执行前 25 章全部正文代码块，覆盖首页+前 25 章在 1440/390/360px 的 78 组浏览器检查，并验证新证据台账 JSON。
+
+## Fifth-wave gates (21–25)
+- CNN 的 Conv2d 公式必须标出 NCHW、groups、stride、padding 与 dilation；互相关与严格数学卷积应区分。残差相加前两支形状必须一致，projection shortcut、bottleneck 和 TorchVision ResNet V1.5 stride 位置不得混淆。
+- 迁移学习必须把权重版本与 transforms 配套；冻结 backbone 时说明 BatchNorm train/eval 行为；增强必须保持任务标签语义，验证/测试预处理确定性。
+- RNN/LSTM/GRU 公式要注明 hidden/state 形状与门控约定；原始 1997 LSTM 与后续 forget-gate 变体分开叙述；teacher forcing 与自回归推理差异、padding mask 与 loss mask 必须解释。
+- Attention 需明确 query/key 维、softmax 轴、mask 的 1/0 语义；Transformer 的并行训练不等于自回归生成并行，标准全注意力具有序列长度平方级交互。
+- NLP tokenizer 与权重必须成对；BERT 原始 MLM/NSP、RoBERTa 去 NSP 的后续实验和 GPT causal LM 分开说明；静态 embedding 不得与 contextual representation 混为一谈。
+- GAN 原始 minimax 与 non-saturating generator loss 分开；VAE ELBO 两项和 reparameterization 正确；DDPM 前向闭式采样、时间步与噪声日程一致；不要声称任一生成家族在所有任务上全面胜出。
+- RL 必须区分 state/observation、terminated/truncated、on-policy/off-policy、terminal bootstrap 与 time-limit bootstrap；Q-learning/DQN/REINFORCE/PPO 的目标和适用条件不能混用。
+- 21–25 每章至少 4 幅独立 SVG，建立 docs/evidence/NN.json 主张—来源台账；每章正文 Python 示例全部进入 run_examples.py。

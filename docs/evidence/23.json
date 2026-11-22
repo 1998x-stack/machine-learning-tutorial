@@ -1,0 +1,68 @@
+{
+  "chapter": "23",
+  "claims": [
+    {
+      "id": "word2vec-sgns",
+      "claim": "Skip-gram predicts surrounding context from a center word; negative sampling replaces full-vocabulary normalization with sampled positive and negative word pairs.",
+      "kind": "research",
+      "source_url": "https://arxiv.org/abs/1301.3781",
+      "locator": "Skip-gram and negative sampling sections",
+      "status": "verified",
+      "notes": "The executable block is a small synthetic objective demonstration, not a trained embedding benchmark."
+    },
+    {
+      "id": "subword-contract",
+      "claim": "Tokenizers map text to model-specific token IDs; special tokens, padding and truncation are part of the model input contract.",
+      "kind": "implementation",
+      "source_url": "https://huggingface.co/docs/transformers/main_classes/tokenizer",
+      "locator": "Tokenizer API: special tokens, padding and truncation",
+      "status": "verified",
+      "notes": "The toy vocabulary code is explicitly not a BPE or WordPiece implementation."
+    },
+    {
+      "id": "scaled-dot-attention",
+      "claim": "Scaled dot-product attention computes softmax(QKᵀ/√dk)V.",
+      "kind": "research",
+      "source_url": "https://arxiv.org/abs/1706.03762",
+      "locator": "Section 3.2.1",
+      "status": "verified",
+      "notes": "The code checks tensor shapes and masked positions."
+    },
+    {
+      "id": "causal-mask",
+      "claim": "Autoregressive decoder attention must block future key positions to prevent target leakage.",
+      "kind": "research",
+      "source_url": "https://arxiv.org/abs/1706.03762",
+      "locator": "Section 3.1 and decoder masking",
+      "status": "verified",
+      "notes": "Encoder bidirectional visibility is contrasted with causal decoder visibility."
+    },
+    {
+      "id": "bert-objective",
+      "claim": "Original BERT uses masked language modeling and next sentence prediction in pretraining.",
+      "kind": "research",
+      "source_url": "https://arxiv.org/abs/1810.04805",
+      "locator": "Abstract and Section 3",
+      "status": "verified",
+      "notes": "The text does not claim NSP is required by later encoder models."
+    },
+    {
+      "id": "roberta-nsp",
+      "claim": "RoBERTa showed a stronger BERT-style pretraining recipe that removes NSP and changes data and optimization settings.",
+      "kind": "research",
+      "source_url": "https://arxiv.org/abs/1907.11692",
+      "locator": "Ablation study",
+      "status": "verified",
+      "notes": "The article attributes differences to multiple training changes, not NSP removal alone."
+    },
+    {
+      "id": "contextual-vs-static",
+      "claim": "Contextual representations depend on surrounding tokens, unlike a single static Word2Vec vector per vocabulary item.",
+      "kind": "research",
+      "source_url": "https://arxiv.org/abs/1810.04805",
+      "locator": "BERT contextual representation formulation",
+      "status": "verified",
+      "notes": "The article avoids treating embedding arithmetic as a universal semantic law."
+    }
+  ]
+}

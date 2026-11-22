@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 460" role="img" aria-labelledby="rnn-gradient-title rnn-gradient-desc">
+<title id="rnn-gradient-title">长序列反向传播中的梯度路径</title><desc id="rnn-gradient-desc">普通 RNN 的梯度包含跨时间步雅可比矩阵连乘，可能衰减或放大；LSTM 的 cell state 提供受门控的加法记忆通路。</desc>
+<defs>
+ <marker id="rnn-gradient-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 Z" fill="#55736d"/></marker>
+ <marker id="rnn-gradient-orange" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L10 5 L0 10 Z" fill="#bc6a47"/></marker>
+ <style>text{font-family:Inter,ui-sans-serif,system-ui,"Noto Sans CJK SC",sans-serif;fill:#203b38}.title{font-size:22px;font-weight:750}.label{font-size:16px;font-weight:650}.small{font-size:13px;fill:#536b66}.tiny{font-size:12px;fill:#536b66}.box{fill:#fffdf8;stroke:#a9bdb3;stroke-width:2}.green{fill:#e3f1eb;stroke:#16786f;stroke-width:2}.orange{fill:#f8e9df;stroke:#bc6a47;stroke-width:2}.purple{fill:#eee9f7;stroke:#7863b0;stroke-width:2}.amber{fill:#f7f0dc;stroke:#9b7533;stroke-width:2}.line{fill:none;stroke:#55736d;stroke-width:2.5;marker-end:url(#rnn-gradient-arrow)}.oline{fill:none;stroke:#bc6a47;stroke-width:2.5;marker-end:url(#rnn-gradient-orange)}.dash{stroke-dasharray:7 6}</style>
+</defs><rect width="900" height="460" rx="22" fill="#fbfaf6"/>
+<text x="40" y="42" class="title">时间跨度越长，梯度需要穿过越多次状态变换</text>
+<text x="65" y="100" class="label">普通 RNN：重复乘法路径</text>
+<rect x="60" y="130" width="105" height="54" rx="10" class="purple"/><text x="112" y="164" text-anchor="middle" class="label">h1</text><rect x="215" y="130" width="105" height="54" rx="10" class="purple"/><text x="267" y="164" text-anchor="middle" class="label">h2</text><rect x="370" y="130" width="105" height="54" rx="10" class="purple"/><text x="422" y="164" text-anchor="middle" class="label">h3</text><rect x="525" y="130" width="105" height="54" rx="10" class="purple"/><text x="577" y="164" text-anchor="middle" class="label">h4</text><rect x="680" y="130" width="105" height="54" rx="10" class="purple"/><text x="732" y="164" text-anchor="middle" class="label">h5</text>
+<path d="M210 157 H165" class="oline"/><path d="M365 157 H320" class="oline"/><path d="M520 157 H475" class="oline"/><path d="M675 157 H630" class="oline"/>
+<text x="65" y="225" class="small">∂hₜ / ∂h₀ = Πₖ ∂hₖ / ∂hₖ₋₁；范数可能连续小于 1 或大于 1</text>
+<line x1="50" y1="260" x2="850" y2="260" stroke="#d5ddd5"/>
+<text x="65" y="310" class="label">LSTM：cell state 的加法更新通路</text>
+<rect x="60" y="340" width="105" height="54" rx="10" class="green"/><text x="112" y="374" text-anchor="middle" class="label">c1</text><rect x="215" y="340" width="105" height="54" rx="10" class="green"/><text x="267" y="374" text-anchor="middle" class="label">c2</text><rect x="370" y="340" width="105" height="54" rx="10" class="green"/><text x="422" y="374" text-anchor="middle" class="label">c3</text><rect x="525" y="340" width="105" height="54" rx="10" class="green"/><text x="577" y="374" text-anchor="middle" class="label">c4</text><rect x="680" y="340" width="105" height="54" rx="10" class="green"/><text x="732" y="374" text-anchor="middle" class="label">c5</text>
+<path d="M210 367 H165" class="line"/><path d="M365 367 H320" class="line"/><path d="M520 367 H475" class="line"/><path d="M675 367 H630" class="line"/>
+<text x="65" y="430" class="small">加法路径并不保证梯度永不衰减：门值、输入、输出与截断仍会影响学习。</text>
+</svg>
