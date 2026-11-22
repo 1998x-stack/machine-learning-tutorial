@@ -1,238 +1,43 @@
-<!DOCTYPE html>
-<html lang="zh-CN">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.5, user-scalable=yes">
-    <title>第12章 朴素贝叶斯与KNN</title>
-    <style>
-        * { margin:0; padding:0; box-sizing:border-box; }
-        body {
-            background: linear-gradient(135deg, #f5f3ff 0%, #e8f5f0 100%);
-            font-family: system-ui, -apple-system, 'Segoe UI', 'PingFang SC', Roboto, 'Helvetica Neue', sans-serif;
-            padding: 20px;
-        }
-        .double-border {
-            max-width: 1400px;
-            margin: 0 auto;
-            background: #ffffff;
-            border: 2px solid #8b5cf6;
-            border-radius: 24px;
-            box-shadow: 0 20px 30px -15px rgba(0,0,0,0.2), inset 0 1px 0 0 #f5f3ff;
-            overflow: hidden;
-        }
-        .container {
-            display: grid;
-            grid-template-columns: 260px 1fr;
-            gap: 0;
-        }
-        .sidebar {
-            background: #faf8ff;
-            border-right: 2px solid #c4b5fd;
-            padding: 24px 16px;
-        }
-        .sidebar h3 {
-            font-size: 1.4rem;
-            color: #6d28d9;
-            border-left: 5px solid #8b5cf6;
-            padding-left: 15px;
-            margin-bottom: 25px;
-        }
-        .chapter-list { list-style: none; }
-        .chapter-list li { margin-bottom: 6px; }
-        .chapter-list a {
-            display: block; padding: 8px 12px; text-decoration: none;
-            color: #334155; border-radius: 12px; transition: all 0.2s;
-            font-weight: 500; font-size: 0.92rem;
-        }
-        .chapter-list a:hover { background: #ede9fe; transform: translateX(3px); }
-        .chapter-list .active {
-            background: #7c3aed; color: white;
-            box-shadow: 0 2px 5px rgba(124,58,237,0.3);
-        }
-        .main-content { padding: 30px 35px; background: white; }
-        .footer-nav {
-            margin-top: 45px; padding-top: 20px; border-top: 2px solid #c4b5fd;
-            display: flex; justify-content: space-between;
-        }
-        .footer-nav a {
-            padding: 8px 24px; background: #f1f5f9; text-decoration: none;
-            color: #5b21b6; border-radius: 40px; font-weight: 500; transition: 0.2s;
-        }
-        .footer-nav a:hover { background: #ede9fe; transform: translateY(-2px); }
-        footer {
-            text-align: center; margin-top: 30px; padding: 15px; color: #64748b;
-            border-top: 1px dashed #cbd5e1; font-size: 0.9rem;
-        }
-        h2 { color: #4c1d95; border-left: 6px solid #8b5cf6; padding-left: 15px; margin: 20px 0 15px; font-size: 1.5rem; }
-        h3 { color: #5b21b6; margin: 20px 0 10px; font-size: 1.2rem; }
-        h4 { color: #6d28d9; margin: 15px 0 8px; font-size: 1.05rem; }
-        p { line-height: 1.85; margin: 10px 0; color: #1e293b; }
-        ul, ol { margin: 10px 0 10px 20px; line-height: 1.8; }
-        li { color: #1e293b; margin-bottom: 4px; }
-        pre {
-            background: #1e1035; color: #e8e8f0; padding: 15px; border-radius: 12px;
-            overflow-x: auto; font-family: 'JetBrains Mono', 'Fira Code', monospace;
-            margin: 15px 0; font-size: 0.9rem; line-height: 1.5;
-        }
-        code { background: #f5f3ff; padding: 2px 6px; border-radius: 4px; font-family: 'JetBrains Mono', monospace; font-size: 0.85em; }
-        pre code { background: none; padding: 0; }
-        table { width: 100%; border-collapse: collapse; margin: 15px 0; background: #fafafe; }
-        th, td { border: 1px solid #c4b5fd; padding: 10px; text-align: left; }
-        th { background: #f5f3ff; color: #5b21b6; font-weight: 600; }
-        .tip, .warning, .highlight {
-            padding: 12px 18px; border-radius: 16px; margin: 15px 0; line-height: 1.7;
-        }
-        .tip { background: #e0f2fe; border-left: 6px solid #0ea5e9; }
-        .warning { background: #fee2e2; border-left: 6px solid #ef4444; }
-        .highlight { background: #fef9c3; border: 1px solid #facc15; }
-        strong { color: #1e1b4b; }
-        @media (max-width: 768px) {
-            .container { grid-template-columns: 1fr; }
-            .sidebar { border-right: none; border-bottom: 2px solid #c4b5fd; }
-            body { padding: 10px; }
-            .main-content { padding: 20px; }
-        }
-    </style>
-    <link rel="stylesheet" href="theme.css">
-</head>
-<body>
-<div class="double-border">
-<div class="container">
-    <div class="sidebar">
-        <h3>🤖 课程目录</h3>
-        <ul class="chapter-list">
-            <li><a href="01.html">第1章 机器学习概述</a></li>
-            <li><a href="02.html">第2章 数学基础：线性代数</a></li>
-            <li><a href="03.html">第3章 数学基础：概率统计</a></li>
-            <li><a href="04.html">第4章 数学基础：优化理论</a></li>
-            <li><a href="05.html">第5章 数据预处理与探索</a></li>
-            <li><a href="06.html">第6章 第一个ML项目实战</a></li>
-            <li><a href="07.html">第7章 模型评估与选择</a></li>
-            <li><a href="08.html">第8章 线性回归与正则化</a></li>
-            <li><a href="09.html">第9章 逻辑回归与分类</a></li>
-            <li><a href="10.html">第10章 决策树与随机森林</a></li>
-            <li><a href="11.html">第11章 支持向量机 SVM</a></li>
-            <li><a href="12.html" class="active">第12章 朴素贝叶斯与KNN</a></li>
-            <li><a href="13.html">第13章 聚类算法</a></li>
-            <li><a href="14.html">第14章 降维与特征工程</a></li>
-            <li><a href="15.html">第15章 模型调参与AutoML</a></li>
-            <li><a href="16.html">第16章 处理不平衡数据</a></li>
-            <li><a href="17.html">第17章 模型可解释性</a></li>
-            <li><a href="18.html">第18章 ML系统工程化</a></li>
-            <li><a href="19.html">第19章 神经网络基础</a></li>
-            <li><a href="20.html">第20章 深度学习框架实战</a></li>
-            <li><a href="21.html">第21章 CNN卷积神经网络</a></li>
-            <li><a href="22.html">第22章 RNN与序列模型</a></li>
-            <li><a href="23.html">第23章 NLP自然语言处理</a></li>
-            <li><a href="24.html">第24章 生成式模型</a></li>
-            <li><a href="25.html">第25章 强化学习入门</a></li>
-            <li><a href="26.html">第26章 大语言模型与RAG</a></li>
-            <li><a href="27.html">第27章 模型部署与服务化</a></li>
-            <li><a href="28.html">第28章 毕业项目：端到端ML系统</a></li>
-        </ul>
-    </div>
-    <div class="main-content">
-        <h2>12.1 两个"简单但有效"的算法</h2>
-        <p>这一章我们把两个经典算法放在一起讲。朴素贝叶斯和KNN的共同点是：思想极其简单，但特定场景下效果出奇好。它们是ML入门必学的"两座桥梁"——朴素贝叶斯连接概率论和分类，KNN连接距离度量和决策。</p>
-
-        <h2>12.2 朴素贝叶斯：一个"错误"的假设，却出奇好用</h2>
-        <p>朴素贝叶斯的核心就是贝叶斯定理（第3章学过）：</p>
-
-        <p style="text-align:center; font-size:1.1rem;"><strong>P(类别|特征) ∝ P(特征|类别) × P(类别)</strong></p>
-
-        <p>"朴素"在哪里？它假设所有特征之间相互独立——给定类别后，每个特征的条件概率是独立的。这个假设在现实中几乎不成立（"身高"和"体重"显然相关），但神奇的是，<strong>朴素贝叶斯在文本分类中效果极好</strong>。原因？虽然概率估计可能不准确（因为独立性假设被违反），但分类排序往往是对的——而分类只需要排序。</p>
-
-        <h3>三种变体</h3>
-
-        <table>
-            <tr><th>变体</th><th>特征分布假设</th><th>适用场景</th></tr>
-            <tr><td>Gaussian NB</td><td>连续值，每个特征服从高斯分布</td><td>通用连续特征（如鸢尾花分类）</td></tr>
-            <tr><td>Multinomial NB</td><td>离散计数（如词频）</td><td>文本分类、垃圾邮件过滤</td></tr>
-            <tr><td>Bernoulli NB</td><td>二值特征（出现/不出现）</td><td>短文本、词袋模型中使用"是否出现"</td></tr>
-        </table>
-
-        <pre><code>from sklearn.naive_bayes import GaussianNB, MultinomialNB
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="description" content="一个模型通过类别先验与条件似然计算类别分数，另一个在预测时搜索近邻。用公式、计数表和距离图理解两者适用的数据类型、尺度敏感性与高维失败模式。"><title>朴素贝叶斯与 KNN：从概率证据到距离投票 · 机器学习图解教程</title><link rel="stylesheet" href="../assets/css/article.css"></head><body class="article-page"><a class="skip-link" href="#content">跳转至正文</a><header class="site-header"><div class="header-inner"><a class="wordmark" href="../index.html"><span class="mark">M<span>·</span>L</span><span>机器学习图解教程<small>Machine Learning, Explained</small></span></a><nav aria-label="顶部导航"><a href="../index.html">课程目录</a><a href="https://github.com/1998x-stack/machine-learning-tutorial">GitHub</a></nav></div></header><div class="article-shell"><aside class="article-nav"><nav aria-label="文章目录"><details open><summary>本章目录</summary><div class="nav-items"><a href="../index.html">← 全部章节</a><a href="#sec1">两种极简分类器的出发点完全不同</a><a href="#sec2">贝叶斯更新与“朴素”条件独立假设</a><a href="#sec3">Gaussian、Multinomial、Bernoulli 模型不要混用</a><a href="#sec4">Laplace 平滑如何处理未见过的词</a><a href="#sec5">KNN：判断新样本的邻居到底是谁</a><a href="#sec6">维度灾难不是一句“高维一定失败”</a><a href="#sec7">实验 A：基于词频的 MultinomialNB</a><a href="#sec8">实验 B：只在开发集选择最近邻 k</a><a href="#sec9">应该如何选、何时不该选</a></div></details></nav></aside><main class="article-main" id="content"><article><div class="breadcrumb"><a href="../index.html">课程目录</a><span>/</span><span>第 12 章</span></div><header class="article-header"><div class="chapter-number">CHAPTER 12 / 28</div><h1>朴素贝叶斯与 KNN：从概率证据到距离投票</h1><p class="dek">一个模型通过类别先验与条件似然计算类别分数，另一个在预测时搜索近邻。用公式、计数表和距离图理解两者适用的数据类型、尺度敏感性与高维失败模式。</p><div class="lead-question">为什么一个假设特征条件独立的模型和一个几乎不拟合参数的模型，都可能成为很强的基线？</div></header><section id="sec1" aria-labelledby="title1"><h2 id="title1">01 · 两种极简分类器的出发点完全不同</h2><p>朴素贝叶斯（Naive Bayes，NB）把预测理解为“看到证据后哪一类更可能”；K 最近邻（KNN）把预测理解为“与这个查询点最相近的训练样本属于哪些类别”。前者需要估计类别先验与每个特征的类条件概率，后者主要保留训练样本并定义距离、邻居数量和投票规则。</p><p>它们没有谁在所有任务上更准确：文本的稀疏计数结构可能适合 MultinomialNB；少量经标准化的平滑低维数据可能适合 KNN；高维噪声、特征相关或距离语义不可靠则可能让两者分别遇到不同问题。</p></section><section id="sec2" aria-labelledby="title2"><h2 id="title2">02 · 贝叶斯更新与“朴素”条件独立假设</h2><p>对类别 <code>y=c</code> 与特征向量 <code>x=(x₁,…,xd)</code>，贝叶斯规则是 <code>P(c|x)∝P(c)P(x|c)</code>。其中困难部分是联合条件似然 <code>P(x|c)</code>；NB 的“朴素”假设将其分解为 <code>∏jP(xⱼ|c)</code>。这是假定给定类别后各特征条件独立，不是说特征在整个总体中都独立。</p><figure><div class="figure-scroll"><img src="../assets/svg/12/naive-bayes.svg" width="1000" height="450" loading="lazy" alt="NB 的类别打分由先验和每个类条件特征似然相乘得到。三个变体适合不同的特征类型。"></div><figcaption>NB 的类别打分由先验和每个类条件特征似然相乘得到。三个变体适合不同的特征类型。</figcaption></figure><div class="eq" role="group" tabindex="0" aria-label="朴素贝叶斯分解：类别先验乘以给定类别的各特征条件概率"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><mrow><mi>P</mi><mo>(</mo><mi>y</mi><mo>=</mo><mi>c</mi><mo>|</mo><mi>x</mi><mo>)</mo><mo>∝</mo><mi>P</mi><mo>(</mo><mi>y</mi><mo>=</mo><mi>c</mi><mo>)</mo><munderover><mo>∏</mo><mrow><mi>j</mi><mo>=</mo><mn>1</mn></mrow><mi>d</mi></munderover><mi>P</mi><mo>(</mo><msub><mi>x</mi><mi>j</mi></msub><mo>|</mo><mi>y</mi><mo>=</mo><mi>c</mi><mo>)</mo></mrow></math></div><p>分类时各类别使用同一个证据分母，比较未归一化分数即可。但数值计算时直接相乘许多很小的概率会下溢，因此通常在<strong>对数空间</strong>将连乘转成求和。即使类条件独立假设不严格成立，NB 仍可能具有不错的分类边界；它的 <code>predict_proba</code> 却可能因重复计算相关证据而偏向过度自信，需要校准检查。</p></section><section id="sec3" aria-labelledby="title3"><h2 id="title3">03 · Gaussian、Multinomial、Bernoulli 模型不要混用</h2><p><strong>GaussianNB</strong> 为每个类别的连续特征分别拟合均值与方差，并以一维高斯密度相乘；它不要求整张数据表全局服从同一个高斯分布。<strong>MultinomialNB</strong> 更适合计数型或类似非负频率的特征，经常与词频矩阵结合；<strong>BernoulliNB</strong> 处理二值化事件，既考虑某词出现，也可考虑未出现。</p><p>直接将带负值的标准化连续特征输入 <code>MultinomialNB</code> 不符合其非负输入要求；把一组高度相关的特征当成独立证据也可能影响概率可靠性。对文本的不平衡数据，可进一步研究 <code>ComplementNB</code> 的具体假设，而不是默认更复杂变体总赢。</p></section><section id="sec4" aria-labelledby="title4"><h2 id="title4">04 · Laplace 平滑如何处理未见过的词</h2><p>如果某个词在一个类别的训练文本中从未出现，直接用最大似然计数给出的条件概率为零，会使类别似然连乘直接变成零。加法平滑给每个词一个伪计数 α，避免这一极端。设词表大小 <code>|V|</code>，类别 <code>c</code> 内词 <code>w</code> 的计数为 <code>Ncw</code>，该类总词计数为 <code>Nc</code>，则：</p><div class="eq" role="group" tabindex="0" aria-label="多项式 NB 加法平滑：词计数加 alpha，分母加 alpha 乘词表大小"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><mrow><mi>P</mi><mo>(</mo><mi>w</mi><mo>|</mo><mi>c</mi><mo>)</mo><mo>=</mo><mfrac><mrow><msub><mi>N</mi><mrow><mi>c</mi><mi>w</mi></mrow></msub><mo>+</mo><mi>α</mi></mrow><mrow><msub><mi>N</mi><mi>c</mi></msub><mo>+</mo><mi>α</mi><mo>|</mo><mi>V</mi><mo>|</mo></mrow></mfrac></mrow></math></div><p>例如词表只有 3 个词：spam 类总词数 12，其中 free 计数 6；ham 类总词数 10，其中 free 计数 1，且 α=1。则 <code>P(free|spam)=7/15</code>，<code>P(free|ham)=2/13</code>。这不等于“7/15 的邮件是垃圾邮件”，也不等于将类别先验忽略后的最终后验。</p><figure><div class="figure-scroll"><img src="../assets/svg/12/laplace-smoothing.svg" width="1000" height="450" loading="lazy" alt="用 3 个词的教学词表展开 Laplace 平滑的分子、分母；分母中的总数是词出现次数而不是文档条数。"></div><figcaption>用 3 个词的教学词表展开 Laplace 平滑的分子、分母；分母中的总数是词出现次数而不是文档条数。</figcaption></figure></section><section id="sec5" aria-labelledby="title5"><h2 id="title5">05 · KNN：判断新样本的邻居到底是谁</h2><p>KNN 分类时先计算查询样本到各训练样本的距离，再找出最近的 <code>k</code> 个邻居，按类别多数投票（uniform）或按距离加权。图中的查询点最近三个邻居有两个绿色、一个橙色，因此 <code>k=3</code> 且等权投票时预测绿色类。实际算法有各种索引结构来加速搜索，但预测本质上仍依赖存储的样本及选定距离。</p><figure><div class="figure-scroll"><img src="../assets/svg/12/knn-neighborhood.svg" width="1000" height="450" loading="lazy" alt="紫色查询点连接其最近三个训练样本，两绿一橙，K=3 的等权投票选择绿色类。"></div><figcaption>紫色查询点连接其最近三个训练样本，两绿一橙，K=3 的等权投票选择绿色类。</figcaption></figure><p>k 小时决策边界可能很曲折并对噪声敏感，k 大时会将局部结构过分平滑；它还受到类比例及距离加权的影响。欧氏距离依赖量纲，面积、年龄或金额等混合特征未经处理就计算距离，通常缺乏合理语义。距离度量和 k 均应在训练开发集内选择。</p></section><section id="sec6" aria-labelledby="title6"><h2 id="title6">06 · 维度灾难不是一句“高维一定失败”</h2><p>高维空间体积增长快：在边长为 1 的超立方体中，固定边长 0.5 的子立方体占总体积的比例为 <code>0.5^d</code>。d=2 时是 0.25；d=10 时仅约 0.00098。这个例子说明局部区域在某种几何定义下迅速稀疏，但不是通用最近邻性能公式。</p><p>实际高维数据可能位于低维流形、经过有效表征学习，或具有适当的稀疏距离；此时近邻仍可有效。问题是随着无关特征增加，距离排序可能变得不稳定，搜索计算与内存需求也增大。需要通过可解释的距离、特征选择、降维和验证曲线判断，而非只看维度数值。</p></section><section id="sec7" aria-labelledby="title7"><h2 id="title7">07 · 实验 A：基于词频的 MultinomialNB</h2><p>这是无需下载的英语短文本演示。每条短信使用非负词计数，模型只在训练样本上学习词汇表和 NB 参数，不暗示这就是一个能用于真实邮件安全拦截的分类器。</p><pre><code>import numpy as np
+from sklearn.pipeline import make_pipeline
 from sklearn.feature_extraction.text import CountVectorizer
+from sklearn.naive_bayes import MultinomialNB
 
-# 垃圾邮件过滤：MultinomialNB + 词袋模型
-texts = ["免费领取大奖", "明天开会讨论", "恭喜你中奖了", "项目进展汇报"]
-labels = [1, 0, 1, 0]  # 1=垃圾, 0=正常
-
-vectorizer = CountVectorizer()
-X = vectorizer.fit_transform(texts)
-
-nb = MultinomialNB(alpha=1.0)  # alpha是拉普拉斯平滑参数
-nb.fit(X, labels)
-print(f"预测概率: {nb.predict_proba(vectorizer.transform(['免费百万大奖']))}")
-</code></pre>
-
-        <div class="tip">
-            <strong>💡 拉普拉斯平滑（α）：</strong>如果训练集中某词从未在垃圾邮件中出现过，它的概率是0。在朴素贝叶斯中，一个0概率会让整个乘积变成0。α参数给每个词计数加α，保证没有概率是0。α=1（默认）就是经典的拉普拉斯平滑。这个简单的技巧解决了"零概率灾难"。
-        </div>
-
-        <h2>12.3 KNN：连"训练"都没有的算法</h2>
-        <p>K近邻算法（K-Nearest Neighbors）可能是所有ML算法中最"懒"的——它根本没有显式的训练过程。当需要预测一个新样本时，KNN在训练集中找离它最近的K个邻居，看这K个邻居多数属于哪个类，就判为哪个类。</p>
-
-        <p>KNN没有"训练"时间，但预测很慢——每次预测都要扫描整个训练集计算距离。这和大多数算法相反（训练慢预测快）。</p>
-
-        <h3>三个关键选择</h3>
-        <ol>
-            <li><strong>K值：</strong>K太小 → 对噪声敏感，过拟合。K太大 → 邻居里混入其他类，边界变模糊。通常用交叉验证选K</li>
-            <li><strong>距离度量：</strong>欧氏距离（默认，适合连续值）、曼哈顿距离（适合高维数据）、余弦相似度（适合文本/高维稀疏向量）</li>
-            <li><strong>投票权重：</strong>uniform（每人一票）vs distance（距离近的权重更大）。后者通常更好</li>
-        </ol>
-
-        <pre><code>from sklearn.neighbors import KNeighborsClassifier
+texts = [
+    &quot;free offer claim now&quot;, &quot;claim free prize&quot;, &quot;free coupon prize&quot;,
+    &quot;team meeting agenda&quot;, &quot;project update meeting&quot;, &quot;schedule team notes&quot;,
+]
+labels = np.array([1, 1, 1, 0, 0, 0])
+clf = make_pipeline(CountVectorizer(), MultinomialNB(alpha=1.0))
+clf.fit(texts, labels)
+probs = clf.predict_proba([&quot;free prize&quot;, &quot;meeting notes&quot;])
+print(&quot;P(class | text):&quot;, np.round(probs, 3))
+print(&quot;prediction:&quot;, clf.predict([&quot;free prize&quot;, &quot;meeting notes&quot;]).tolist())
+assert probs.shape == (2, 2)
+assert np.allclose(probs.sum(axis=1), 1)</code></pre><p>依赖 Python 3.10+、NumPy、scikit-learn。实际任务应从训练开发数据中另划独立验证与测试；这个极小的示例只为说明模型 API 与词袋特征，未做泛化性能评估。</p></section><section id="sec8" aria-labelledby="title8"><h2 id="title8">08 · 实验 B：只在开发集选择最近邻 k</h2><p>使用内置 Iris 数据作多分类近邻演示，固定种子拆分开发与测试集，开发集的 3 折交叉验证比较不同 k。<code>StandardScaler</code> 被放进 Pipeline 内，避免交叉验证时从验证折偷看均值或尺度。</p><pre><code>import numpy as np
+from sklearn.datasets import load_iris
+from sklearn.model_selection import train_test_split, StratifiedKFold, cross_val_score
+from sklearn.pipeline import make_pipeline
 from sklearn.preprocessing import StandardScaler
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.metrics import accuracy_score
 
-# KNN对尺度极其敏感，不标准化等于让大尺度特征独裁
-scaler = StandardScaler()
-X_train_scaled = scaler.fit_transform(X_train)
-X_test_scaled = scaler.transform(X_test)
-
-knn = KNeighborsClassifier(n_neighbors=5, weights='distance', metric='minkowski', p=2)
-knn.fit(X_train_scaled, y_train)  # 实际上只是"记住"数据，不做计算
-
-# 找最优K值
-k_range = range(1, 31)
-scores = []
-for k in k_range:
-    knn = KNeighborsClassifier(n_neighbors=k)
-    score = cross_val_score(knn, X_train_scaled, y_train, cv=5, scoring='accuracy').mean()
-    scores.append(score)
-best_k = k_range[np.argmax(scores)]
-print(f"最佳K值: {best_k}")
-</code></pre>
-
-        <h2>12.4 维度灾难：KNN的阿喀琉斯之踵</h2>
-        <p>KNN最大的敌人不是噪声，而是高维度。直觉：在1维空间，大多数点都在附近；在100维空间，所有点都离得很远——最近邻和最远邻的距离差异变得微不足道，距离失去了意义。</p>
-
-        <p>如果特征维度d > 20，KNN的效果通常急剧下降。这时候需要降维（PCA等）或者换一个不受维度灾难影响的算法（如树模型或SVM）。</p>
-
-        <div class="warning">
-            <strong>⚠️ 两个常见错误：</strong>(1) 在KNN之前不做标准化——特征的量纲差异直接毁了距离计算。(2) 特征维度过高还硬用KNN——1000维数据下KNN基本等于随机猜测。如果非要在这个数据上用KNN，先用PCA降到20维以内。还有K-D Tree和Ball Tree可以加速最近邻搜索，但治标不治本。
-        </div>
-
-        <h2>12.5 对比总结</h2>
-
-        <table>
-            <tr><th>特性</th><th>朴素贝叶斯</th><th>KNN</th></tr>
-            <tr><td>训练速度</td><td>极快（只统计计数）</td><td>极快（不训练）</td></tr>
-            <tr><td>预测速度</td><td>快</td><td>慢（需扫描全部数据）</td></tr>
-            <tr><td>特征尺度敏感</td><td>不敏感（高斯NB自适应）</td><td>极其敏感</td></tr>
-            <tr><td>线性可分</td><td>是（线性决策边界）</td><td>否（任意复杂边界）</td></tr>
-            <tr><td>最佳场景</td><td>文本分类、实时预测</td><td>小数据、低维度、推荐系统</td></tr>
-        </table>
-
-        <p>好了，朴素贝叶斯和KNN就讲到这里。下一章我们进入无监督学习的第一个主题——聚类算法。</p>
-
-        <div class="footer-nav">
-            <a href="11.html">← 上一章</a>
-            <a href="index.html">📖 返回目录</a>
-            <a href="13.html">下一章 →</a>
-        </div>
-    </div>
-</div>
-</div>
-</body>
-</html>
+X, y = load_iris(return_X_y=True)
+Xdev, Xtest, ydev, ytest = train_test_split(
+    X, y, test_size=0.2, stratify=y, random_state=12)
+cv = StratifiedKFold(n_splits=3, shuffle=True, random_state=12)
+scores = {}
+for k in (3, 5, 7, 11):
+    pipe = make_pipeline(StandardScaler(),
+                         KNeighborsClassifier(n_neighbors=k))
+    scores[k] = float(cross_val_score(
+        pipe, Xdev, ydev, cv=cv, scoring=&quot;accuracy&quot;).mean())
+chosen_k = max(scores, key=scores.get)
+model = make_pipeline(StandardScaler(),
+                      KNeighborsClassifier(n_neighbors=chosen_k))
+model.fit(Xdev, ydev)
+pred = model.predict(Xtest)
+print(&quot;CV by k:&quot;, scores, &quot;chosen k:&quot;, chosen_k)
+print(&quot;held-out accuracy:&quot;, accuracy_score(ytest, pred))
+assert len(pred) == len(ytest)
+assert 1 &lt;= chosen_k &lt;= len(Xdev)</code></pre><p>这是单次保留测试评估。<code>scoring</code> 应结合实际业务错误成本更换，类别不平衡时不应只看 accuracy；若存在重复实体或时间依赖，分割器也需要改变。</p></section><section id="sec9" aria-labelledby="title9"><h2 id="title9">09 · 应该如何选、何时不该选</h2><p>若特征主要是短文本词频，NB 可以成为轻量可解释基线；若输入是定义明确、已缩放的低维连续数值，KNN 是直观且易诊断的基线。对高维、概率校准敏感或部署延迟严格的系统，必须进一步测试概率可靠性和预测成本。NB 的独立假设、KNN 的距离假设都比“模型类型”这个标签重要得多。</p><ul class="refs"><li><a href="https://scikit-learn.org/stable/modules/naive_bayes.html" rel="noopener noreferrer">scikit-learn Naive Bayes：条件独立假设、变体和概率行为</a></li><li><a href="https://scikit-learn.org/stable/modules/generated/sklearn.naive_bayes.MultinomialNB.html" rel="noopener noreferrer">MultinomialNB：alpha 和非负计数要求</a></li><li><a href="https://scikit-learn.org/stable/modules/neighbors.html" rel="noopener noreferrer">Nearest Neighbors：距离、索引结构和维度影响</a></li><li><a href="https://scikit-learn.org/stable/modules/generated/sklearn.neighbors.KNeighborsClassifier.html" rel="noopener noreferrer">KNeighborsClassifier：k、权重、距离与 API</a></li></ul></section><nav class="article-footer" aria-label="章节导航"><a href="11.html">← 上一章</a><a href="../index.html">全部章节</a><a href="13.html">下一章 →</a></nav></article></main></div><footer class="site-footer"><span>机器学习图解教程 · 第 12 章</span><span>从直觉到公式、代码与证据边界</span></footer></body></html>

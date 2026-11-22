@@ -1,231 +1,26 @@
-<!DOCTYPE html>
-<html lang="zh-CN">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.5, user-scalable=yes">
-    <title>第11章 支持向量机 SVM</title>
-    <style>
-        * { margin:0; padding:0; box-sizing:border-box; }
-        body {
-            background: linear-gradient(135deg, #f5f3ff 0%, #e8f5f0 100%);
-            font-family: system-ui, -apple-system, 'Segoe UI', 'PingFang SC', Roboto, 'Helvetica Neue', sans-serif;
-            padding: 20px;
-        }
-        .double-border {
-            max-width: 1400px;
-            margin: 0 auto;
-            background: #ffffff;
-            border: 2px solid #8b5cf6;
-            border-radius: 24px;
-            box-shadow: 0 20px 30px -15px rgba(0,0,0,0.2), inset 0 1px 0 0 #f5f3ff;
-            overflow: hidden;
-        }
-        .container {
-            display: grid;
-            grid-template-columns: 260px 1fr;
-            gap: 0;
-        }
-        .sidebar {
-            background: #faf8ff;
-            border-right: 2px solid #c4b5fd;
-            padding: 24px 16px;
-        }
-        .sidebar h3 {
-            font-size: 1.4rem;
-            color: #6d28d9;
-            border-left: 5px solid #8b5cf6;
-            padding-left: 15px;
-            margin-bottom: 25px;
-        }
-        .chapter-list { list-style: none; }
-        .chapter-list li { margin-bottom: 6px; }
-        .chapter-list a {
-            display: block; padding: 8px 12px; text-decoration: none;
-            color: #334155; border-radius: 12px; transition: all 0.2s;
-            font-weight: 500; font-size: 0.92rem;
-        }
-        .chapter-list a:hover { background: #ede9fe; transform: translateX(3px); }
-        .chapter-list .active {
-            background: #7c3aed; color: white;
-            box-shadow: 0 2px 5px rgba(124,58,237,0.3);
-        }
-        .main-content { padding: 30px 35px; background: white; }
-        .footer-nav {
-            margin-top: 45px; padding-top: 20px; border-top: 2px solid #c4b5fd;
-            display: flex; justify-content: space-between;
-        }
-        .footer-nav a {
-            padding: 8px 24px; background: #f1f5f9; text-decoration: none;
-            color: #5b21b6; border-radius: 40px; font-weight: 500; transition: 0.2s;
-        }
-        .footer-nav a:hover { background: #ede9fe; transform: translateY(-2px); }
-        footer {
-            text-align: center; margin-top: 30px; padding: 15px; color: #64748b;
-            border-top: 1px dashed #cbd5e1; font-size: 0.9rem;
-        }
-        h2 { color: #4c1d95; border-left: 6px solid #8b5cf6; padding-left: 15px; margin: 20px 0 15px; font-size: 1.5rem; }
-        h3 { color: #5b21b6; margin: 20px 0 10px; font-size: 1.2rem; }
-        h4 { color: #6d28d9; margin: 15px 0 8px; font-size: 1.05rem; }
-        p { line-height: 1.85; margin: 10px 0; color: #1e293b; }
-        ul, ol { margin: 10px 0 10px 20px; line-height: 1.8; }
-        li { color: #1e293b; margin-bottom: 4px; }
-        pre {
-            background: #1e1035; color: #e8e8f0; padding: 15px; border-radius: 12px;
-            overflow-x: auto; font-family: 'JetBrains Mono', 'Fira Code', monospace;
-            margin: 15px 0; font-size: 0.9rem; line-height: 1.5;
-        }
-        code { background: #f5f3ff; padding: 2px 6px; border-radius: 4px; font-family: 'JetBrains Mono', monospace; font-size: 0.85em; }
-        pre code { background: none; padding: 0; }
-        table { width: 100%; border-collapse: collapse; margin: 15px 0; background: #fafafe; }
-        th, td { border: 1px solid #c4b5fd; padding: 10px; text-align: left; }
-        th { background: #f5f3ff; color: #5b21b6; font-weight: 600; }
-        .tip, .warning, .highlight {
-            padding: 12px 18px; border-radius: 16px; margin: 15px 0; line-height: 1.7;
-        }
-        .tip { background: #e0f2fe; border-left: 6px solid #0ea5e9; }
-        .warning { background: #fee2e2; border-left: 6px solid #ef4444; }
-        .highlight { background: #fef9c3; border: 1px solid #facc15; }
-        strong { color: #1e1b4b; }
-        @media (max-width: 768px) {
-            .container { grid-template-columns: 1fr; }
-            .sidebar { border-right: none; border-bottom: 2px solid #c4b5fd; }
-            body { padding: 10px; }
-            .main-content { padding: 20px; }
-        }
-    </style>
-    <link rel="stylesheet" href="theme.css">
-</head>
-<body>
-<div class="double-border">
-<div class="container">
-    <div class="sidebar">
-        <h3>🤖 课程目录</h3>
-        <ul class="chapter-list">
-            <li><a href="01.html">第1章 机器学习概述</a></li>
-            <li><a href="02.html">第2章 数学基础：线性代数</a></li>
-            <li><a href="03.html">第3章 数学基础：概率统计</a></li>
-            <li><a href="04.html">第4章 数学基础：优化理论</a></li>
-            <li><a href="05.html">第5章 数据预处理与探索</a></li>
-            <li><a href="06.html">第6章 第一个ML项目实战</a></li>
-            <li><a href="07.html">第7章 模型评估与选择</a></li>
-            <li><a href="08.html">第8章 线性回归与正则化</a></li>
-            <li><a href="09.html">第9章 逻辑回归与分类</a></li>
-            <li><a href="10.html">第10章 决策树与随机森林</a></li>
-            <li><a href="11.html" class="active">第11章 支持向量机 SVM</a></li>
-            <li><a href="12.html">第12章 朴素贝叶斯与KNN</a></li>
-            <li><a href="13.html">第13章 聚类算法</a></li>
-            <li><a href="14.html">第14章 降维与特征工程</a></li>
-            <li><a href="15.html">第15章 模型调参与AutoML</a></li>
-            <li><a href="16.html">第16章 处理不平衡数据</a></li>
-            <li><a href="17.html">第17章 模型可解释性</a></li>
-            <li><a href="18.html">第18章 ML系统工程化</a></li>
-            <li><a href="19.html">第19章 神经网络基础</a></li>
-            <li><a href="20.html">第20章 深度学习框架实战</a></li>
-            <li><a href="21.html">第21章 CNN卷积神经网络</a></li>
-            <li><a href="22.html">第22章 RNN与序列模型</a></li>
-            <li><a href="23.html">第23章 NLP自然语言处理</a></li>
-            <li><a href="24.html">第24章 生成式模型</a></li>
-            <li><a href="25.html">第25章 强化学习入门</a></li>
-            <li><a href="26.html">第26章 大语言模型与RAG</a></li>
-            <li><a href="27.html">第27章 模型部署与服务化</a></li>
-            <li><a href="28.html">第28章 毕业项目：端到端ML系统</a></li>
-        </ul>
-    </div>
-    <div class="main-content">
-        <h2>11.1 画一条线把两类分开——但画哪条最好？</h2>
-        <p>假设平面上有两类点，红点和蓝点。你可以画无数条直线把它们分开。哪条最好？SVM的回答是：<strong>到两边最近点的距离（间隔）最大的那条</strong>。这个直觉非常几何化——不只要分对，还要让分界线离每个类都尽可能远，这样新的点进来时不容易被错分。</p>
-
-        <p>我一直在想一个问题：为什么SVM在深度学习兴起之后依然没有被淘汰？答案是：<strong>在小样本、高维度的场景下，SVM的表现经常优于神经网络</strong>。比如基因表达数据（几百个样本、几万个特征），SVM配合合适的核函数依然是SOTA。</p>
-
-        <h2>11.2 最大间隔分类器</h2>
-        <p>SVM的目标是最大化margin（间隔），即分类边界到最近样本点的距离。这些"最近的点"决定了边界的位置，它们就是<strong>支持向量（Support Vectors）</strong>——SVM名字的由来。</p>
-
-        <p>关键性质：只有支持向量影响决策边界。你把非支持向量的训练样本移动一点或删掉，边界完全不变。这使得SVM天然对远离边界的样本具有鲁棒性。</p>
-
-        <h2>11.3 软间隔：允许犯一点错</h2>
-        <p>现实中数据往往不是线性可分的——总有几个点混在对方阵营里。硬间隔SVM会为了完美分开它们而画出一个极其扭曲的边界，过拟合。软间隔引入参数<strong>C</strong>，允许一些点"越过"边界：</p>
-
-        <ul>
-            <li><strong>C很大：</strong>几乎不允许犯错 → 边界很"硬" → 过拟合风险</li>
-            <li><strong>C很小：</strong>允许较多犯错 → 边界更"软" → 更平滑，泛化更好</li>
-        </ul>
-
-        <div class="tip">
-            <strong>💡 C怎么记：</strong>C是"惩罚力度"。C大 = 对犯错惩罚大 = 不允许犯错 = 硬边界。C小 = 对犯错宽容 = 允许犯错 = 软边界。记住：<strong>C和正则化强度λ是反比关系</strong>（C ≈ 1/λ）。
-        </div>
-
-        <h2>11.4 核技巧：把"不可能"变成"可能"</h2>
-        <p>这是SVM最优雅的部分。如果数据在原空间无法线性分开怎么办？把它们映射到高维空间！</p>
-
-        <p>比如二维平面上，红点围成一圈，蓝点在圈里。没有直线能分开它们。但如果加一个维度 z = x² + y²，红点在高处（大的z），蓝点在低处（小的z）——在高维空间一个平面就能分开了。</p>
-
-        <p>核技巧的精髓：<strong>你不需要真的算高维映射的结果，只需要知道两个样本在高维空间的内积</strong>。核函数K(x, x')就是这个内积。</p>
-
-        <table>
-            <tr><th>核函数</th><th>公式（直觉）</th><th>适用场景</th></tr>
-            <tr><td>线性核</td><td>x·x'</td><td>高维稀疏数据（文本分类）</td></tr>
-            <tr><td>RBF核</td><td>exp(-γ||x-x'||²)</td><td>不知道用什么的时候的默认选项</td></tr>
-            <tr><td>多项式核</td><td>(γx·x' + r)^d</td><td>已知特征交互是多项式关系</td></tr>
-            <tr><td>Sigmoid核</td><td>tanh(γx·x' + r)</td><td>历史上使用，现在很少用</td></tr>
-        </table>
-
-        <h2>11.5 γ参数：RBF核的关键</h2>
-
-        <p>RBF核中有两个核心参数——C和γ（gamma）：</p>
-        <ul>
-            <li><strong>γ大：</strong>每个支持向量的影响范围小 → 边界非常弯曲 → 容易过拟合</li>
-            <li><strong>γ小：</strong>每个支持向量的影响范围大 → 边界更平滑 → 可能欠拟合</li>
-        </ul>
-
-        <pre><code>from sklearn.svm import SVC
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="description" content="从可分数据的最大几何间隔出发，推导间隔与 ||w|| 的关系，再用 hinge loss 解释软间隔。RBF 核、C 与 gamma 的影响必须与标准化、交叉验证和数据规模一起理解。"><title>支持向量机：最大间隔、软间隔与核技巧 · 机器学习图解教程</title><link rel="stylesheet" href="../assets/css/article.css"></head><body class="article-page"><a class="skip-link" href="#content">跳转至正文</a><header class="site-header"><div class="header-inner"><a class="wordmark" href="../index.html"><span class="mark">M<span>·</span>L</span><span>机器学习图解教程<small>Machine Learning, Explained</small></span></a><nav aria-label="顶部导航"><a href="../index.html">课程目录</a><a href="https://github.com/1998x-stack/machine-learning-tutorial">GitHub</a></nav></div></header><div class="article-shell"><aside class="article-nav"><nav aria-label="文章目录"><details open><summary>本章目录</summary><div class="nav-items"><a href="../index.html">← 全部章节</a><a href="#sec1">从可分直线到最大间隔</a><a href="#sec2">为什么要引入软间隔</a><a href="#sec3">hinge loss 把违例写成可优化函数</a><a href="#sec4">核函数：不显式生成高维特征也能计算相似性</a><a href="#sec5">C 与 gamma 的联合搜索不能看测试分数</a><a href="#sec6">离线实验：在两月牙数据上搜索 RBF SVC</a><a href="#sec7">误用检查与来源</a></div></details></nav></aside><main class="article-main" id="content"><article><div class="breadcrumb"><a href="../index.html">课程目录</a><span>/</span><span>第 11 章</span></div><header class="article-header"><div class="chapter-number">CHAPTER 11 / 28</div><h1>支持向量机：最大间隔、软间隔与核技巧</h1><p class="dek">从可分数据的最大几何间隔出发，推导间隔与 ||w|| 的关系，再用 hinge loss 解释软间隔。RBF 核、C 与 gamma 的影响必须与标准化、交叉验证和数据规模一起理解。</p><div class="lead-question">两条线都能把训练样本分开，为什么更宽的分类间隔可能更可靠？</div></header><section id="sec1" aria-labelledby="title1"><h2 id="title1">01 · 从可分直线到最大间隔</h2><p>考虑二维样本被分成正类和负类，线性分类器以函数 <code>f(x)=wᵀx+b</code> 的符号决定类别。一组可分样本可能对应无数条分类线。SVM 不是随便选一条线，而是寻找距离最近训练点尽量远的分割超平面，避免决策边界贴着某个偶然样本。</p><p>对标签 <code>yᵢ∈{−1,+1}</code>，规范化线性可分问题中的约束 <code>yᵢ(wᵀxᵢ+b)≥1</code> 定义两侧的函数间隔。位于 <code>wᵀx+b=±1</code> 的平行超平面之间的<strong>几何距离</strong>为 <code>2/||w||₂</code>；所以最大化间隔等价于最小化 <code>||w||²/2</code>，并满足所有训练约束。</p><figure><div class="figure-scroll"><img src="../assets/svg/11/margin-support-vectors.svg" width="1000" height="450" loading="lazy" alt="紫色实线为分类边界，两侧虚线是规范化间隔边界，最近样本（支持向量）决定最大间隔；图示属于线性可分教学情形。"></div><figcaption>紫色实线为分类边界，两侧虚线是规范化间隔边界，最近样本（支持向量）决定最大间隔；图示属于线性可分教学情形。</figcaption></figure><div class="eq" role="group" tabindex="0" aria-label="硬间隔 SVM：最小化二分之一权重的平方范数，并满足每个样本函数间隔至少一"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><mrow><munder><mo>min</mo><mrow><mi>w</mi><mo>,</mo><mi>b</mi></mrow></munder><mfrac><mn>1</mn><mn>2</mn></mfrac><msup><mrow><mo>‖</mo><mi>w</mi><mo>‖</mo></mrow><mn>2</mn></msup><mspace width="1em"/><mtext>subject to </mtext><msub><mi>y</mi><mi>i</mi></msub><mo>(</mo><msup><mi>w</mi><mi>T</mi></msup><msub><mi>x</mi><mi>i</mi></msub><mo>+</mo><mi>b</mi><mo>)</mo><mo>≥</mo><mn>1</mn></mrow></math></div><p>数学上“支持向量”通常对应对偶优化中非零乘子的训练点；并非图上任意靠近分界线的点都能仅凭视觉判断其对最终最优解有多大影响。标准化特征前后的距离尺度不同，间隔的数值意义也不同。</p></section><section id="sec2" aria-labelledby="title2"><h2 id="title2">02 · 为什么要引入软间隔</h2><p>真实样本可能有标签噪声、异常点或两类重叠。硬间隔模型要求全部样本被正确分开，因而对这些情况不适用。软间隔 SVM 引入非负松弛变量 <code>ξᵢ</code>，在一定程度上允许点落入间隔甚至被分错，用 <code>C</code> 对这些违反间隔约束的情况定价。</p><div class="eq" role="group" tabindex="0" aria-label="软间隔原始目标：最小二分之一权重平方范数加 C 乘松弛变量之和"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><mrow><munder><mo>min</mo><mrow><mi>w</mi><mo>,</mo><mi>b</mi><mo>,</mo><mi>ξ</mi></mrow></munder><mfrac><mn>1</mn><mn>2</mn></mfrac><msup><mrow><mo>‖</mo><mi>w</mi><mo>‖</mo></mrow><mn>2</mn></msup><mo>+</mo><mi>C</mi><munderover><mo>∑</mo><mrow><mi>i</mi><mo>=</mo><mn>1</mn></mrow><mi>n</mi></munderover><msub><mi>ξ</mi><mi>i</mi></msub></mrow></math></div><p>约束还包括 <code>yᵢ(wᵀxᵢ+b)≥1−ξᵢ</code> 和 <code>ξᵢ≥0</code>。<strong>C 越大</strong>，每单位违反间隔的代价通常越高，更倾向减少训练违例；但并不意味着“C 就是允许犯错的个数”，也不保证大 C 在测试集更好。</p></section><section id="sec3" aria-labelledby="title3"><h2 id="title3">03 · hinge loss 把违例写成可优化函数</h2><p>定义函数间隔 <code>mᵢ=yᵢf(xᵢ)</code>，hinge loss 为 <code>max(0,1−mᵢ)</code>。若 <code>mᵢ≥1</code>，样本不仅被分对，而且处于规定间隔外，损失为零；若 <code>0&lt;mᵢ&lt;1</code>，虽然分类正确，却仍侵犯间隔；若 <code>mᵢ≤0</code>，它已经在错误侧或边界上。</p><figure><div class="figure-scroll"><img src="../assets/svg/11/hinge-loss.svg" width="1000" height="450" loading="lazy" alt="橙色折线由精确分段公式计算，展示 hinge loss 在函数间隔为 1 之后变为零；它不是训练曲线。"></div><figcaption>橙色折线由精确分段公式计算，展示 hinge loss 在函数间隔为 1 之后变为零；它不是训练曲线。</figcaption></figure><p>hinge loss 在拐点不可微，但可以使用次梯度或专门的优化方法；它不需要提供校准概率。SVC 的 <code>decision_function</code> 是用于排序及判别的分数，不应直接视作“某类真实发生的概率”。</p></section><section id="sec4" aria-labelledby="title4"><h2 id="title4">04 · 核函数：不显式生成高维特征也能计算相似性</h2><p>有些数据如两层同心圆无法由单一二维直线分开。若存在映射 <code>φ(x)</code>，理论上可以在映射后的特征空间寻找线性边界。核函数 <code>K(x,x')=⟨φ(x),φ(x')⟩</code> 直接计算这类内积，而不必真的构造全部特征列；这就是<strong>核技巧</strong>的核心。</p><p>常用 RBF 核为 <code>K(x,x')=exp(−γ||x−x'||²)</code>，当样本重合时相似度为 1，距离越远则趋向 0。参数 <code>γ</code> 决定影响范围：更大的 gamma 使相似度随距离更快衰减，边界更容易追踪局部细节；小 gamma 使变化更平滑。但能否泛化必须由数据与验证集共同决定。</p><figure><div class="figure-scroll"><img src="../assets/svg/11/rbf-gamma.svg" width="1000" height="450" loading="lazy" alt="RBF 核随两点欧氏距离衰减，绿线 gamma=0.5，橙线 gamma=4；曲线由解析公式计算。"></div><figcaption>RBF 核随两点欧氏距离衰减，绿线 gamma=0.5，橙线 gamma=4；曲线由解析公式计算。</figcaption></figure><div class="eq" role="group" tabindex="0" aria-label="径向基函数核，指数为负 gamma 乘欧氏距离的平方"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><mrow><mi>K</mi><mo>(</mo><mi>x</mi><mo>,</mo><msup><mi>x</mi><mo>′</mo></msup><mo>)</mo><mo>=</mo><msup><mi>e</mi><mrow><mo>−</mo><mi>γ</mi><msup><mrow><mo>‖</mo><mi>x</mi><mo>−</mo><msup><mi>x</mi><mo>′</mo></msup><mo>‖</mo></mrow><mn>2</mn></msup></mrow></msup></mrow></math></div><p>核函数并不是“任何相似度函数都可以随意代替”，理论上需要满足相应的正半定等条件。实际 scikit-learn <code>SVC(gamma='scale')</code> 使用基于特征数量及输入方差的缺省 gamma 规则；它对尺度敏感，不适合把未缩放的面积与年龄直接扔进去。</p></section><section id="sec5" aria-labelledby="title5"><h2 id="title5">05 · C 与 gamma 的联合搜索不能看测试分数</h2><p>在 RBF 核 SVM 中，<code>C</code> 控制训练损失与正则化之间的折中，<code>gamma</code> 控制相似性范围，二者会相互作用。通常在对数尺度取一组候选值，通过训练开发集内部的交叉验证寻找参数组合；整个 <code>StandardScaler</code> 必须位于 <code>Pipeline</code> 中，从每一训练折拟合。</p><p>对少量低维样本，核 SVM 可能很有效；对极大样本，精确核矩阵和支持向量数量带来计算与内存成本。对于高维稀疏文本，线性 SVM 或 SGD 等实现往往更适合扩展。多分类 <code>SVC</code> 内部基于成对类的训练机制，<code>decision_function_shape</code> 只是输出形式约定，勿与独立概率校准混淆。</p></section><section id="sec6" aria-labelledby="title6"><h2 id="title6">06 · 离线实验：在两月牙数据上搜索 RBF SVC</h2><p>使用两条互相交错的月牙合成数据，可以检验非线性边界是否比一条直线更合理。这里只对开发集做网格交叉验证，最后使用隔离测试集报告一个结果。示例不宣称此算法对所有二维非线性数据最优。</p><pre><code>import numpy as np
+from sklearn.datasets import make_moons
+from sklearn.model_selection import train_test_split, GridSearchCV
+from sklearn.pipeline import make_pipeline
 from sklearn.preprocessing import StandardScaler
-from sklearn.pipeline import Pipeline
+from sklearn.svm import SVC
+from sklearn.metrics import balanced_accuracy_score
 
-# SVM对特征尺度极其敏感，必须标准化！
-svm_pipe = Pipeline([
-    ('scaler', StandardScaler()),
-    ('svm', SVC(kernel='rbf', C=1.0, gamma='scale', probability=True))
-])
-svm_pipe.fit(X_train, y_train)
-
-# 调参：C和gamma通常在对数尺度上搜索
-from sklearn.model_selection import GridSearchCV
-param_grid = {
-    'svm__C': [0.1, 1, 10, 100],
-    'svm__gamma': [0.001, 0.01, 0.1, 1, 'scale', 'auto'],
-}
-grid = GridSearchCV(svm_pipe, param_grid, cv=5, scoring='f1')
-grid.fit(X_train, y_train)
-print(f"最佳参数: {grid.best_params_}")
-</code></pre>
-
-        <div class="warning">
-            <strong>⚠️ 两个SVM最常见的坑：</strong>(1) 没做标准化就训练——特征尺度差异会导致核函数计算被大尺度特征主导，小尺度特征形同虚设。(2) 默认参数不调参——C=1.0和gamma='scale'只是默认值，不一定是适合你数据的最优值。SVM对参数相当敏感，一定要做网格搜索。
-        </div>
-
-        <h2>11.6 SVM的优缺点总结</h2>
-
-        <table>
-            <tr><th>优点</th><th>缺点</th></tr>
-            <tr><td>小样本高维数据表现优秀</td><td>大数据集训练慢（O(n²)~O(n³)）</td></tr>
-            <tr><td>核技巧非线性灵活</td><td>对参数敏感，需要仔细调参</td></tr>
-            <tr><td>全局最优（凸优化）</td><td>难以解释（黑盒，不像树和线性模型）</td></tr>
-            <tr><td>泛化理论扎实</td><td>不直接输出概率（需要额外校准）</td></tr>
-        </table>
-
-        <div class="highlight">
-            <strong>🔑 什么场景选SVM？</strong>样本量 < 10万 + 特征维度适中 + 需要非线性决策边界。典型应用：手写数字识别（SVM + RBF核在MNIST上表现极好）、文本分类（线性SVM在大规模稀疏文本上速度极快）、生物信息学（基因表达数据分类）。如果是百万级样本的表格数据，请用XGBoost；如果是图像/音频，请用深度学习。
-        </div>
-
-        <p>SVM学完了。下一章我们进入两个"简约但不简单"的算法——朴素贝叶斯和KNN，它们虽然思想简单，但在特定场景下出奇的好用。</p>
-
-        <div class="footer-nav">
-            <a href="10.html">← 上一章</a>
-            <a href="index.html">📖 返回目录</a>
-            <a href="12.html">下一章 →</a>
-        </div>
-    </div>
-</div>
-</div>
-</body>
-</html>
+X, y = make_moons(n_samples=300, noise=0.18, random_state=11)
+Xdev, Xtest, ydev, ytest = train_test_split(
+    X, y, test_size=0.2, stratify=y, random_state=11)
+pipe = make_pipeline(StandardScaler(), SVC(kernel=&quot;rbf&quot;))
+search = GridSearchCV(
+    pipe, {&quot;svc__C&quot;: [0.1, 1.0, 10.0],
+           &quot;svc__gamma&quot;: [0.1, 1.0]},
+    cv=3, scoring=&quot;balanced_accuracy&quot;, n_jobs=1)
+search.fit(Xdev, ydev)
+prediction = search.predict(Xtest)
+print(&quot;CV chosen parameters:&quot;, search.best_params_)
+print(&quot;CV balanced accuracy:&quot;, round(search.best_score_, 3))
+print(&quot;held-out balanced accuracy:&quot;,
+      round(balanced_accuracy_score(ytest, prediction), 3))
+print(&quot;support vector count:&quot;,
+      search.best_estimator_.named_steps[&quot;svc&quot;].n_support_.tolist())
+assert prediction.shape == ytest.shape
+assert 0 &lt;= search.best_score_ &lt;= 1</code></pre><p>需 Python 3.10+、NumPy 与 scikit-learn。这里固定随机种子并在训练折内拟合尺度；<code>n_support_</code> 展示每个类别使用的支持向量数量。研究“C 变化是否改变泛化”时应比较不同折的分数范围，而不是只挑一张好看的边界图。</p></section><section id="sec7" aria-labelledby="title7"><h2 id="title7">07 · 误用检查与来源</h2><p>遇到高维稀疏文本、强烈类别不平衡、需要解释为概率的业务系统或数十万级样本时，先检查训练成本、类别权重、概率校准与上线延迟。缩放必须在训练折内完成；不使用测试集来挑 <code>gamma</code>；别把非线性边界和真实世界的因果分界混为一谈。</p><ul class="refs"><li><a href="https://scikit-learn.org/stable/modules/svm.html" rel="noopener noreferrer">scikit-learn 支持向量机用户指南：最大间隔、核函数、缩放和复杂度</a></li><li><a href="https://scikit-learn.org/stable/modules/generated/sklearn.svm.SVC.html" rel="noopener noreferrer">SVC 参数：C、gamma、kernel 和支持向量</a></li><li><a href="https://scikit-learn.org/stable/modules/grid_search.html" rel="noopener noreferrer">基于交叉验证的参数搜索</a></li></ul></section><nav class="article-footer" aria-label="章节导航"><a href="10.html">← 上一章</a><a href="../index.html">全部章节</a><a href="12.html">下一章 →</a></nav></article></main></div><footer class="site-footer"><span>机器学习图解教程 · 第 11 章</span><span>从直觉到公式、代码与证据边界</span></footer></body></html>

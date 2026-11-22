@@ -41,7 +41,7 @@ def check_page(path, require_article=False):
         if u.scheme or u.netloc or link.startswith(("#", "mailto:", "tel:", "javascript:", "data:")):
             continue
         dest = (path.parent / unquote(u.path)).resolve()
-        if not dest.is_relative_to(ROOT.resolve()) or not dest.is_file():
+        if not dest.is_relative_to(DOCS.resolve()) or not dest.is_file():
             ERRORS.append(f"{path.relative_to(ROOT)}: broken link {link}")
 
 def main():
@@ -54,7 +54,7 @@ def main():
         if not p.is_file():
             ERRORS.append(f"missing {p}")
             continue
-        if i <= 10:
+        if i <= 15:
             check_page(p, require_article=True)
         if not (ROOT / f"{i:02}.html").is_file():
             ERRORS.append(f"missing root legacy redirect {i:02}.html")
@@ -72,12 +72,16 @@ def main():
                 ERRORS.append(f"{f.relative_to(ROOT)}: missing SVG desc")
         except ET.ParseError as e:
             ERRORS.append(f"{f.relative_to(ROOT)}: invalid SVG {e}")
-    if len(svgs) < 25:
-        ERRORS.append(f"expected >=25 diagrams for first ten lessons, found {len(svgs)}")
+    for i in range(11, 16):
+        chapter_svgs = list((DOCS / "assets" / "svg" / f"{i:02}").glob("*.svg"))
+        if len(chapter_svgs) < 3:
+            ERRORS.append(f"chapter {i:02}: expected >=3 standalone SVG files")
+    if len(svgs) < 40:
+        ERRORS.append(f"expected >=40 diagrams for first fifteen lessons, found {len(svgs)}")
     if ERRORS:
         print("\n".join("ERROR " + s for s in ERRORS))
         return 1
-    print(f"PASS: 28 lessons, 10 updated article pages, {len(svgs)} valid standalone SVGs, local assets resolved")
+    print(f"PASS: 28 lessons, 15 updated article pages, {len(svgs)} valid standalone SVGs, local assets resolved")
     return 0
 
 if __name__ == "__main__":
