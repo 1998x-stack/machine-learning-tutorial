@@ -6,7 +6,7 @@
       "claim": "A confusion matrix counts true and predicted class combinations; row/column interpretation depends on the documented label order and normalization.",
       "kind": "implementation",
       "source_url": "https://scikit-learn.org/stable/modules/generated/sklearn.metrics.confusion_matrix.html",
-      "locator": "confusion_matrix parameters and examples",
+      "locator": "scikit-learn confusion_matrix: label ordering, row/column convention and normalization",
       "status": "verified",
       "notes": "The article fixes labels=[0,1] and states true rows / predicted columns."
     },
