@@ -76,8 +76,8 @@ def main():
         chapter_svgs = list((DOCS / "assets" / "svg" / f"{i:02}").glob("*.svg"))
         if len(chapter_svgs) < 3:
             ERRORS.append(f"chapter {i:02}: expected >=3 standalone SVG files")
-    if len(svgs) < 58:
-        ERRORS.append(f"expected >=58 diagrams for first twenty lessons, found {len(svgs)}")
+    if len(svgs) < 59:
+        ERRORS.append(f"expected >=58 chapter diagrams plus homepage map (59 SVGs), found {len(svgs)}")
     for i in range(16, 21):
         evidence = DOCS / "evidence" / f"{i:02}.json"
         if not evidence.is_file():
