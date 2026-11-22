@@ -59,7 +59,7 @@ GitHub Pages 首页：https://1998x-stack.github.io/machine-learning-tutorial/
     python3 -m http.server 8000
     # http://localhost:8000/docs/
 
-    python3 -m pip install numpy pandas scikit-learn imbalanced-learn shap mlflow-skinny joblib
+    python3 -m pip install numpy pandas scikit-learn imbalanced-learn shap mlflow joblib
     python3 -m pip install torch --extra-index-url https://download.pytorch.org/whl/cpu
     python3 -m pip install playwright
     python3 -m playwright install chromium
