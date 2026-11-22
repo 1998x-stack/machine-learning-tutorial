@@ -276,7 +276,7 @@ def main():
                 error(path, f"broken fragment target {raw}")
 
     home = (DOCS / "index.html").read_text(encoding="utf-8")
-    home_cards = re.findall(r'href="chapters/(\d{2})\.html"', home)
+    home_cards = re.findall(r'<a class="lesson-card"[^>]*href="chapters/(\d{2})\.html"', home)
     if sorted(home_cards) != [f"{i:02}" for i in range(1, 29)]:
         ERRORS.append("homepage must link to every chapter exactly once")
     if 'id="study-paths"' not in home or 'aria-live="polite"' not in home:
