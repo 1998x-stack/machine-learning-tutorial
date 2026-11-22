@@ -21,7 +21,13 @@ def main():
                 errors = []
                 page.on('pageerror', lambda e: errors.append(str(e)))
                 page.goto(path.as_uri(), wait_until='load')
-                page.wait_for_timeout(80)
+                # Lazy-loaded below-the-fold SVGs must be decoded before
+                # classifying them as broken at a mobile-sized viewport.
+                page.evaluate("""async () => {
+                  const images = Array.from(document.images);
+                  images.forEach(img => { img.loading = 'eager'; });
+                  await Promise.all(images.map(img => img.decode().catch(() => null)));
+                }""")
                 result = page.evaluate('''() => ({
                   scroll: document.documentElement.scrollWidth,
                   viewport: innerWidth,
