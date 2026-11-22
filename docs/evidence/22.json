@@ -14,10 +14,10 @@
       "id": "bptt-gradient",
       "claim": "Backpropagation through time multiplies local state Jacobians, which can lead to vanishing or exploding gradients.",
       "kind": "research",
-      "source_url": "https://www.deeplearningbook.org/contents/rnn.html",
-      "locator": "Chapter 10: Recurrent Neural Networks",
+      "source_url": "https://www.deeplearningbook.org/contents/rnn",
+      "locator": "Chapter 10.2.2, Computing the Gradient in a Recurrent Neural Network",
       "status": "verified",
-      "notes": "Gradient clipping limits norm but does not restore information already lost."
+      "notes": "Gradient clipping limits norm but does not restore information already lost. The source is the authors' public second-edition complete draft PDF/web chapter."
     },
     {
       "id": "lstm-original",
