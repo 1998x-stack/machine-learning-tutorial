@@ -1,0 +1,41 @@
+{
+  "chapter": "09",
+  "claims": [
+    {
+      "id": "logistic-link",
+      "claim": "Binary logistic regression maps a linear predictor through the logistic function to model a conditional probability.",
+      "kind": "concept",
+      "source_url": "https://scikit-learn.org/stable/modules/linear_model.html#logistic-regression",
+      "locator": "Logistic regression formulation",
+      "status": "verified",
+      "notes": "The probability interpretation depends on the model specification and fitted data."
+    },
+    {
+      "id": "log-odds",
+      "claim": "The logistic model makes log-odds linear in the input features rather than probability itself.",
+      "kind": "derivation",
+      "source_url": "https://scikit-learn.org/stable/modules/linear_model.html#logistic-regression",
+      "locator": "Logistic regression and logit link",
+      "status": "derived",
+      "notes": "Coefficients describe conditional log-odds changes under the model, not causal effects."
+    },
+    {
+      "id": "probability-calibration",
+      "claim": "Discrimination and calibration are separate: a model can rank examples well while its probabilities are systematically over- or under-confident.",
+      "kind": "evaluation",
+      "source_url": "https://scikit-learn.org/stable/modules/calibration.html",
+      "locator": "Calibration curves and calibration estimators",
+      "status": "verified",
+      "notes": "Calibration should be assessed on data not used to fit the calibrator."
+    },
+    {
+      "id": "decision-threshold",
+      "claim": "The default 0.5 threshold is a decision convention, not a universal optimum for asymmetric costs or class prevalence.",
+      "kind": "method",
+      "source_url": "https://scikit-learn.org/stable/modules/classification_threshold.html",
+      "locator": "Post-tuning decision threshold",
+      "status": "verified",
+      "notes": "Threshold selection belongs to validation or cross-validation, not the final test set."
+    }
+  ]
+}
