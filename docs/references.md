@@ -40,7 +40,7 @@
 | 14 | [PCA](https://scikit-learn.org/stable/modules/generated/sklearn.decomposition.PCA.html) · [Manifold](https://scikit-learn.org/stable/modules/manifold.html) · [Feature selection](https://scikit-learn.org/stable/modules/feature_selection.html) · [TargetEncoder](https://scikit-learn.org/stable/modules/generated/sklearn.preprocessing.TargetEncoder.html) | t-SNE 不保留全局簇距/密度；目标编码 fit_transform 内部交叉拟合；特征选择必须进入训练折 |
 | 15 | [Grid/Random search](https://scikit-learn.org/stable/modules/grid_search.html) · [Nested CV example](https://scikit-learn.org/stable/auto_examples/model_selection/plot_nested_cross_validation_iris.html) · [Optuna search spaces](https://optuna.readthedocs.io/en/stable/tutorial/10_key_features/002_configurations.html) · [Optuna pruning](https://optuna.readthedocs.io/en/stable/tutorial/10_key_features/003_efficient_optimization_algorithms.html) | 搜索 CV 选择偏差；内层选参、外层评估；非迭代模型不能虚构 pruning 中间步骤 |
 
-## 第四批技术核查 · 16–17
+## 第四批技术核查 · 16–18
 
 以下官方资料核对的是原理、API 与适用条件。本章 SVG 是流程示意或明确声明的人造教学数据，不是实际业务数据集或基准曲线。
 
@@ -48,6 +48,7 @@
 | --- | --- | --- |
 | 16 | [SMOTE（Chawla et al., JAIR 2002）](https://doi.org/10.1613/jair.953) · [imbalanced-learn 用户指南](https://imbalanced-learn.org/stable/user_guide.html) · [LogisticRegression class_weight](https://scikit-learn.org/stable/modules/generated/sklearn.linear_model.LogisticRegression.html) · [模型评估：平衡准确率与 PR 指标](https://scikit-learn.org/stable/modules/model_evaluation.html) · [precision_recall_curve](https://scikit-learn.org/stable/modules/generated/sklearn.metrics.precision_recall_curve.html) | 重采样只能作用于训练折；SMOTE 依赖距离度量与缩放；类别权重会移动概率、需重新选阈值；阈值与代价比在验证集上定，不能用测试集挑选；极端稀有可改走异常检测视角 |
 | 17 | [SHAP（Lundberg & Lee, NeurIPS 2017）](https://arxiv.org/abs/1705.07874) · [LIME（Ribeiro et al., KDD 2016）](https://arxiv.org/abs/1602.04938) · [置换重要性](https://scikit-learn.org/stable/modules/permutation_importance.html) · [PDP/ICE](https://scikit-learn.org/stable/modules/partial_dependence.html) · [Interpretable ML](https://christophm.github.io/interpretable-ml-book/) | 重要性口径不同（MDI 偏高基数、置换受相关影响）；置换须在留出折上算；SHAP 依赖背景/基线且可加；LIME 局部且对扰动敏感；PDP/ICE 假设特征独立；所有工具解释预测而非因果 |
+| 18 | [Pipeline / ColumnTransformer](https://scikit-learn.org/stable/modules/compose.html) · [模型持久化](https://scikit-learn.org/stable/model_persistence.html) · [MLflow](https://mlflow.org/docs/latest/index.html) · [Feast](https://feast.dev/) · [Google MLOps 成熟度](https://cloud.google.com/architecture/mlops-continuous-delivery-and-automation-pipelines-in-machine-learning) | 交付物应为含预处理的整体管线；训练-服务偏差靠共享特征定义消除；实验需记录预算与失败；PSI 等漂移阈值须按业务定义而非通用数字；成熟度阶梯是参考而非硬标准 |
 
 ## 跨批次共用事实约束
 

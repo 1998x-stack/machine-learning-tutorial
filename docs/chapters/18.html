@@ -1,211 +1,47 @@
-<!DOCTYPE html>
-<html lang="zh-CN">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.5, user-scalable=yes">
-    <title>第18章 ML系统工程化</title>
-    <style>
-        * { margin:0; padding:0; box-sizing:border-box; }
-        body {
-            background: linear-gradient(135deg, #f5f3ff 0%, #e8f5f0 100%);
-            font-family: system-ui, -apple-system, 'Segoe UI', 'PingFang SC', Roboto, 'Helvetica Neue', sans-serif;
-            padding: 20px;
-        }
-        .double-border {
-            max-width: 1400px;
-            margin: 0 auto;
-            background: #ffffff;
-            border: 2px solid #8b5cf6;
-            border-radius: 24px;
-            box-shadow: 0 20px 30px -15px rgba(0,0,0,0.2), inset 0 1px 0 0 #f5f3ff;
-            overflow: hidden;
-        }
-        .container { display: grid; grid-template-columns: 260px 1fr; gap: 0; }
-        .sidebar {
-            background: #faf8ff; border-right: 2px solid #c4b5fd; padding: 24px 16px;
-        }
-        .sidebar h3 { font-size: 1.4rem; color: #6d28d9; border-left: 5px solid #8b5cf6; padding-left: 15px; margin-bottom: 25px; }
-        .chapter-list { list-style: none; }
-        .chapter-list li { margin-bottom: 6px; }
-        .chapter-list a {
-            display: block; padding: 8px 12px; text-decoration: none;
-            color: #334155; border-radius: 12px; transition: all 0.2s;
-            font-weight: 500; font-size: 0.92rem;
-        }
-        .chapter-list a:hover { background: #ede9fe; transform: translateX(3px); }
-        .chapter-list .active { background: #7c3aed; color: white; box-shadow: 0 2px 5px rgba(124,58,237,0.3); }
-        .main-content { padding: 30px 35px; background: white; }
-        .footer-nav {
-            margin-top: 45px; padding-top: 20px; border-top: 2px solid #c4b5fd;
-            display: flex; justify-content: space-between;
-        }
-        .footer-nav a {
-            padding: 8px 24px; background: #f1f5f9; text-decoration: none;
-            color: #5b21b6; border-radius: 40px; font-weight: 500; transition: 0.2s;
-        }
-        .footer-nav a:hover { background: #ede9fe; transform: translateY(-2px); }
-        h2 { color: #4c1d95; border-left: 6px solid #8b5cf6; padding-left: 15px; margin: 20px 0 15px; font-size: 1.5rem; }
-        h3 { color: #5b21b6; margin: 20px 0 10px; font-size: 1.2rem; }
-        h4 { color: #6d28d9; margin: 15px 0 8px; font-size: 1.05rem; }
-        p { line-height: 1.85; margin: 10px 0; color: #1e293b; }
-        ul, ol { margin: 10px 0 10px 20px; line-height: 1.8; }
-        li { color: #1e293b; margin-bottom: 4px; }
-        pre { background: #1e1035; color: #e8e8f0; padding: 15px; border-radius: 12px; overflow-x: auto; font-family: 'JetBrains Mono', 'Fira Code', monospace; margin: 15px 0; font-size: 0.9rem; line-height: 1.5; }
-        code { background: #f5f3ff; padding: 2px 6px; border-radius: 4px; font-family: 'JetBrains Mono', monospace; font-size: 0.85em; }
-        pre code { background: none; padding: 0; }
-        table { width: 100%; border-collapse: collapse; margin: 15px 0; background: #fafafe; }
-        th, td { border: 1px solid #c4b5fd; padding: 10px; text-align: left; }
-        th { background: #f5f3ff; color: #5b21b6; font-weight: 600; }
-        .tip, .warning, .highlight { padding: 12px 18px; border-radius: 16px; margin: 15px 0; line-height: 1.7; }
-        .tip { background: #e0f2fe; border-left: 6px solid #0ea5e9; }
-        .warning { background: #fee2e2; border-left: 6px solid #ef4444; }
-        .highlight { background: #fef9c3; border: 1px solid #facc15; }
-        strong { color: #1e1b4b; }
-        @media (max-width: 768px) {
-            .container { grid-template-columns: 1fr; }
-            .sidebar { border-right: none; border-bottom: 2px solid #c4b5fd; }
-            body { padding: 10px; }
-            .main-content { padding: 20px; }
-        }
-    </style>
-    <link rel="stylesheet" href="theme.css">
-</head>
-<body>
-<div class="double-border">
-<div class="container">
-    <div class="sidebar">
-        <h3>🤖 课程目录</h3>
-        <ul class="chapter-list">
-            <li><a href="01.html">第1章 机器学习概述</a></li>
-            <li><a href="02.html">第2章 数学基础：线性代数</a></li>
-            <li><a href="03.html">第3章 数学基础：概率统计</a></li>
-            <li><a href="04.html">第4章 数学基础：优化理论</a></li>
-            <li><a href="05.html">第5章 数据预处理与探索</a></li>
-            <li><a href="06.html">第6章 第一个ML项目实战</a></li>
-            <li><a href="07.html">第7章 模型评估与选择</a></li>
-            <li><a href="08.html">第8章 线性回归与正则化</a></li>
-            <li><a href="09.html">第9章 逻辑回归与分类</a></li>
-            <li><a href="10.html">第10章 决策树与随机森林</a></li>
-            <li><a href="11.html">第11章 支持向量机 SVM</a></li>
-            <li><a href="12.html">第12章 朴素贝叶斯与KNN</a></li>
-            <li><a href="13.html">第13章 聚类算法</a></li>
-            <li><a href="14.html">第14章 降维与特征工程</a></li>
-            <li><a href="15.html">第15章 模型调参与AutoML</a></li>
-            <li><a href="16.html">第16章 处理不平衡数据</a></li>
-            <li><a href="17.html">第17章 模型可解释性</a></li>
-            <li><a href="18.html" class="active">第18章 ML系统工程化</a></li>
-            <li><a href="19.html">第19章 神经网络基础</a></li>
-            <li><a href="20.html">第20章 深度学习框架实战</a></li>
-            <li><a href="21.html">第21章 CNN卷积神经网络</a></li>
-            <li><a href="22.html">第22章 RNN与序列模型</a></li>
-            <li><a href="23.html">第23章 NLP自然语言处理</a></li>
-            <li><a href="24.html">第24章 生成式模型</a></li>
-            <li><a href="25.html">第25章 强化学习入门</a></li>
-            <li><a href="26.html">第26章 大语言模型与RAG</a></li>
-            <li><a href="27.html">第27章 模型部署与服务化</a></li>
-            <li><a href="28.html">第28章 毕业项目：端到端ML系统</a></li>
-        </ul>
-    </div>
-    <div class="main-content">
-        <h2>18.1 Jupyter Notebook里跑通的模型 ≠ 生产系统</h2>
-        <p>有一个著名的数据：在业界，只有约13%的数据科学项目真正进入了生产环境。剩下的87%死在了Jupyter Notebook里。为什么？因为"训练一个效果不错的模型"和"构建一个可靠、可维护的ML系统"之间有一个巨大的鸿沟。</p>
-
-        <p>我亲身经历过这个痛。一个客户流失预测模型，在Notebook上AUC 0.88，领导说"上线"。我花了一周把代码打包成脚本放到服务器上跑定时任务。两周后模型效果断崖式下跌——原来一个上游数据源的格式变了，我的代码既没有验证也没报警，默默地把错误数据喂给了模型，然后模型默默产出了错误预测。从那以后我才真正理解：ML工程化不只是"部署"这一步，而是一个贯穿始终的系统工程思维。</p>
-
-        <h2>18.2 Pipeline：让数据流自动化</h2>
-        <p>sklearn的Pipeline把多个步骤串联成一个整体。这不仅仅是代码组织方式的问题——它直接关系到模型在生产环境中是否可靠。</p>
-
-        <pre><code>from sklearn.pipeline import Pipeline
-from sklearn.preprocessing import StandardScaler, OneHotEncoder
-from sklearn.compose import ColumnTransformer
-from sklearn.ensemble import RandomForestClassifier
-
-# ColumnTransformer：对不同列做不同预处理
-preprocessor = ColumnTransformer([
-    ('num', StandardScaler(), ['age', 'income', 'tenure']),
-    ('cat', OneHotEncoder(handle_unknown='ignore'), ['city', 'plan']),
-])
-
-# 完整Pipeline
-pipeline = Pipeline([
-    ('preprocessor', preprocessor),
-    ('feature_selector', SelectFromModel(RandomForestClassifier())),
-    ('classifier', RandomForestClassifier(n_estimators=200))
-])
-
-pipeline.fit(X_train, y_train)
-
-# 保存整个pipeline（不只是模型！）
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="description" content="把模型放进生产，关键不在训练代码跑得多好，而在数据与特征在训练和服务两端是否走同一条路、实验是否可追踪、上线后是否有人盯着漂移。"><title>ML 系统工程化：让训练与服务走同一条路 · 机器学习图解教程</title><link rel="stylesheet" href="../assets/css/article.css"></head><body class="article-page"><a class="skip-link" href="#content">跳转至正文</a><header class="site-header"><div class="header-inner"><a class="wordmark" href="../index.html"><span class="mark">M<span>·</span>L</span><span>机器学习图解教程<small>Machine Learning, Explained</small></span></a><nav aria-label="顶部导航"><a href="../index.html">课程目录</a><a href="https://github.com/1998x-stack/machine-learning-tutorial">GitHub</a></nav></div></header><div class="article-shell"><aside class="article-nav"><nav aria-label="文章目录"><details open><summary>本章目录</summary><div class="nav-items"><a href="../index.html">← 全部章节</a><a href="#sec1">Notebook 跑通 ≠ 生产系统</a><a href="#sec2">从实验代码到可复现管线</a><a href="#sec3">训练-服务偏差：最隐蔽的 bug</a><a href="#sec4">实验追踪与模型注册</a><a href="#sec5">特征存储与一致性</a><a href="#sec6">监控与漂移：上线只是开始</a><a href="#sec7">MLOps 成熟度：不要一步到位</a><a href="#sec8">离线实验：打包管线与推理一致性核验</a><a href="#sec9">来源、版本与验收界限</a></div></details></nav></aside><main class="article-main" id="content"><article><div class="breadcrumb"><a href="../index.html">课程目录</a><span>/</span><span>第 18 章</span></div><header class="article-header"><div class="chapter-number">CHAPTER 18 / 28</div><h1>ML 系统工程化：让训练与服务走同一条路</h1><p class="dek">把模型放进生产，关键不在训练代码跑得多好，而在数据与特征在训练和服务两端是否走同一条路、实验是否可追踪、上线后是否有人盯着漂移。</p><div class="lead-question">一个在 Notebook 里 AUC 很高的模型，为什么上线两周后可能悄悄失效，却没有任何人收到报警？</div></header>
+<section id="sec1" aria-labelledby="title1"><h2 id="title1">01 · Notebook 跑通 ≠ 生产系统</h2><p>在 Notebook 里把模型调到满意的指标，只是把问题解决了一小半。生产系统还需要回答：数据从哪里来、是否稳定？特征怎么算、训练和线上是否一致？模型如何版本化、如何回滚？上线后性能下降时，谁能在多久内发现？</p><p>业界常说“大部分数据科学项目没能上线”，但具体比例因统计口径与行业而异，不宜当作精确事实。可以确定的是：<strong>训练脚本能跑通，与系统能可靠服务是两件不同的事</strong>。前者关心模型质量，后者关心可重复、可观测、可回滚。</p><p>一个常见误区是把“部署”当终点。实际上模型上线只是生命周期的中间环节：数据在漂移、上游在变更、业务目标在变化，模型需要持续被监控和再训练。</p></section>
+<section id="sec2" aria-labelledby="title2"><h2 id="title2">02 · 从实验代码到可复现管线</h2><p>可复现的第一步是把散落的预处理与模型拼成一个<strong>整体对象</strong>。scikit-learn 的 <code>Pipeline</code> 与 <code>ColumnTransformer</code> 能对不同列施加不同预处理，再在任何模型之前串起来。它的关键价值不在“代码好看”，而在于<strong>训练和推理使用同一套变换</strong>，并且可以连同参数一起序列化。</p><figure id="fig-ml-lifecycle"><div class="figure-scroll"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 360" role="img" aria-labelledby="t18a d18a"><title id="t18a">机器学习系统的生命周环</title><desc id="t18a">环形流程：数据准备、特征工程、训练、打包、部署、监控、再训练首尾相接。Notebook 只覆盖中间的训练与特征阶段，其余环节才是生产鲁棒性的所在。</desc><rect x="1" y="1" width="998" height="358" rx="18" fill="#fffdf9" stroke="#d8e2d9"/><g font-family="system-ui,'PingFang SC','Microsoft YaHei',sans-serif"><text x="40" y="45" font-size="22" fill="#213a37" font-weight="760">上线只是生命周环上的一段弧</text><g><rect x="70" y="90" width="150" height="50" rx="9" fill="#e7f3ef" stroke="#147b70"/><text x="145" y="120" font-size="14" fill="#147b70" text-anchor="middle">数据准备</text><rect x="260" y="90" width="150" height="50" rx="9" fill="#e7f3ef" stroke="#147b70"/><text x="335" y="120" font-size="14" fill="#147b70" text-anchor="middle">特征工程</text><rect x="450" y="90" width="150" height="50" rx="9" fill="#f8ede6" stroke="#c4774b"/><text x="525" y="120" font-size="14" fill="#b5673f" text-anchor="middle">训练 / 调参</text><rect x="640" y="90" width="150" height="50" rx="9" fill="#f8ede6" stroke="#c4774b"/><text x="715" y="120" font-size="14" fill="#b5673f" text-anchor="middle">打包 / 注册</text><rect x="780" y="180" width="150" height="50" rx="9" fill="#efeaf7" stroke="#7863b0"/><text x="855" y="210" font-size="14" fill="#66529e" text-anchor="middle">部署 / 服务</text><rect x="520" y="240" width="150" height="50" rx="9" fill="#efeaf7" stroke="#7863b0"/><text x="595" y="270" font-size="14" fill="#66529e" text-anchor="middle">监控 / 报警</text><rect x="260" y="240" width="150" height="50" rx="9" fill="#f8ede6" stroke="#c4774b"/><text x="335" y="270" font-size="14" fill="#b5673f" text-anchor="middle">再训练 / 回滚</text></g><g stroke="#a4b2aa" stroke-width="1.8" fill="none" marker-end="url(#a18)"><path d="M220 115 H258"/><path d="M410 115 H448"/><path d="M600 115 H638"/><path d="M790 140 C870 165, 880 175, 862 178"/><path d="M830 230 C780 275, 740 268, 672 265"/><path d="M520 265 H412"/><path d="M300 240 C240 200, 220 180, 145 142"/></g><rect x="60" y="62" width="380" height="92" rx="12" fill="none" stroke="#c4774b" stroke-width="1.6" stroke-dasharray="6 5"/><text x="70" y="80" font-size="10" fill="#b5673f">Notebook 覆盖范围</text><text x="40" y="344" font-size="13.5" fill="#57706c">教学示意：展示生命周环各环节的依赖关系。</text><defs><marker id="a18" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto"><path d="M1 1 L7 4 L1 7" fill="none" stroke="#a4b2aa" stroke-width="1.6"/></marker></defs></g></svg></div><figcaption>机器学习系统的生命周环：数据准备、特征工程、训练、打包、部署、监控、再训练首尾相接。Notebook 通常只覆盖中间一段，其余环节才是生产鲁棒性的来源。流程示意图。</figcaption></figure><p>把整个管线（预处理 + 模型）一起用 <code>joblib</code> 序列化保存，而不是只保存模型权重，能直接消除“训练时做了标准化、部署时忘了做”这类人为错误。<strong>交付物应该是一个能接受原始输入、输出预测的整体管线</strong>，再附上它训练时的数据切片与参数。</p></section>
+<section id="sec3" aria-labelledby="title3"><h2 id="title3">03 · 训练-服务偏差：最隐蔽的 bug</h2><p>训练-服务偏差（training-serving skew）指：训练时特征的计算方式，和线上推理时不一样。例如“用户过去 30 天点击次数”在离线是批量聚合的值，在线上可能是另一个实时服务按不同时间窗口算出的值。两边代码即使只差一个时区或边界定义，都会让模型看到不同分布。</p><figure id="fig-train-serve-skew"><div class="figure-scroll"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 340" role="img" aria-labelledby="t18b d18b"><title id="t18b">训练与服务两端的特征计算分歧</title><desc id="t18b">上方离线批处理与下方实时服务分别计算同一特征，因时间窗口或时区定义不同得到不同值，导致模型在线上看到与训练不同的输入分布。</desc><rect x="1" y="1" width="998" height="338" rx="18" fill="#fffdf9" stroke="#d8e2d9"/><g font-family="system-ui,'PingFang SC','Microsoft YaHei',sans-serif"><text x="40" y="45" font-size="22" fill="#213a37" font-weight="760">同一个特征，两种算法 → 两种分布</text><rect x="60" y="90" width="290" height="90" rx="10" fill="#e7f3ef" stroke="#147b70"/><text x="80" y="120" font-size="15" fill="#147b70" font-weight="740">离线批处理（训练）</text><text x="80" y="148" font-size="13.5" fill="#304442">按自然日聚合过去 30 天</text><text x="80" y="170" font-size="13.5" fill="#304442">得到 clicks_train</text><rect x="650" y="90" width="290" height="90" rx="10" fill="#f8ede6" stroke="#c4774b"/><text x="670" y="120" font-size="15" fill="#b5673f" font-weight="740">实时服务（推理）</text><text x="670" y="148" font-size="13.5" fill="#304442">按滚动 720 小时窗口</text><text x="670" y="170" font-size="13.5" fill="#304442">得到 clicks_serve</text><path d="M350 135 H648" stroke="#a4b2aa" stroke-width="1.8" stroke-dasharray="6 5"/><text x="500" y="126" font-size="13" fill="#b5452f" text-anchor="middle">定义不同</text><path d="M380 200 H620" stroke="#d9543a" stroke-width="2" marker-end="url(#a18b)"/><text x="500" y="222" font-size="14" fill="#b5452f" text-anchor="middle">同一用户特征值不一致</text><path d="M205 180 V250 M795 180 V250" stroke="#a4b2aa" stroke-width="1.6"/><g><rect x="120" y="250" width="170" height="46" rx="8" fill="#fff" stroke="#147b70"/><text x="205" y="278" font-size="13.5" fill="#147b70" text-anchor="middle">训练分布 A</text><rect x="710" y="250" width="170" height="46" rx="8" fill="#fff" stroke="#c4774b"/><text x="795" y="278" font-size="13.5" fill="#b5673f" text-anchor="middle">服务分布 B</text></g><text x="390" y="278" font-size="14" fill="#b5452f" text-anchor="middle">→ 预测系统性偏移</text><text x="40" y="326" font-size="13.5" fill="#57706c">教学示意：窗口定义仅举例，用于说明偏差来源。</text><defs><marker id="a18b" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto"><path d="M1 1 L7 4 L1 7" fill="none" stroke="#d9543a" stroke-width="1.8"/></marker></defs></g></svg></div><figcaption>训练-服务偏差：同一特征在离线批处理与实时服务中按不同窗口定义计算，得到不同取值，模型因此看到与训练不同的分布，预测发生系统性偏移。示意图。</figcaption></figure><p>对抗偏差的方式不是“小心翼翼”，而是<strong>让两边共享同一份特征定义与代码</strong>：把特征变换写进版本化的特征定义，训练和线上都从它取数；上线前用相同的原始输入分别跑两次计算，比对结果是否逐位一致。这正是特征存储（feature store）要解决的核心问题。</p></section>
+<section id="sec4" aria-labelledby="title4"><h2 id="title4">04 · 实验追踪与模型注册</h2><p>当同时跑很多组实验时，“哪个文件对应哪组参数、哪份数据、哪个指标”会迅速失控。实验追踪工具（如 MLflow）把每次运行记录成一个 <em>run</em>：参数、指标、产物与代码版本一并写入，之后可以横向对比。</p><table><thead><tr><th>组件</th><th>作用</th><th>核心概念</th></tr></thead><tbody><tr><td>Tracking</td><td>记录参数、指标、产物与依赖</td><td>Run / Experiment</td></tr><tr><td>Models</td><td>统一模型格式，跨框架加载</td><td>Flavor / Signature</td></tr><tr><td>Registry</td><td>模型版本、阶段与审批流转</td><td>Version / Stage</td></tr></tbody></table><p>“模型注册”不是可有可无的仪式：它给每次上线一个可指认的版本号，使<strong>回滚</strong>成为一条命令而不需要重训。记录还应包含训练数据的时间窗口与切分方式，否则几个月后无法解释指标变化。</p><div class="note"><p><strong>常见误区：</strong>只记录最终的最优指标，而不记录搜索预算、随机种子与失败运行。这样所谓的“最优”无法被复核，也无法判断它是真实提升还是选择偏差。追踪工具的价值一半在“记录成功”，一半在“记录尝试”。</p></div></section>
+<section id="sec5" aria-labelledby="title5"><h2 id="title5">05 · 特征存储与一致性</h2><p>特征存储（feature store）把<strong>特征的定义、计算与存取</strong>集中到一处，同时提供离线读取（供训练）与在线读取（供推理）。它的目标正是消除第 03 节那类偏差：训练与线上用同一份特征定义，而不是各自维护一套代码。</p><p>对小团队来说，完整的特征存储可能过重；但即便不引入它，也要坚持三条原则：</p><ul><li><strong>单一实现：</strong>特征变换只有一份代码，训练与推理都调用它。</li><li><strong>时间点正确：</strong>训练样本只能用“该样本发生时刻之前”的信息，防止未来数据泄露（point-in-time correctness）。</li><li><strong>可版本化：</strong>特征定义改变时能追溯到它影响哪些模型。</li></ul><p>这三条不依赖任何特定产品，却能在不引入新基础设施的前提下避开大部分上线事故。</p></section>
+<section id="sec6" aria-labelledby="title6"><h2 id="title6">06 · 监控与漂移：上线只是开始</h2><p>上线后最该盯的是什么？除了服务可用性与延迟，还有<strong>输入分布</strong>与<strong>模型表现</strong>。当线上特征分布逐渐偏离训练分布时，称为数据漂移（data drift）；当特征与标签的关系发生变化，称为概念漂移（concept drift）。漂移不一定立即降低指标，但它是性能下降的前置信号。</p><p>一种常用的分布对比指标是总体稳定指数（PSI），它比较预期分布与实际分布在各个分箱上的占比差异：</p><div class="eq eq-scroll" role="region" tabindex="0" aria-label="总体稳定指数，比较预期与实际分布在各分箱的占比差异"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block" aria-label="PSI 公式"><mrow><mi>PSI</mi><mo>=</mo><munderover><mo>∑</mo><mrow><mi>i</mi><mo>=</mo><mn>1</mn></mrow><mi>B</mi></munderover><mrow><mo>(</mo><msub><mi>a</mi><mi>i</mi></msub><mo>−</mo><msub><mi>e</mi><mi>i</mi></msub><mo>)</mo></mrow><mo>·</mo><mi>ln</mi><mfrac><msub><mi>a</mi><mi>i</mi></msub><msub><mi>e</mi><mi>i</mi></msub></mfrac></mrow></math></div><p>其中 B 是分箱数，<code>aᵢ</code> 是当前数据落在第 i 箱的比例（actual），<code>eᵢ</code> 是基准数据对应比例（expected）。PSI 越小越稳定；具体报警阈值因业务而异，不应把一个通用数字当作硬标准。</p><figure id="fig-drift-monitoring"><div class="figure-scroll"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 350" role="img" aria-labelledby="t18c d18c"><title id="t18c">上线后指标监控与漂移报警</title><desc id="t18c">折线图显示上线后某指标随时间变化：平稳期在基准带内，后期突破阈值触发报警，之后触发再训练并回到基线。</desc><rect x="1" y="1" width="998" height="348" rx="18" fill="#fffdf9" stroke="#d8e2d9"/><g font-family="system-ui,'PingFang SC','Microsoft YaHei',sans-serif"><text x="40" y="45" font-size="22" fill="#213a37" font-weight="760">指标监控：报警触发再训练，而不是等到崩盘</text><path d="M80 280 H920 M80 280 V90" fill="none" stroke="#a4b2aa" stroke-width="1.8"/><path d="M80 130 H920" stroke="#d8e2d9" stroke-width="1" stroke-dasharray="4 5"/><path d="M80 170 H920" stroke="#d8e2d9" stroke-width="1" stroke-dasharray="4 5"/><rect x="80" y="130" width="840" height="40" fill="#e7f3ef" opacity="0.45"/><text x="86" y="124" font-size="12" fill="#147b70">基准带</text><path d="M80 150 C200 148, 300 152, 420 150 C520 148, 560 120, 640 108 C720 96, 760 150, 840 150 C880 150, 900 150, 920 150" fill="none" stroke="#c4774b" stroke-width="3"/><circle cx="640" cy="108" r="7" fill="#b5452f"/><text x="600" y="90" font-size="13" fill="#b5452f" font-weight="720">越过阈值→报警</text><path d="M660 108 V200" stroke="#7863b0" stroke-width="1.6" stroke-dasharray="5 4"/><rect x="670" y="186" width="160" height="40" rx="8" fill="#efeaf7" stroke="#7863b0"/><text x="750" y="211" font-size="13" fill="#66529e" text-anchor="middle">触发再训练 / 回滚</text><text x="86" y="300" font-size="12.5" fill="#57706c">上线时间</text><text x="880" y="300" font-size="12.5" fill="#57706c">→ 时间</text><text x="40" y="338" font-size="13.5" fill="#57706c">教学示意：曲线为虚构，非真实监控记录。</text></g></svg></div><figcaption>上线后对模型指标与输入分布持续监控：曲线越过基准带触发报警，再触发再训练或回滚。关键是把“发现时间”压短，而不是等业务侧反馈才发现。曲线为教学示意。</figcaption></figure><p>实际落地时，除了模型指标，还应监控数据质量（空值、范围、类别新增）、上游依赖健康度与预测分布。报警要有明确的处理手册与责任人，否则多一个信号只会多一份噪声。</p></section>
+<section id="sec7" aria-labelledby="title7"><h2 id="title7">07 · MLOps 成熟度：不要一步到位</h2><p>MLOps 的成熟度常被描述成阶梯：从全程手动，到自动化训练管线，再到持续训练与自动回滚。级别越高能力越强，但代价也越大。对小团队而言，<strong>把训练与部署流程固定下来、加上基本监控</strong>通常比引入重型平台更能降低风险。</p><table><thead><tr><th>级别</th><th>特征</th><th>适合</th></tr></thead><tbody><tr><td>L0 手动</td><td>Notebook 训练、手动部署、无监控</td><td>探索期、个人项目</td></tr><tr><td>L1 自动化管线</td><td>数据→训练→部署可重复，有报警</td><td>初创、小团队</td></tr><tr><td>L2 CI/CD/CT</td><td>持续训练、自动回滚、在线实验</td><td>中大型、核心业务</td></tr></tbody></table><p>选择级别的依据应是<strong>失败代价</strong>而非“先进程度”：预测内内容的可用性要求、合规要求、重复出现的事故类型，都比对标他人更能决定投入方向。</p></section>
+<section id="sec8" aria-labelledby="title8"><h2 id="title8">08 · 离线实验：打包管线与推理一致性核验</h2><p>下面做三件事：用 <code>ColumnTransformer + Pipeline</code> 构造一个含预处理的管线；把它序列化到内存再读回，验证<strong>同一份原始输入得到完全相同预测</strong>；再手算 PSI 看一个特征分布的漂移。需要 Python 3.10+、NumPy、scikit-learn 与 joblib。</p><pre><code>import io, numpy as np
+from sklearn.datasets import load_breast_cancer
+from sklearn.model_selection import train_test_split
+from sklearn.pipeline import Pipeline
+from sklearn.preprocessing import StandardScaler, FunctionTransformer
+from sklearn.linear_model import LogisticRegression
 import joblib
-joblib.dump(pipeline, 'full_pipeline.pkl')
 
-# 生产环境使用：输入原始数据，返回预测
-predictions = joblib.load('full_pipeline.pkl').predict(raw_data)
-</code></pre>
+X, y = load_breast_cancer(return_X_y=True)
+Xtr, Xte, ytr, yte = train_test_split(X, y, test_size=0.3,
+                                      stratify=y, random_state=18)
+pipe = Pipeline([
+    (&quot;log1p&quot;, FunctionTransformer(np.log1p)),
+    (&quot;scale&quot;, StandardScaler()),
+    (&quot;clf&quot;, LogisticRegression(max_iter=5000)),
+]).fit(Xtr, ytr)
 
-        <div class="tip">
-            <strong>💡 Pipeline的核心价值：</strong>把预处理逻辑和模型打包在一起保存。这样你在训练时怎么处理数据的，推理时就用完全一样的方式处理。消除了"训练代码里做了标准化，部署代码忘了做"这类人为错误。在生产环境中，<strong>保存 Pipeline 而不是保存模型</strong>——这是血的教训换来的经验。
-        </div>
+# 序列化到内存再读回，验证一致性
+buf = io.BytesIO(); joblib.dump(pipe, buf); buf.seek(0)
+reloaded = joblib.load(buf)
+p1 = pipe.predict_proba(Xte)[:, 1]
+p2 = reloaded.predict_proba(Xte)[:, 1]
+assert np.allclose(p1, p2, atol=1e-9)
+print(&quot;reload consistent:&quot;, bool(np.allclose(p1, p2)))
 
-        <h2>18.3 MLflow：实验管理与模型注册</h2>
-        <p>当你同时跑十几个实验，参数各不同，一周后回来看"best_model_v3_final_2.pkl"时，你已经完全忘了它对应什么参数、什么数据、什么结果。MLflow就是为这个痛点而生的。</p>
+# 手算一个特征的 PSI，监控分布漂移
+def psi(expected, actual, bins=10):
+    edges = np.quantile(expected, np.linspace(0, 1, bins + 1))
+    e = np.histogram(expected, bins=edges)[0] / len(expected)
+    a = np.histogram(actual, bins=edges)[0] / len(actual)
+    e, a = np.clip(e, 1e-6, None), np.clip(a, 1e-6, None)
+    return float(np.sum((a - e) * np.log(a / e)))
 
-        <table>
-            <tr><th>MLflow组件</th><th>功能</th><th>核心概念</th></tr>
-            <tr><td>Tracking</td><td>记录实验参数、指标、模型</td><td>Run、Experiment</td></tr>
-            <tr><td>Models</td><td>标准化模型格式，跨框架部署</td><td>Flavor、Signature</td></tr>
-            <tr><td>Registry</td><td>模型版本管理、阶段切换</td><td>Stage、Version</td></tr>
-        </table>
-
-        <pre><code>import mlflow
-import mlflow.sklearn
-
-mlflow.set_experiment("customer_churn_prediction")
-
-with mlflow.start_run():
-    # 记录参数
-    mlflow.log_params({'n_estimators': 200, 'max_depth': 10})
-
-    # 训练模型
-    model = RandomForestClassifier(n_estimators=200, max_depth=10)
-    model.fit(X_train, y_train)
-
-    # 记录指标
-    mlflow.log_metrics({'accuracy': 0.87, 'f1': 0.82, 'auc': 0.91})
-
-    # 保存模型（自动记录环境依赖）
-    mlflow.sklearn.log_model(model, "random_forest_model")
-
-# 之后查看：mlflow ui → http://localhost:5000
-</code></pre>
-
-        <h2>18.4 特征存储：告别"离线在线不一致"</h2>
-        <p>ML系统中最隐蔽的bug之一是"训练-服务偏差"（Training-Serving Skew）：训练时用的特征计算逻辑，和线上推理时不一样。比如训练时"用户过去30天点击次数"是离线批计算的值，但线上推理时用的是另一个实时服务计算的值——两者可能因为时间窗口定义、数据延迟等原因产生差异。</p>
-
-        <p>特征存储（Feature Store）解决的就是这个问题：<strong>所有特征的定义、计算、存储、服务都在一个地方</strong>。业界常用的有Feast（开源）、Tecton（商业）。虽然对于小团队可能过重，但了解这个概念非常重要——即使不用专门的Feature Store，你也要确保训练和推理的特征计算代码是同一套。</p>
-
-        <h2>18.5 MLOps成熟度模型</h2>
-
-        <table>
-            <tr><th>等级</th><th>特征</th><th>适合</th></tr>
-            <tr><td>L0: 手动</td><td>Notebook训练，手动部署，无监控</td><td>个人项目、探索期</td></tr>
-            <tr><td>L1: 自动化Pipeline</td><td>数据→训练→部署全自动化，有监控</td><td>初创公司、小团队</td></tr>
-            <tr><td>L2: CI/CD/CT</td><td>持续训练、自动回滚、A/B实验</td><td>中大型公司、核心业务</td></tr>
-        </table>
-
-        <div class="highlight">
-            <strong>🔑 实战建议：</strong>不要一上来就追求L2。从L0到L1是性价比最高的投资——花一两周把训练流程Pipeline化、加上基本的异常监控，就能避免80%的生产事故。MLflow + sklearn Pipeline + 基础监控脚本，这就已经是一个不错的生产系统了。等技术债务积累到一定程度再考虑引入Kubeflow这类重型MLOps平台。
-        </div>
-
-        <p>ML系统工程化是第三部分的终点。下一章开始，我们正式进入深度学习的世界！</p>
-
-        <div class="footer-nav">
-            <a href="17.html">← 上一章</a>
-            <a href="index.html">📖 返回目录</a>
-            <a href="19.html">下一章 →</a>
-        </div>
-    </div>
-</div>
-</div>
-</body>
-</html>
+col = X[:, 0]
+print(&quot;PSI (same dist):&quot;, round(psi(col[:300], col[300:]), 4))
+print(&quot;PSI (shifted):&quot;, round(psi(col[:300], col[300:] * 1.3), 4))
+assert pipe.named_steps[&quot;clf&quot;].coef_.shape[0] == 1</code></pre><p>这段代码演示的是工程性质：序列化前后预测一致，是部署可靠性的最低要求；PSI 是把分布变化转成一个可报警数字的一种做法（同一数据上应接近 0，人为偏移后明显增大）。它不声称任何生产指标，也不是对 Feature Store 的验证。</p></section>
+<section id="sec9" aria-labelledby="title9"><h2 id="title9">09 · 来源、版本与验收界限</h2><p>管线、序列化与监控概念的官方资料如下；MLOps 成熟度阶梯是一种工程参考模型，而非行业硬标准。不同工具的 API 与默认行为随版本变化，复现时应记录版本。</p><ul class="refs"><li><a href="https://scikit-learn.org/stable/modules/compose.html" rel="noopener noreferrer">scikit-learn Pipeline 与 ColumnTransformer</a></li><li><a href="https://scikit-learn.org/stable/model_persistence.html" rel="noopener noreferrer">scikit-learn 模型持久化（含 joblib 说明）</a></li><li><a href="https://mlflow.org/docs/latest/index.html" rel="noopener noreferrer">MLflow 文档：Tracking / Models / Registry</a></li><li><a href="https://feast.dev/" rel="noopener noreferrer">Feast 开源特征存储</a></li><li><a href="https://cloud.google.com/architecture/mlops-continuous-delivery-and-automation-pipelines-in-machine-learning" rel="noopener noreferrer">Google Cloud：MLOps 成熟度与自动化流水线</a></li></ul><p class="note"><strong>验收界限：</strong>本章流程图为教学示意，不描述任何具体系统；代码示例应在本地实际运行后才可声称得到具体数值；具体监控阈值必须根据业务定义，不能照搬通用数字。</p></section>
+<nav class="article-footer" aria-label="章节导航"><a href="17.html">← 上一章</a><a href="../index.html">全部章节</a><a href="19.html">下一章 →</a></nav></article></main></div><footer class="site-footer"><span>机器学习图解教程 · 第 18 章</span><span>可追踪、可部署、可监控的边界</span></footer></body></html>
