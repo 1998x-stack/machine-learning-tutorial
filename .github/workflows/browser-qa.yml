@@ -1,0 +1,30 @@
+name: Browser and Python example QA
+on:
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  browser-and-examples:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install test dependencies
+        run: |
+          python3 -m pip install --upgrade pip
+          python3 -m pip install "numpy>=1.24,<3" "pandas>=2,<3" "scikit-learn>=1.4,<2" playwright
+          python3 -m playwright install --with-deps chromium
+      - name: Run article examples
+        run: python3 scripts/run_examples.py
+      - name: Browser regression checks
+        run: python3 scripts/browser_qa.py
+      - name: Upload QA screenshots
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: curriculum-browser-qa
+          path: reports/browser-qa
+          if-no-files-found: ignore
