@@ -1,194 +1,28 @@
-<!DOCTYPE html>
-<html lang="zh-CN">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.5, user-scalable=yes">
-    <title>第22章 RNN与序列模型</title>
-    <style>
-        * { margin:0; padding:0; box-sizing:border-box; }
-        body {
-            background: linear-gradient(135deg, #f5f3ff 0%, #e8f5f0 100%);
-            font-family: system-ui, -apple-system, 'Segoe UI', 'PingFang SC', Roboto, 'Helvetica Neue', sans-serif;
-            padding: 20px;
-        }
-        .double-border {
-            max-width: 1400px;
-            margin: 0 auto;
-            background: #ffffff;
-            border: 2px solid #8b5cf6;
-            border-radius: 24px;
-            box-shadow: 0 20px 30px -15px rgba(0,0,0,0.2), inset 0 1px 0 0 #f5f3ff;
-            overflow: hidden;
-        }
-        .container { display: grid; grid-template-columns: 260px 1fr; gap: 0; }
-        .sidebar {
-            background: #faf8ff; border-right: 2px solid #c4b5fd; padding: 24px 16px;
-        }
-        .sidebar h3 { font-size: 1.4rem; color: #6d28d9; border-left: 5px solid #8b5cf6; padding-left: 15px; margin-bottom: 25px; }
-        .chapter-list { list-style: none; }
-        .chapter-list li { margin-bottom: 6px; }
-        .chapter-list a {
-            display: block; padding: 8px 12px; text-decoration: none;
-            color: #334155; border-radius: 12px; transition: all 0.2s;
-            font-weight: 500; font-size: 0.92rem;
-        }
-        .chapter-list a:hover { background: #ede9fe; transform: translateX(3px); }
-        .chapter-list .active { background: #7c3aed; color: white; box-shadow: 0 2px 5px rgba(124,58,237,0.3); }
-        .main-content { padding: 30px 35px; background: white; }
-        .footer-nav {
-            margin-top: 45px; padding-top: 20px; border-top: 2px solid #c4b5fd;
-            display: flex; justify-content: space-between;
-        }
-        .footer-nav a {
-            padding: 8px 24px; background: #f1f5f9; text-decoration: none;
-            color: #5b21b6; border-radius: 40px; font-weight: 500; transition: 0.2s;
-        }
-        .footer-nav a:hover { background: #ede9fe; transform: translateY(-2px); }
-        h2 { color: #4c1d95; border-left: 6px solid #8b5cf6; padding-left: 15px; margin: 20px 0 15px; font-size: 1.5rem; }
-        h3 { color: #5b21b6; margin: 20px 0 10px; font-size: 1.2rem; }
-        h4 { color: #6d28d9; margin: 15px 0 8px; font-size: 1.05rem; }
-        p { line-height: 1.85; margin: 10px 0; color: #1e293b; }
-        ul, ol { margin: 10px 0 10px 20px; line-height: 1.8; }
-        li { color: #1e293b; margin-bottom: 4px; }
-        pre { background: #1e1035; color: #e8e8f0; padding: 15px; border-radius: 12px; overflow-x: auto; font-family: 'JetBrains Mono', 'Fira Code', monospace; margin: 15px 0; font-size: 0.9rem; line-height: 1.5; }
-        code { background: #f5f3ff; padding: 2px 6px; border-radius: 4px; font-family: 'JetBrains Mono', monospace; font-size: 0.85em; }
-        pre code { background: none; padding: 0; }
-        table { width: 100%; border-collapse: collapse; margin: 15px 0; background: #fafafe; }
-        th, td { border: 1px solid #c4b5fd; padding: 10px; text-align: left; }
-        th { background: #f5f3ff; color: #5b21b6; font-weight: 600; }
-        .tip, .warning, .highlight { padding: 12px 18px; border-radius: 16px; margin: 15px 0; line-height: 1.7; }
-        .tip { background: #e0f2fe; border-left: 6px solid #0ea5e9; }
-        .warning { background: #fee2e2; border-left: 6px solid #ef4444; }
-        .highlight { background: #fef9c3; border: 1px solid #facc15; }
-        strong { color: #1e1b4b; }
-        @media (max-width: 768px) {
-            .container { grid-template-columns: 1fr; }
-            .sidebar { border-right: none; border-bottom: 2px solid #c4b5fd; }
-            body { padding: 10px; }
-            .main-content { padding: 20px; }
-        }
-    </style>
-    <link rel="stylesheet" href="theme.css">
-</head>
-<body>
-<div class="double-border">
-<div class="container">
-    <div class="sidebar">
-        <h3>🤖 课程目录</h3>
-        <ul class="chapter-list">
-            <li><a href="01.html">第1章 机器学习概述</a></li>
-            <li><a href="02.html">第2章 数学基础：线性代数</a></li>
-            <li><a href="03.html">第3章 数学基础：概率统计</a></li>
-            <li><a href="04.html">第4章 数学基础：优化理论</a></li>
-            <li><a href="05.html">第5章 数据预处理与探索</a></li>
-            <li><a href="06.html">第6章 第一个ML项目实战</a></li>
-            <li><a href="07.html">第7章 模型评估与选择</a></li>
-            <li><a href="08.html">第8章 线性回归与正则化</a></li>
-            <li><a href="09.html">第9章 逻辑回归与分类</a></li>
-            <li><a href="10.html">第10章 决策树与随机森林</a></li>
-            <li><a href="11.html">第11章 支持向量机 SVM</a></li>
-            <li><a href="12.html">第12章 朴素贝叶斯与KNN</a></li>
-            <li><a href="13.html">第13章 聚类算法</a></li>
-            <li><a href="14.html">第14章 降维与特征工程</a></li>
-            <li><a href="15.html">第15章 模型调参与AutoML</a></li>
-            <li><a href="16.html">第16章 处理不平衡数据</a></li>
-            <li><a href="17.html">第17章 模型可解释性</a></li>
-            <li><a href="18.html">第18章 ML系统工程化</a></li>
-            <li><a href="19.html">第19章 神经网络基础</a></li>
-            <li><a href="20.html">第20章 深度学习框架实战</a></li>
-            <li><a href="21.html">第21章 CNN卷积神经网络</a></li>
-            <li><a href="22.html" class="active">第22章 RNN与序列模型</a></li>
-            <li><a href="23.html">第23章 NLP自然语言处理</a></li>
-            <li><a href="24.html">第24章 生成式模型</a></li>
-            <li><a href="25.html">第25章 强化学习入门</a></li>
-            <li><a href="26.html">第26章 大语言模型与RAG</a></li>
-            <li><a href="27.html">第27章 模型部署与服务化</a></li>
-            <li><a href="28.html">第28章 毕业项目：端到端ML系统</a></li>
-        </ul>
-    </div>
-    <div class="main-content">
-        <h2>22.1 序列有自己的逻辑</h2>
-        <p>文本、语音、股票价格、传感器读数——这些数据有一个共同点：<strong>顺序很重要</strong>。把"我爱你"三个字倒过来变成"你爱我"，意思完全不同。而CNN和全连接网络天生假设输入是"无序的"——它们看不见时间维度。</p>
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="description" content="序列数据的关键是顺序。RNN 用循环状态记住历史，LSTM/GRU 用门控缓解长程梯度问题，Seq2Seq 处理变长输出，注意力则让解码器直接回看输入的任意位置。"><title>RNN 与序列模型：循环、门控与注意力 · 机器学习图解教程</title><link rel="stylesheet" href="../assets/css/article.css"></head><body class="article-page"><a class="skip-link" href="#content">跳转至正文</a><header class="site-header"><div class="header-inner"><a class="wordmark" href="../index.html"><span class="mark">M<span>·</span>L</span><span>机器学习图解教程<small>Machine Learning, Explained</small></span></a><nav aria-label="顶部导航"><a href="../index.html">课程目录</a><a href="https://github.com/1998x-stack/machine-learning-tutorial">GitHub</a></nav></div></header><div class="article-shell"><aside class="article-nav"><nav aria-label="文章目录"><details open><summary>本章目录</summary><div class="nav-items"><a href="../index.html">← 全部章节</a><a href="#sec1">序列有自己的逻辑</a><a href="#sec2">基础 RNN：把状态循环传递</a><a href="#sec3">LSTM 与门控</a><a href="#sec4">GRU：更少的门</a><a href="#sec5">Seq2Seq 与编码器–解码器</a><a href="#sec6">Attention：让解码器回看输入</a><a href="#sec7">从 RNN 到 Transformer 的交接</a><a href="#sec8">离线实验：核对 RNN 输出形状</a><a href="#sec9">来源、版本与验收界限</a></div></details></nav></aside><main class="article-main" id="content"><article><div class="breadcrumb"><a href="../index.html">课程目录</a><span>/</span><span>第 22 章</span></div><header class="article-header"><div class="chapter-number">CHAPTER 22 / 28</div><h1>RNN 与序列模型：循环、门控与注意力</h1><p class="dek">序列数据的关键是顺序。RNN 用循环状态记住历史，LSTM/GRU 用门控缓解长程梯度问题，Seq2Seq 处理变长输出，注意力则让解码器直接回看输入的任意位置。</p><div class="lead-question">把“我爱你”倒过来变成“你爱我”，意思就完全不同——一个网络要怎样才能把“顺序”这件事也学进去？</div></header>
+<section id="sec1" aria-labelledby="title1"><h2 id="title1">01 · 序列有自己的逻辑</h2><p>文本、语音、股价、传感器读数都有一个共同点：<strong>顺序携带信息</strong>。把“我爱你”倒过来就是另一句话；把两天的股价调换顺序会得到相反的走势判断。而全连接网络与 CNN 对输入顺序并不敏感——全连接层把输入当成无序的特征集合，CNN 假设局部平移不变，都不天然建模“随时间传递的状态”。</p><p>另一层困难是<strong>长度可变</strong>：句子的词数、音频的帧数都不固定，而我们希望同一个模型能处理不同长度。循环神经网络（RNN）正是为这两点设计的。</p></section>
+<section id="sec2" aria-labelledby="title2"><h2 id="title2">02 · 基础 RNN：把状态循环传递</h2><p>RNN 的核心是一个循环公式：第 t 步不仅看当前输入 <code>x_t</code>，还看上一步的隐藏状态 <code>h_{t-1}</code>，把它们一起映射成新的状态 <code>h_t</code>：</p><div class="eq eq-scroll" role="region" tabindex="0" aria-label="RNN 循环状态更新公式"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block" aria-label="RNN 状态更新"><mrow><msub><mi>h</mi><mi>t</mi></msub><mo>=</mo><mi>tanh</mi><mrow><mo>(</mo><msub><mi>W</mi><mi>h</mi></msub><msub><mi>h</mi><mrow><mi>t</mi><mo>−</mo><mn>1</mn></mrow></msub><mo>+</mo><msub><mi>W</mi><mi>x</mi></msub><msub><mi>x</mi><mi>t</mi></msub><mo>+</mo><mi>b</mi><mo>)</mo></mrow></mrow></math></div><p>关键在于<strong>所有时间步共享同一组权重</strong> <code>W_h, W_x</code>——这与卷积共享核是同一思想：参数数量与序列长度无关。把循环在时间上展开，就得到一个深度随长度变化的“长链网络”。</p><figure id="fig-rnn-unrolled"><div class="figure-scroll"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 300" role="img" aria-labelledby="t22a d22a"><title id="t22a">RNN 在时间上展开</title><desc id="d22a">三个时间步并列：每一步接收输入 x_t 与上一步状态 h_{t-1}，用同一组权重计算新状态 h_t，并传出到下一步。</desc><rect x="1" y="1" width="998" height="298" rx="18" fill="#fffdf9" stroke="#d8e2d9"/><g font-family="system-ui,'PingFang SC','Microsoft YaHei',sans-serif"><text x="40" y="45" font-size="22" fill="#213a37" font-weight="760">同一组权重，沿时间重复使用</text><g><rect x="90" y="96" width="120" height="56" rx="10" fill="#f8ede6" stroke="#c4774b"/><text x="150" y="130" font-size="14" fill="#b5673f" text-anchor="middle">RNN</text><rect x="360" y="96" width="120" height="56" rx="10" fill="#f8ede6" stroke="#c4774b"/><text x="420" y="130" font-size="14" fill="#b5673f" text-anchor="middle">RNN</text><rect x="630" y="96" width="120" height="56" rx="10" fill="#f8ede6" stroke="#c4774b"/><text x="690" y="130" font-size="14" fill="#b5673f" text-anchor="middle">RNN</text></g><g stroke="#a4b2aa" stroke-width="1.8" fill="none" marker-end="url(#a22)"><path d="M210 124 H356"/><path d="M480 124 H626"/></g><g font-size="13" fill="#147b70"><text x="270" y="112">h₁</text><text x="540" y="112">h₂</text></g><g stroke="#147b70" stroke-width="1.8" fill="none" marker-end="url(#a22g)"><path d="M150 200 V156"/><path d="M420 200 V156"/><path d="M690 200 V156"/></g><g font-size="13" fill="#147b70" text-anchor="middle"><text x="150" y="220">x₁</text><text x="420" y="220">x₂</text><text x="690" y="220">x₃</text></g><g stroke="#7863b0" stroke-width="1.8" fill="none" marker-end="url(#a22p)"><path d="M260 216 H360"/><path d="M530 216 H630"/></g><g font-size="13" fill="#7863b0"><text x="300" y="236">h₁</text><text x="570" y="236">h₂</text></g><text x="770" y="130" font-size="13" fill="#57706c">→ 可接入输出层</text><text x="40" y="284" font-size="13" fill="#57706c">教学示意：展开 3 个时间步；实际序列长度可变。</text><defs><marker id="a22" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto"><path d="M1 1 L7 4 L1 7" fill="none" stroke="#a4b2aa" stroke-width="1.8"/></marker><marker id="a22g" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto"><path d="M1 1 L7 4 L1 7" fill="none" stroke="#147b70" stroke-width="1.8"/></marker><marker id="a22p" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto"><path d="M1 1 L7 4 L1 7" fill="none" stroke="#7863b0" stroke-width="1.8"/></marker></defs></g></svg></div><figcaption>RNN 在时间上展开：每个时间步用同一组权重，把当前输入与上一步状态结合成新状态并向后传递。参数数量与序列长度无关。示意图。</figcaption></figure><p>基础 RNN 的问题是<strong>长程依赖</strong>：反向传播时梯度要穿过很多次同一个权重矩阵的连乘，很容易逐层衰减（梯度消失）或爆炸。序列越长，开头的信息越难影响后面的决策。</p></section>
+<section id="sec3" aria-labelledby="title3"><h2 id="title3">03 · LSTM 与门控</h2><p>LSTM（长短期记忆网络）引入一个独立的<strong>细胞状态</strong> <code>c_t</code> 与三个门，用逐元素乘法选择性保留或写入信息：遗忘门决定旧记忆中丢什么，输入门决定写入什么新信息，输出门决定输出哪一部分。门值都在 0 到 1 之间，由 sigmoid 产生：</p><div class="eq eq-scroll" role="region" tabindex="0" aria-label="LSTM 的遗忘门、输入门与细胞状态更新"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block" aria-label="LSTM 门与状态"><mrow><msub><mi>f</mi><mi>t</mi></msub><mo>=</mo><mi>σ</mi><mrow><mo>(</mo><msub><mi>W</mi><mi>f</mi></msub><mo>[</mo><msub><mi>h</mi><mrow><mi>t</mi><mo>−</mo><mn>1</mn></mrow></msub><mo>,</mo><msub><mi>x</mi><mi>t</mi></msub><mo>]</mo><mo>)</mo></mrow><mo>,</mo><mspace width="1em"/><msub><mi>i</mi><mi>t</mi></msub><mo>=</mo><mi>σ</mi><mrow><mo>(</mo><msub><mi>W</mi><mi>i</mi></msub><mo>[</mo><msub><mi>h</mi><mrow><mi>t</mi><mo>−</mo><mn>1</mn></mrow></msub><mo>,</mo><msub><mi>x</mi><mi>t</mi></msub><mo>]</mo><mo>)</mo></mrow></mrow></math></div><div class="eq eq-scroll" role="region" tabindex="0" aria-label="细胞状态由遗忘门控制保留旧状态、输入门控制写入新候选"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block" aria-label="LSTM 细胞状态更新"><mrow><msub><mi>c</mi><mi>t</mi></msub><mo>=</mo><msub><mi>f</mi><mi>t</mi></msub><mo>⊙</mo><msub><mi>c</mi><mrow><mi>t</mi><mo>−</mo><mn>1</mn></mrow></msub><mo>+</mo><msub><mi>i</mi><mi>t</mi></msub><mo>⊙</mo><msub><mover><mi>c</mi><mo>~</mo></mover><mi>t</mi></msub></mrow></math></div><p>其中 <code>⊙</code> 是逐元素乘法，<code>c̃_t</code> 是候选新信息。由于 <code>c_t</code> 的更新是一条加法路径，梯度可以更直接地流过，从而缓解梯度消失。这正是 ResNet“相加”思想在时间维度上的前身。</p><figure id="fig-lstm"><div class="figure-scroll"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 330" role="img" aria-labelledby="t22b d22b"><title id="t22b">LSTM 单元的三个门与细胞状态</title><desc id="d22b">输入 x_t 与上一步状态 h_{t−1} 同时送入遗忘门、输入门与输出门；遗忘门与输入门更新细胞状态 c_t，输出门决定输出 h_t。</desc><rect x="1" y="1" width="998" height="328" rx="18" fill="#fffdf9" stroke="#d8e2d9"/><g font-family="system-ui,'PingFang SC','Microsoft YaHei',sans-serif"><text x="40" y="45" font-size="22" fill="#213a37" font-weight="760">LSTM：用门控选择性记住与遗忘</text><rect x="60" y="90" width="120" height="46" rx="8" fill="#e7f3ef" stroke="#147b70"/><text x="120" y="118" font-size="13.5" fill="#147b70" text-anchor="middle">h_{t−1}, x_t</text><g stroke="#a4b2aa" stroke-width="1.6" fill="none"><path d="M180 105 H300"/><path d="M180 120 H300"/><path d="M180 135 H300"/></g><g><rect x="300" y="80" width="150" height="44" rx="8" fill="#f8ede6" stroke="#c4774b"/><text x="375" y="107" font-size="13" fill="#b5673f" text-anchor="middle">遗忘门 f_t</text><rect x="300" y="136" width="150" height="44" rx="8" fill="#f8ede6" stroke="#c4774b"/><text x="375" y="163" font-size="13" fill="#b5673f" text-anchor="middle">输入门 i_t</text><rect x="300" y="192" width="150" height="44" rx="8" fill="#f8ede6" stroke="#c4774b"/><text x="375" y="219" font-size="13" fill="#b5673f" text-anchor="middle">输出门 o_t</text></g><rect x="520" y="120" width="200" height="72" rx="10" fill="#efeaf7" stroke="#7863b0"/><text x="620" y="150" font-size="14" fill="#66529e" text-anchor="middle">细胞状态 c_t</text><text x="620" y="172" font-size="12" fill="#66529e" text-anchor="middle">c_t = f_t⊙c_{t−1} + i_t⊙c̃_t</text><g stroke="#a4b2aa" stroke-width="1.6" fill="none" marker-end="url(#a22b)"><path d="M450 102 L516 130"/><path d="M450 158 L516 152"/><path d="M720 156 H800"/><path d="M450 214 C500 230, 560 210, 600 196"/></g><rect x="800" y="132" width="120" height="46" rx="8" fill="#e7f3ef" stroke="#147b70"/><text x="860" y="160" font-size="13.5" fill="#147b70" text-anchor="middle">输出 h_t</text><text x="40" y="316" font-size="13" fill="#57706c">教学示意：门控结构；c̃_t 为候选新信息，σ 为 sigmoid。</text><defs><marker id="a22b" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto"><path d="M1 1 L7 4 L1 7" fill="none" stroke="#a4b2aa" stroke-width="1.6"/></marker></defs></g></svg></div><figcaption>LSTM 单元：遗忘门、输入门与输出门控制细胞状态的更新与输出。细胞状态上的加法路径帮助梯度更直接地流动，缓解长程依赖下的梯度消失。示意图。</figcaption></figure><div class="note"><p><strong>为什么门控能缓解梯度消失：</strong>基础 RNN 的状态更新是“乘以权重再激活”，梯度要连乘很多个雅可比矩阵；LSTM 的细胞状态更新包含一条加法路径，当遗忘门接近 1 时，梯度可以近乎恒等地向后传递。这与 ResNet 的思路一致。</p></div></section>
+<section id="sec4" aria-labelledby="title4"><h2 id="title4">04 · GRU：更少的门</h2><p>GRU（门控循环单元）把 LSTM 的遗忘门与输入门合并为一个<strong>更新门</strong> <code>z_t</code>，并引入一个<strong>重置门</strong> <code>r_t</code>，同时不再单独维护细胞状态。它参数量更少、计算更轻，在许多任务上与 LSTM 性能大致相当，但对不同数据集和超参数的敏感度不同。</p><p>选择建议：没有先验理由断言一个总优于另一个，通常做法是在验证集上把两者都试一遍，比较收敛速度与最终指标。不要因为“LSTM 更早出名”就默认它更好。</p></section>
+<section id="sec5" aria-labelledby="title5"><h2 id="title5">05 · Seq2Seq 与编码器–解码器</h2><p>很多任务不是“序列→一个标签”，而是“序列→另一个序列”：机器翻译、文本摘要、语音识别。Seq2Seq 架构用两个 RNN 应对：<strong>编码器</strong>逐词读入源序列，把它压成一个上下文向量；<strong>解码器</strong>从这个向量出发，逐词生成目标序列。</p><p>朴素 Seq2Seq 有一个明显瓶颈：编码器必须把任意长度的输入压进一个<strong>固定大小</strong>的向量，长序列的信息会在这一步丢失。这直接引出了下一节的注意力机制。</p></section>
+<section id="sec6" aria-labelledby="title6"><h2 id="title6">06 · Attention：让解码器回看输入</h2><p>注意力机制让解码器在生成每个输出词时，不只看那个固定的上下文向量，而是<strong>动态关注输入序列中相关的部分</strong>。翻译 “I love machine learning” 时，生成“机器”会更多关注 “machine”，生成“学习”会更多关注 “learning”。</p><p>做法分三步：用解码器当前状态与每个编码器状态算一个相关性分数，softmax 归一化成权重，再对编码器状态加权求和：</p><div class="eq eq-scroll" role="region" tabindex="0" aria-label="注意力权重由 softmax 给出，上下文是编码器状态的加权和"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block" aria-label="注意力公式"><mrow><msub><mi>α</mi><mi>t</mi></msub><mo>=</mo><mi>softmax</mi><mrow><mo>(</mo><mi>score</mi><mrow><mo>(</mo><msub><mi>s</mi><mi>t</mi></msub><mo>,</mo><msub><mi>h</mi><mi>i</mi></msub><mo>)</mo></mrow><mo>)</mo></mrow><mo>,</mo><mspace width="1em"/><msub><mi>c</mi><mi>t</mi></msub><mo>=</mo><munder><mo>∑</mo><mi>i</mi></munder><msub><mi>α</mi><mrow><mi>t</mi><mi>i</mi></mrow></msub><msub><mi>h</mi><mi>i</mi></msub></mrow></math></div><p>其中 <code>s_t</code> 是解码器当前状态，<code>h_i</code> 是第 i 个编码器状态。最初的注意力用加性/乘性打分函数；后来 《Attention Is All You Need》 用<strong>缩放点积</strong>实现了同样的思想，并在 Transformer 中彻底取代了循环结构。</p><figure id="fig-attention"><div class="figure-scroll"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 320" role="img" aria-labelledby="t22c d22c"><title id="t22c">解码器通过注意力权重回看编码器状态</title><desc id="d22c">下方为编码器各位置的状态；解码器当前状态与它们分别算分数，经 softmax 得到权重，权重大的位置（如 machine）连线更粗，加权求和得到上下文向量。</desc><rect x="1" y="1" width="998" height="318" rx="18" fill="#fffdf9" stroke="#d8e2d9"/><g font-family="system-ui,'PingFang SC','Microsoft YaHei',sans-serif"><text x="40" y="45" font-size="22" fill="#213a37" font-weight="760">注意力权重决定“回看”哪里</text><circle cx="500" cy="86" r="30" fill="#7863b0"/><text x="500" y="92" font-size="14" fill="#fff" text-anchor="middle">解码器 s_t</text><g font-size="13" text-anchor="middle"><rect x="90" y="210" width="140" height="48" rx="9" fill="#e7f3ef" stroke="#147b70"/><text x="160" y="240" fill="#147b70">I</text><rect x="275" y="210" width="140" height="48" rx="9" fill="#e7f3ef" stroke="#147b70"/><text x="345" y="240" fill="#147b70">love</text><rect x="460" y="210" width="140" height="48" rx="9" fill="#e7f3ef" stroke="#147b70"/><text x="530" y="240" fill="#147b70">machine</text><rect x="645" y="210" width="140" height="48" rx="9" fill="#e7f3ef" stroke="#147b70"/><text x="715" y="240" fill="#147b70">learning</text></g><g fill="none"><path d="M478 110 L160 206" stroke="#cdd6d0" stroke-width="1.5"/><path d="M486 112 L345 206" stroke="#a4b2aa" stroke-width="2.4"/><path d="M500 116 L530 204" stroke="#c4774b" stroke-width="5"/><path d="M516 112 L715 206" stroke="#a4b2aa" stroke-width="2.8"/></g><g font-size="12.5" text-anchor="middle"><text x="300" y="160" fill="#57706c">α=0.1</text><text x="420" y="158" fill="#57706c">α=0.2</text><text x="588" y="150" fill="#b5673f">α=0.5</text><text x="640" y="176" fill="#57706c">α=0.2</text></g><text x="40" y="300" font-size="13" fill="#57706c">教学示意：权重为虚构，用于展示“越相关、连线越粗”。</text></g></svg></div><figcaption>解码器当前状态与各编码器位置算出注意力权重：权重越大，对该位置的“回看”越强；上下文向量是这些状态的加权和。权重为教学示意。</figcaption></figure></section>
+<section id="sec7" aria-labelledby="title7"><h2 id="title7">07 · 从 RNN 到 Transformer 的交接</h2><p>自 2017 年《Attention Is All You Need》提出 Transformer 后，序列建模的主流架构发生了转移。相对循环网络，自注意力有三个结构性差异：</p><ul><li><strong>并行化：</strong>RNN 必须按时间步依次计算（t=1→t=2→…），而自注意力可以同时处理整个序列，更适合 GPU 并行。</li><li><strong>路径长度：</strong>自注意力在任意两个位置间直接建立连接，梯度路径短；RNN 需要逐步传递状态，长距离上更易衰减。</li><li><strong>可扩展性：</strong>Transformer 的结构更适合加大规模与数据量。</li></ul><p>但循环、门控、编码器–解码器与注意力这些概念并未被丢弃：残差与加法路径、门控式选择信息、编码器–解码器分工，都以变体形式留在现代架构里。学习 LSTM 的价值在于理解这些设计动机，而不在于死守旧架构。</p></section>
+<section id="sec8" aria-labelledby="title8"><h2 id="title8">08 · 离线实验：核对 RNN 输出形状</h2><p>循环网络最常见的错误是<strong>形状与时间维对不上</strong>。下面用 PyTorch 核对输出维度的含义，并验证“输出只取最后一步”与“取全部时间步”的区别。<strong>本页离线校验环境未安装 PyTorch，该脚本标记为未验证</strong>。</p><pre><code>import torch, torch.nn as nn
 
-        <p>循环神经网络（RNN）就是为了处理序列数据而设计的。核心思想很简单：在处理序列的第t个元素时，RNN不仅看当前输入x_t，还"记住"之前处理过的一个状态h_{t-1}——这个"记忆"通过循环连接从一个时间步传到下一个。</p>
+# batch=4, 序列长度=7, 每步特征=5
+x = torch.randn(4, 7, 5)
+rnn = nn.RNN(input_size=5, hidden_size=16,
+             num_layers=1, batch_first=True)
+out, h_n = rnn(x)
 
-        <h2>22.2 从RNN到LSTM：解决"记忆"难题</h2>
-        <p>基础RNN有一个致命问题：<strong>长程依赖</strong>。当序列很长时（比如一段500字的文本），前100个字的信息在反向传播中梯度逐渐消失，无法影响后续的决策。比如"我出生在法国...（中间400字）...所以我的母语是___"，模型需要记住开头"法国"这个线索来填空，但基本RNN做不到。</p>
+# out 包含每个时间步的输出；h_n 是最后一步的隐状态
+assert out.shape == (4, 7, 16)
+assert h_n.shape == (1, 4, 16)
+assert torch.allclose(out[:, -1, :], h_n[-1])
 
-        <h3>LSTM：门控机制</h3>
-        <p>LSTM引入了三个"门"（Gate）来控制信息流：</p>
-        <ul>
-            <li><strong>遗忘门：</strong>决定从旧记忆中丢弃什么信息。比如进入一个新段落时，上一段的信息可以忘掉</li>
-            <li><strong>输入门：</strong>决定什么新信息应该存入记忆。比如出现"法国"这个重要线索时，存入记忆</li>
-            <li><strong>输出门：</strong>决定基于当前的记忆输出什么。比如当前记忆有"法国"，输出"法语"的概率就大</li>
-        </ul>
-
-        <h3>GRU：LSTM的简化版</h3>
-        <p>GRU把遗忘门和输入门合并成"更新门"，只有两个门。参数更少，训练更快，效果通常和LSTM相当。没有明确理由选LSTM而不是GRU——建议两个都试。</p>
-
-        <div class="highlight">
-            <strong>🔑 2026年的现实：</strong>虽然RNN/LSTM在理论上很重要，但在实际NLP任务中，Transformer已经完全取代了它们。Google在2017年发表了Attention is All You Need之后，序列建模的霸主地位就易主了。但理解LSTM仍然有价值——它让你理解"门控机制"和"长程记忆"的设计思想，这些思想在GRU和现代架构中得到了继承。
-        </div>
-
-        <h2>22.3 Seq2Seq与编码器-解码器架构</h2>
-        <p>很多序列任务不是"输入一个序列，输出一个标签"，而是"输入一个序列，输出另一个序列"：机器翻译（中文→英文）、文本摘要（长文→短摘要）、语音识别（音频→文字）。这就是Seq2Seq架构的用武之地。</p>
-
-        <p>Seq2Seq由两部分组成：<strong>编码器（Encoder）</strong>把输入序列压缩成一个"上下文向量"，<strong>解码器（Decoder）</strong>从这个上下文向量出发，逐步生成输出序列。</p>
-
-        <p>Seq2Seq的致命弱点：编码器必须把整个输入序列压缩成一个固定大小的向量。当输入很长时，这个"瓶颈"会丢失大量信息。这就引出了下一节的核心概念——Attention。</p>
-
-        <h2>22.4 Attention：让解码器"看到"整个输入</h2>
-        <p>Attention机制的核心思想：解码器在生成每个输出词时，不只看最后一个编码器状态（上下文向量），而是<strong>动态关注输入序列中相关的部分</strong>。</p>
-
-        <p>比如翻译"I love machine learning"为"我爱机器学习"：生成"机器"时，模型关注"machine"；生成"学习"时，关注"learning"。Attention权重可视化出来非常直观——你可以看到模型在"看"哪里。</p>
-
-        <p>Attention的计算可以总结为三步：(1) 计算解码器当前状态和每个编码器状态的"相关性分数"；(2) Softmax归一化成注意力权重；(3) 用权重对编码器状态加权求和得到"上下文向量"。</p>
-
-        <pre><code>import torch
-import torch.nn as nn
-
-class BahdanauAttention(nn.Module):
-    def __init__(self, hidden_size):
-        super().__init__()
-        self.Wa = nn.Linear(hidden_size * 2, hidden_size)
-        self.Va = nn.Linear(hidden_size, 1)
-
-    def forward(self, decoder_hidden, encoder_outputs):
-        # decoder_hidden: (batch, hidden)
-        # encoder_outputs: (batch, seq_len, hidden)
-        seq_len = encoder_outputs.size(1)
-        decoder_hidden = decoder_hidden.unsqueeze(1).repeat(1, seq_len, 1)
-        energy = torch.tanh(self.Wa(
-            torch.cat((decoder_hidden, encoder_outputs), dim=2)
-        ))
-        attention_weights = torch.softmax(self.Va(energy).squeeze(2), dim=1)
-        context = torch.bmm(attention_weights.unsqueeze(1), encoder_outputs)
-        return context.squeeze(1), attention_weights
-</code></pre>
-
-        <div class="tip">
-            <strong>💡 Attention的直观理解：</strong>想象你在翻译一个长句子。你不需要记住整个句子——你在写每个词的时候，眼睛自然地去回看原文中相关的部分。Attention就是给模型装上了这个"回看"的能力。这也是为什么Transformer论文的标题是"Attention Is All You Need"——当你能随时回看任何位置，你就不需要RNN那个有限的"记忆"了。
-        </div>
-
-        <h2>22.5 从RNN到Transformer：时代的交接</h2>
-        <p>2017年之后，Transformer以碾压之势取代了RNN/LSTM。为什么？三个核心优势：</p>
-        <ol>
-            <li><strong>并行化：</strong>RNN必须按顺序处理（t=1→t=2→t=3），Transformer可以同时处理整个序列</li>
-            <li><strong>长程依赖：</strong>Attention机制直接建立任意两个位置之间的连接，不需要通过隐藏状态逐步传递</li>
-            <li><strong>可扩展性：</strong>Transformer架构天然适合扩展——更大的模型、更多的数据、更好的效果</li>
-        </ol>
-
-        <p>RNN/LSTM的时代正在过去，但它们的思想（循环、门控、编码器-解码器、Attention）已经成为了深度学习大厦的基石。理解了这些，你就能无缝过渡到第23章的Transformer和现代NLP。</p>
-
-        <p>RNN与序列模型就讲到这里。下一章我们正式进入NLP的现代时代——Transformer、BERT和GPT。</p>
-
-        <div class="footer-nav">
-            <a href="21.html">← 上一章</a>
-            <a href="index.html">📖 返回目录</a>
-            <a href="23.html">下一章 →</a>
-        </div>
-    </div>
-</div>
-</div>
-</body>
-</html>
+# 单向 GRU，多层则第一维等于层数
+gru = nn.GRU(5, 16, num_layers=2, batch_first=True)
+ol, hl = gru(x)
+assert ol.shape == (4, 7, 16) and hl.shape == (2, 4, 16)
+print(&quot;rnn out&quot;, tuple(out.shape), &quot;h_n&quot;, tuple(h_n.shape))</code></pre><p>形状断言能提前暴露“取了最后一个时间步还是把所有时间步都送入下游”这类错误——在分类任务里两者结果差别很大。若要处理变长序列，应使用 padding + <code>pack_padded_sequence</code> 或注意力掩码，避免把填充位当成真实输入。</p></section>
+<section id="sec9" aria-labelledby="title9"><h2 id="title9">09 · 来源、版本与验收界限</h2><p>各架构定义以原始论文为准，API 行为以框架文档为准；不同 PyTorch 版本对 <code>batch_first</code>、<code>pack_padded_sequence</code> 等的默认行为可能差异，复现时应记录版本。</p><ul class="refs"><li><a href="https://arxiv.org/abs/1406.1078" rel="noopener noreferrer">Cho et al., Learning Phrase Representations using RNN Encoder–Decoder（GRU）, 2014</a></li><li><a href="https://arxiv.org/abs/1409.3215" rel="noopener noreferrer">Sutskever et al., Sequence to Sequence Learning with Neural Networks, 2014</a></li><li><a href="https://arxiv.org/abs/1409.0473" rel="noopener noreferrer">Bahdanau et al., Neural Machine Translation by Jointly Learning to Align and Translate（注意力）, 2014</a></li><li><a href="https://arxiv.org/abs/1706.03762" rel="noopener noreferrer">Vaswani et al., Attention Is All You Need, 2017</a></li><li><a href="https://pytorch.org/docs/stable/generated/torch.nn.LSTM.html" rel="noopener noreferrer">PyTorch LSTM（输入输出形状与门控定义）</a></li><li><a href="https://pytorch.org/docs/stable/generated/torch.nn.GRU.html" rel="noopener noreferrer">PyTorch GRU</a></li></ul><p class="note"><strong>验收界限：</strong>门控结构图、注意力权重与 RNN 展开图均为教学示意，不含真实权重；第 08 节脚本在本页离线环境未安装 PyTorch，标记为<strong>未验证</strong>；不声称任何具体 BLEU 或准确率数字。</p></section>
+<nav class="article-footer" aria-label="章节导航"><a href="21.html">← 上一章</a><a href="../index.html">全部章节</a><a href="23.html">下一章 →</a></nav></article></main></div><footer class="site-footer"><span>机器学习图解教程 · 第 22 章</span><span>循环状态、门控与注意力</span></footer></body></html>
