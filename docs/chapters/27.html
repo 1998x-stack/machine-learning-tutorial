@@ -1,229 +1,84 @@
-<!DOCTYPE html>
-<html lang="zh-CN">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.5, user-scalable=yes">
-    <title>第27章 模型部署与服务化</title>
-    <style>
-        * { margin:0; padding:0; box-sizing:border-box; }
-        body {
-            background: linear-gradient(135deg, #f5f3ff 0%, #e8f5f0 100%);
-            font-family: system-ui, -apple-system, 'Segoe UI', 'PingFang SC', Roboto, 'Helvetica Neue', sans-serif;
-            padding: 20px;
-        }
-        .double-border {
-            max-width: 1400px;
-            margin: 0 auto;
-            background: #ffffff;
-            border: 2px solid #8b5cf6;
-            border-radius: 24px;
-            box-shadow: 0 20px 30px -15px rgba(0,0,0,0.2), inset 0 1px 0 0 #f5f3ff;
-            overflow: hidden;
-        }
-        .container { display: grid; grid-template-columns: 260px 1fr; gap: 0; }
-        .sidebar {
-            background: #faf8ff; border-right: 2px solid #c4b5fd; padding: 24px 16px;
-        }
-        .sidebar h3 { font-size: 1.4rem; color: #6d28d9; border-left: 5px solid #8b5cf6; padding-left: 15px; margin-bottom: 25px; }
-        .chapter-list { list-style: none; }
-        .chapter-list li { margin-bottom: 6px; }
-        .chapter-list a {
-            display: block; padding: 8px 12px; text-decoration: none;
-            color: #334155; border-radius: 12px; transition: all 0.2s;
-            font-weight: 500; font-size: 0.92rem;
-        }
-        .chapter-list a:hover { background: #ede9fe; transform: translateX(3px); }
-        .chapter-list .active { background: #7c3aed; color: white; box-shadow: 0 2px 5px rgba(124,58,237,0.3); }
-        .main-content { padding: 30px 35px; background: white; }
-        .footer-nav {
-            margin-top: 45px; padding-top: 20px; border-top: 2px solid #c4b5fd;
-            display: flex; justify-content: space-between;
-        }
-        .footer-nav a {
-            padding: 8px 24px; background: #f1f5f9; text-decoration: none;
-            color: #5b21b6; border-radius: 40px; font-weight: 500; transition: 0.2s;
-        }
-        .footer-nav a:hover { background: #ede9fe; transform: translateY(-2px); }
-        h2 { color: #4c1d95; border-left: 6px solid #8b5cf6; padding-left: 15px; margin: 20px 0 15px; font-size: 1.5rem; }
-        h3 { color: #5b21b6; margin: 20px 0 10px; font-size: 1.2rem; }
-        h4 { color: #6d28d9; margin: 15px 0 8px; font-size: 1.05rem; }
-        p { line-height: 1.85; margin: 10px 0; color: #1e293b; }
-        ul, ol { margin: 10px 0 10px 20px; line-height: 1.8; }
-        li { color: #1e293b; margin-bottom: 4px; }
-        pre { background: #1e1035; color: #e8e8f0; padding: 15px; border-radius: 12px; overflow-x: auto; font-family: 'JetBrains Mono', 'Fira Code', monospace; margin: 15px 0; font-size: 0.9rem; line-height: 1.5; }
-        code { background: #f5f3ff; padding: 2px 6px; border-radius: 4px; font-family: 'JetBrains Mono', monospace; font-size: 0.85em; }
-        pre code { background: none; padding: 0; }
-        table { width: 100%; border-collapse: collapse; margin: 15px 0; background: #fafafe; }
-        th, td { border: 1px solid #c4b5fd; padding: 10px; text-align: left; }
-        th { background: #f5f3ff; color: #5b21b6; font-weight: 600; }
-        .tip, .warning, .highlight { padding: 12px 18px; border-radius: 16px; margin: 15px 0; line-height: 1.7; }
-        .tip { background: #e0f2fe; border-left: 6px solid #0ea5e9; }
-        .warning { background: #fee2e2; border-left: 6px solid #ef4444; }
-        .highlight { background: #fef9c3; border: 1px solid #facc15; }
-        strong { color: #1e1b4b; }
-        @media (max-width: 768px) {
-            .container { grid-template-columns: 1fr; }
-            .sidebar { border-right: none; border-bottom: 2px solid #c4b5fd; }
-            body { padding: 10px; }
-            .main-content { padding: 20px; }
-        }
-    </style>
-    <link rel="stylesheet" href="theme.css">
-</head>
-<body>
-<div class="double-border">
-<div class="container">
-    <div class="sidebar">
-        <h3>🤖 课程目录</h3>
-        <ul class="chapter-list">
-            <li><a href="01.html">第1章 机器学习概述</a></li>
-            <li><a href="02.html">第2章 数学基础：线性代数</a></li>
-            <li><a href="03.html">第3章 数学基础：概率统计</a></li>
-            <li><a href="04.html">第4章 数学基础：优化理论</a></li>
-            <li><a href="05.html">第5章 数据预处理与探索</a></li>
-            <li><a href="06.html">第6章 第一个ML项目实战</a></li>
-            <li><a href="07.html">第7章 模型评估与选择</a></li>
-            <li><a href="08.html">第8章 线性回归与正则化</a></li>
-            <li><a href="09.html">第9章 逻辑回归与分类</a></li>
-            <li><a href="10.html">第10章 决策树与随机森林</a></li>
-            <li><a href="11.html">第11章 支持向量机 SVM</a></li>
-            <li><a href="12.html">第12章 朴素贝叶斯与KNN</a></li>
-            <li><a href="13.html">第13章 聚类算法</a></li>
-            <li><a href="14.html">第14章 降维与特征工程</a></li>
-            <li><a href="15.html">第15章 模型调参与AutoML</a></li>
-            <li><a href="16.html">第16章 处理不平衡数据</a></li>
-            <li><a href="17.html">第17章 模型可解释性</a></li>
-            <li><a href="18.html">第18章 ML系统工程化</a></li>
-            <li><a href="19.html">第19章 神经网络基础</a></li>
-            <li><a href="20.html">第20章 深度学习框架实战</a></li>
-            <li><a href="21.html">第21章 CNN卷积神经网络</a></li>
-            <li><a href="22.html">第22章 RNN与序列模型</a></li>
-            <li><a href="23.html">第23章 NLP自然语言处理</a></li>
-            <li><a href="24.html">第24章 生成式模型</a></li>
-            <li><a href="25.html">第25章 强化学习入门</a></li>
-            <li><a href="26.html">第26章 大语言模型与RAG</a></li>
-            <li><a href="27.html" class="active">第27章 模型部署与服务化</a></li>
-            <li><a href="28.html">第28章 毕业项目：端到端ML系统</a></li>
-        </ul>
-    </div>
-    <div class="main-content">
-        <h2>27.1 模型不部署，等于不存在</h2>
-        <p>你花了两周调出了一个AUC 0.92的模型，存在了joblib文件里。然后呢？如果这个模型不能给业务系统提供实时推理服务，它的价值就是零。模型部署是ML价值实现的"最后一公里"，也是技术栈最多、坑最多的一环。</p>
-
-        <p>我最早做模型部署的时候，天真地以为就是"Flask包一层API"，结果上线第一天就翻车：并发一上来服务就崩了，因为我的模型是单线程的，而且没有做任何批处理优化。后来逐步引入了异步处理、模型量化、请求队列、健康检查——这些都是血的教训。</p>
-
-        <h2>27.2 FastAPI：ML模型服务的标配</h2>
-
-        <pre><code>from fastapi import FastAPI, HTTPException
-from pydantic import BaseModel
-import joblib
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="description" content="通过完整 Pipeline 和输入 Schema 构建 FastAPI 服务，验证 ONNX 数值一致性，理解部署时延、容器、安全、金丝雀发布与漂移监控。"><title>模型部署与服务化：FastAPI、ONNX、Docker 与监控 · 机器学习图解教程</title><link rel="stylesheet" href="../assets/css/article.css"></head><body class="article-page"><a class="skip-link" href="#content">跳转至正文</a><header class="site-header"><div class="header-inner"><a class="wordmark" href="../index.html"><span class="mark">M<span>·</span>L</span><span>机器学习图解教程<small>Machine Learning, Explained</small></span></a><nav aria-label="顶部导航"><a href="../index.html">课程目录</a><a href="https://github.com/1998x-stack/machine-learning-tutorial">GitHub</a></nav></div></header><div class="article-shell"><aside class="article-nav"><nav aria-label="文章目录"><details open><summary>本章目录</summary><div class="nav-items"><a href="../index.html">← 全部章节</a><a href="#sec1">模型服务先要定义输入输出契约</a><a href="#sec2">FastAPI、Pydantic 与启动生命周期</a><a href="#sec3">P95 延迟与并发吞吐不能相互替代</a><a href="#sec4">工件安全、复现实验与模型版本</a><a href="#sec5">ONNX：先检验输出一致性再谈加速</a><a href="#sec6">容器封装、权限与启动探针</a><a href="#sec7">金丝雀灰度与回滚门禁</a><a href="#sec8">漂移、延迟标签与模型效果</a><a href="#sec9">发布前检查与来源</a><a href="#references">来源与边界</a></div></details></nav></aside><main class="article-main" id="content"><article><div class="breadcrumb"><a href="../index.html">课程目录</a><span>/</span><span>第 27 章</span></div><header class="article-header"><div class="chapter-number">CHAPTER 27 / 28</div><h1>模型部署与服务化：FastAPI、ONNX、Docker 与监控</h1><p class="dek">把训练成功的模型变成可定义输入、可验证输出、可控制延迟与可回滚的系统。从 API 和数值等价，到容器、版本、金丝雀与监控。</p><div class="lead-question">为什么在 Notebook 中准确的模型，变成 HTTP 服务后仍可能产生错误预测或不稳定的延迟？</div></header><section id="sec1" aria-labelledby="title1"><h2 id="title1">01 · 模型服务先要定义输入输出契约</h2><p>训练完成后保存模型权重并不能保证上线正确：字段顺序、缺失值、类别编码、时间戳、单位或正类标签的变化，都可能让服务返回看似正常的数值。一个可交付的模型服务要版本化<strong>预处理 + estimator + 输入 schema + 阈值 + 依赖 + 产物完整性</strong>，而不仅是一个孤立模型文件。</p><figure><div class="figure-scroll"><img src="../assets/svg/27/serving-contract.svg" width="1100" height="540" loading="lazy" alt="训练时拟合并冻结完整 preprocessing+model Pipeline，推理时通过 schema 校验并复用相同的变换和模型版本。"></div><figcaption>训练时拟合并冻结完整 preprocessing+model Pipeline，推理时通过 schema 校验并复用相同的变换和模型版本。</figcaption></figure><p>API 要明确字段名称、类型、范围、单位、缺失策略、批大小、超时、返回概率所对应的类别、模型版本与错误码。Pydantic 能验证结构，却无法证明特征代表的业务意义仍与训练时一致。类别未见过、特征历史窗口变化和训练服务 skew 仍需单独监控。</p></section><section id="sec2" aria-labelledby="title2"><h2 id="title2">02 · FastAPI、Pydantic 与启动生命周期</h2><p>FastAPI 能识别 Pydantic 请求体并返回结构验证错误；资源加载应使用 <code>lifespan</code> 生命周期。<strong>async 不会自动加速 CPU 推理</strong>，把耗时的同步模型放进事件循环反而可能阻塞其他请求。本例故意使用同步 <code>def</code> 路由，由服务器调度工作线程；GPU 的并发、队列与批处理需要另行设计。</p><pre><code>from contextlib import asynccontextmanager
 import numpy as np
+from fastapi import FastAPI
+from fastapi.testclient import TestClient
+from pydantic import BaseModel, Field
+from sklearn.linear_model import LogisticRegression
 
-app = FastAPI(title="ML Model Service")
+X = np.array([[-2, -1], [-1, -2], [-1, 0], [1, 1], [2, 1], [1, 2]], dtype=float)
+y = [0, 0, 0, 1, 1, 1]
+model = LogisticRegression(random_state=27).fit(X, y)
 
-# 启动时加载模型
-model = None
-@app.on_event("startup")
-async def load_model():
-    global model
-    model = joblib.load("model.pkl")
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    app.state.model = model
+    yield
+    app.state.model = None
 
-# 定义输入schema
-class PredictRequest(BaseModel):
-    features: list[float]
+app = FastAPI(lifespan=lifespan)
+class Request(BaseModel):
+    feature_a: float = Field(ge=-10, le=10, allow_inf_nan=False)
+    feature_b: float = Field(ge=-10, le=10, allow_inf_nan=False)
 
-class PredictResponse(BaseModel):
-    prediction: float
-    probability: float | None = None
+@app.get("/ready")
+def ready():
+    return {"ready": app.state.model is not None}
 
-@app.post("/predict", response_model=PredictResponse)
-async def predict(request: PredictRequest):
-    if model is None:
-        raise HTTPException(status_code=503, detail="模型未加载")
-    X = np.array(request.features).reshape(1, -1)
-    pred = model.predict(X)[0]
-    prob = model.predict_proba(X)[0].max() if hasattr(model, 'predict_proba') else None
-    return PredictResponse(prediction=float(pred), probability=prob)
+@app.post("/predict")
+def predict(request: Request):
+    x = np.array([[request.feature_a, request.feature_b]])
+    probability = float(app.state.model.predict_proba(x)[0, 1])
+    return {"positive_probability": probability, "model_version": "demo-v1"}
 
-@app.get("/health")
-async def health():
-    return {"status": "ok", "model_loaded": model is not None}
+with TestClient(app) as client:
+    assert client.get("/ready").json()["ready"] is True
+    result = client.post("/predict", json={"feature_a": 1.0, "feature_b": 1.5})
+    assert result.status_code == 200
+    assert 0 &lt;= result.json()["positive_probability"] &lt;= 1
+    assert client.post("/predict", json={"feature_a": 99, "feature_b": 0}).status_code == 422
+    print(result.json())</code></pre><p>这只是可单元测试的内存演示，不是可以公开访问的生产服务：没有认证、速率限制、审计或可信模型加载。liveness 与 readiness 应区分；多个 worker 进程通常会重复加载内存中的模型。服务从不应相信客户端传来的模型文件路径。</p></section><section id="sec3" aria-labelledby="title3"><h2 id="title3">03 · P95 延迟与并发吞吐不能相互替代</h2><p>端到端时间包含网络、排队、特征查询、模型计算与响应序列化。单次在 Notebook 中调用 <code>predict()</code> 的耗时，既不包含请求队列，也不能反映慢请求。应同时测量 P50/P95/P99、QPS、峰值内存、错误率、GPU 利用率与冷启动。</p><figure><div class="figure-scroll"><img src="../assets/svg/27/latency-budget.svg" width="1100" height="540" loading="lazy" alt="一次人工示例请求总计 60ms：网络与解析 18、特征 7、推理 29、序列化 6；不同请求的 P95 不可按各段 P95 相加。"></div><figcaption>一次人工示例请求总计 60ms：网络与解析 18、特征 7、推理 29、序列化 6；不同请求的 P95 不可按各段 P95 相加。</figcaption></figure><div class="eq" role="group" tabindex="0" aria-label="端到端延迟由多个串行处理阶段和排队时间相加构成"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block" aria-label="端到端延迟由多个串行处理阶段和排队时间相加构成"><mrow><msub><mi>L</mi><mtext>end</mtext></msub><mo>=</mo><msub><mi>L</mi><mtext>queue</mtext></msub><mo>+</mo><msub><mi>L</mi><mtext>feature</mtext></msub><mo>+</mo><msub><mi>L</mi><mtext>infer</mtext></msub><mo>+</mo><msub><mi>L</mi><mtext>other</mtext></msub></mrow></math></div><pre><code>import numpy as np
 
-# 运行: uvicorn app:app --host 0.0.0.0 --port 8000 --workers 4
-</code></pre>
-
-        <div class="tip">
-            <strong>💡 FastAPI为什么是ML部署的首选？</strong>(1) 异步支持——高并发时不会阻塞。(2) 自动生成OpenAPI文档——访问/docs就能看到交互式API文档。(3) Pydantic数据验证——自动校验输入格式，错误请求在到达模型前被拦截。(4) 启动事件——模型在服务启动时加载一次到内存，避免每个请求都重新加载。
-        </div>
-
-        <h2>27.3 模型优化：让推理更快更省</h2>
-
-        <table>
-            <tr><th>技术</th><th>原理</th><th>效果</th></tr>
-            <tr><td>量化 (Quantization)</td><td>把FP32权重压缩到INT8/INT4</td><td>模型缩小4-8倍，推理快2-4倍，精度损失<1%</td></tr>
-            <tr><td>剪枝 (Pruning)</td><td>删除接近0的权重</td><td>模型缩小30-90%，需要重训练恢复精度</td></tr>
-            <tr><td>ONNX</td><td>统一模型格式，跨框架部署</td><td>推理加速30-200%（取决于模型和硬件）</td></tr>
-            <tr><td>TensorRT</td><td>NVIDIA推理优化引擎</td><td>GPU推理加速3-10倍</td></tr>
-            <tr><td>vLLM</td><td>LLM专用高吞吐推理</td><td>相比HuggingFace推理快10-30倍</td></tr>
-        </table>
-
-        <pre><code># ONNX导出示例：sklearn/PyTorch → ONNX → ONNX Runtime推理
-from skl2onnx import convert_sklearn
-from skl2onnx.common.data_types import FloatTensorType
+# 人工造的延迟样本；不是在服务器上测得的真实结果
+latencies_ms = np.array([35, 37, 38, 40, 41, 43, 44, 47, 49, 51,
+                         56, 59, 63, 67, 75, 84, 96, 115, 145, 190], dtype=float)
+p50, p95, p99 = np.quantile(latencies_ms, [0.50, 0.95, 0.99])
+assert p50 &lt; p95 &lt; p99
+print("synthetic P50/P95/P99:", round(p50, 1), round(p95, 1), round(p99, 1))</code></pre><p>注意，<strong>总延迟 P95 不等于组件 P95 之和</strong>，分位数在不同请求间一般不可直接线性组合。动态批处理可能提高吞吐，但会增加攒批等待时间；worker 增加也可能导致模型多份驻留内存，因此优化必须基于目标硬件和负载。</p></section><section id="sec4" aria-labelledby="title4"><h2 id="title4">04 · 工件安全、复现实验与模型版本</h2><p>部署的一组文件至少包含模型 Pipeline、输入 schema、决策阈值、依赖版本、训练时间窗、代码 SHA、实验指标、工件哈希与回滚版本。使用 <code>joblib</code>、<code>pickle</code> 或兼容反序列化会带来代码执行风险，不能加载不可信来源；scikit-learn 官方文档对 <code>skops.io</code> 给出了更可审查的选择。</p><table><thead><tr><th>资产</th><th>需要固定</th><th>出错影响</th></tr></thead><tbody><tr><td>模型 + Pipeline</td><td>拟合后的 scaler、encoder、estimators</td><td>同一输入可能被变换为不同值</td></tr><tr><td>输入 schema</td><td>字段、类别顺序、单位、有效范围</td><td>静默误判或正负类互换</td></tr><tr><td>Manifest</td><td>代码、数据、依赖、指标、hash</td><td>无法定位、复现与回滚</td></tr><tr><td>决策规则</td><td>阈值、成本函数、生效版本</td><td>概率相同但业务动作不同</td></tr></tbody></table><p>序列化对象的跨版本载入不一定可靠。任何发布工件都应在其受控运行环境中 smoke-test，核对数值与类别索引，避免仅凭文件名推断内容可信。</p></section><section id="sec5" aria-labelledby="title5"><h2 id="title5">05 · ONNX：先检验输出一致性再谈加速</h2><p>ONNX 将支持的模型算子转换为可交换计算图，ONNX Runtime 依照所选 Execution Provider 推理。它不是“把模型转换一次就快 3 倍”的保证。真正可发布的转换应检查 opset、输入 dtype/shape、类别顺序、数值容差，并在目标硬件上比较延迟与成本。</p><figure><div class="figure-scroll"><img src="../assets/svg/27/onnx-parity.svg" width="1100" height="540" loading="lazy" alt="原框架预测作为参考，与 ONNX Runtime 的输出逐元素对比概率形状、类别顺序和浮点容差。"></div><figcaption>原框架预测作为参考，与 ONNX Runtime 的输出逐元素对比概率形状、类别顺序和浮点容差。</figcaption></figure><pre><code>import numpy as np
+from sklearn.datasets import make_classification
+from sklearn.linear_model import LogisticRegression
+from skl2onnx import to_onnx
 import onnxruntime as ort
 
-# sklearn模型转ONNX
-initial_type = [('float_input', FloatTensorType([None, X_train.shape[1]]))]
-onnx_model = convert_sklearn(model, initial_types=initial_type)
-
-# 用ONNX Runtime推理
-session = ort.InferenceSession(onnx_model.SerializeToString())
-pred = session.run(None, {'float_input': X_test.astype(np.float32)})[0]
-</code></pre>
-
-        <h2>27.4 Docker：一次构建，到处运行</h2>
-
-        <pre><code># Dockerfile 示例
-FROM python:3.11-slim
-
-WORKDIR /app
-COPY requirements.txt .
+X, y = make_classification(n_samples=80, n_features=4, n_informative=3,
+                            n_redundant=0, random_state=27)
+X = X.astype(np.float32)
+model = LogisticRegression(random_state=27, max_iter=300).fit(X, y)
+onnx_model = to_onnx(model, X[:1],
+                     options={id(model): {"zipmap": False}}, target_opset=15)
+session = ort.InferenceSession(onnx_model.SerializeToString(),
+                               providers=["CPUExecutionProvider"])
+labels, probabilities = session.run(None, {session.get_inputs()[0].name: X[:12]})
+reference = model.predict_proba(X[:12])
+np.testing.assert_allclose(probabilities, reference, rtol=1e-4, atol=1e-5)
+np.testing.assert_array_equal(labels, model.predict(X[:12]))
+print("ONNX parity:", probabilities.shape)</code></pre><p>这个实验需要 <code>skl2onnx</code>、<code>onnx</code> 和 <code>onnxruntime</code>。它只覆盖普通 LogisticRegression，不能证明自定义 sklearn Transformer、图像模型或 LLM 均能被等价转换；复杂流水线要逐算子检查。</p></section><section id="sec6" aria-labelledby="title6"><h2 id="title6">06 · 容器封装、权限与启动探针</h2><p>Docker 镜像将应用、Python 环境及其依赖放到可分发容器中，但不自动提供资源隔离、供应链安全或模型可信性。生产要锁定基础镜像 digest、依赖哈希、模型校验和健康/就绪探针，以非 root 用户运行；模型工件应来自受信任构建渠道。</p><pre><samp>FROM python:3.12-slim
+WORKDIR /srv
+RUN useradd --system --uid 10001 appuser
+COPY requirements.txt ./
 RUN pip install --no-cache-dir -r requirements.txt
-
-COPY model.pkl .
-COPY app.py .
-
+COPY app.py ./app.py
+COPY trusted-model.joblib ./trusted-model.joblib
+USER appuser
 EXPOSE 8000
-CMD ["uvicorn", "app:app", "--host", "0.0.0.0", "--port", "8000", "--workers", "2"]
-</code></pre>
+CMD ["uvicorn", "app:app", "--host", "0.0.0.0", "--port", "8000"]</samp></pre><p>上面的 Dockerfile 是<strong>需要配套服务源码与依赖清单</strong>的示意，不是已构建并扫描的发布镜像。还需要设置最小权限、只读文件系统、密钥管理、网络出站规则、内存/CPU 限额、日志去敏和镜像漏洞扫描。readiness 应确认模型和必要依赖可用；liveness 不应因为短暂后端压力就频繁重启全部 worker。</p></section><section id="sec7" aria-labelledby="title7"><h2 id="title7">07 · 金丝雀灰度与回滚门禁</h2><p>模型变更可能影响输入分布、输出概率与服务时延。常见做法是保持旧版本 A 稳定，将一小部分流量转给候选 B，观察错误、超时、P95/99、预测分布和较晚出现的业务结果。示意的 95/5 流量比例并不是统计显著性保证，也不自动构成严格随机试验。</p><figure><div class="figure-scroll"><img src="../assets/svg/27/canary-gates.svg" width="1100" height="540" loading="lazy" alt="示意 95% 稳定版本、5% 候选版本路由以及基于错误、延迟和标签证据的回滚与放量门禁。"></div><figcaption>示意 95% 稳定版本、5% 候选版本路由以及基于错误、延迟和标签证据的回滚与放量门禁。</figcaption></figure><pre><code>def release_gate(n, error_rate, p95_ms, baseline_p95_ms):
+    # 仅供演示的规则数值：生产需按业务风险与统计功效设计
+    if n &lt; 1000:
+        return "observe"
+    if error_rate &gt; 0.01 or p95_ms &gt; baseline_p95_ms * 1.25:
+        return "rollback-review"
+    return "human-approval"
 
-        <div class="warning">
-            <strong>⚠️ Docker部署常见问题：</strong>(1) 模型文件太大（>1GB）导致镜像构建和推送极慢——应使用模型下载脚本在容器启动时拉取模型，而不是COPY进镜像。(2) 内存不足——单个模型推理需要2GB显存，两个worker同时推理需要4GB，确保容器内存限制高于 peak 内存使用。(3) 忘记设置health check——K8s/Docker Compose依赖health check来自动重启不健康的服务。
-        </div>
-
-        <h2>27.5 模型监控：部署不是终点</h2>
-        <p>模型上线后，你需要持续监控以下指标：</p>
-        <ul>
-            <li><strong>数据漂移（Data Drift）：</strong>输入特征的分布是否偏离了训练集？比如训练时用户平均年龄35岁，现在变42岁了——模型可能在新分布下失效</li>
-            <li><strong>概念漂移（Concept Drift）：</strong>同样的输入，目标变量的含义变了。比如"用户流失"的定义从"30天不活跃"改成了"14天不活跃"</li>
-            <li><strong>模型性能：</strong>预测延迟、吞吐量、错误率、业务指标（如预测准确率和转化率的变化）</li>
-        </ul>
-
-        <p>基础的监控可以用Prometheus收集指标 + Grafana可视化，或直接用简单的日志 + 定期脚本做统计。复杂的漂移检测可以用Evidently AI或NannyML等专用工具。</p>
-
-        <div class="highlight">
-            <strong>🔑 部署哲学：</strong>好的部署不是"一劳永逸"，而是"可以随时安全地更新"。你的部署架构应该支持：蓝绿部署（新旧版本同时运行，流量切换）、金丝雀发布（先给5%流量验证新模型）、自动回滚（指标异常时自动切回旧版本）。模型不是静态的——它会衰减、需要重训练、需要被更好的模型替换。部署系统要为此而设计。
-        </div>
-
-        <p>部署的知识就到这里。课程的最后，让我们把所有学到的知识串联起来——完成一个端到端的ML系统毕业项目。</p>
-
-        <div class="footer-nav">
-            <a href="26.html">← 上一章</a>
-            <a href="index.html">📖 返回目录</a>
-            <a href="28.html">下一章 →</a>
-        </div>
-    </div>
-</div>
-</div>
-</body>
-</html>
+assert release_gate(20, 0.0, 40, 40) == "observe"
+assert release_gate(2000, 0.03, 42, 40) == "rollback-review"
+assert release_gate(2000, 0.0, 42, 40) == "human-approval"
+print("rollback decision rules verified")</code></pre><p>真正的发布系统还需定义变更审批、最短观测窗口、重复请求一致路由、金丝雀分层、人工兜底和前一稳定工件的恢复流程。延迟数值或小批次早期标签不能代替完整的上线验证。</p></section><section id="sec8" aria-labelledby="title8"><h2 id="title8">08 · 漂移、延迟标签与模型效果</h2><p>线上监控要拆成两类：实时无标签指标（API 错误率、字段缺失率、特征分布、输出概率、资源和延迟）与等待实际标签成熟后的指标（召回、校准、业务结果、分组失败率）。输入分布变化 <code>P(X)</code> 不等于条件分布 <code>P(Y|X)</code> 改变。发现漂移应检查上游版本与数据含义，再判断是否影响效果。</p><figure><div class="figure-scroll"><img src="../assets/svg/27/drift-monitoring.svg" width="1100" height="540" loading="lazy" alt="实时流量监控可发现数据漂移；延迟标签回流后才能检验真实预测质量，两类证据进入调查而不是直接自动重训。"></div><figcaption>实时流量监控可发现数据漂移；延迟标签回流后才能检验真实预测质量，两类证据进入调查而不是直接自动重训。</figcaption></figure><div class="eq" tabindex="0" role="group" aria-label="概念漂移表示不同时间的条件概率分布发生变化"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block" aria-label="P t1 Y given X 不等于 P t2 Y given X"><mrow><msub><mi>P</mi><mtext>t1</mtext></msub><mo>(</mo><mi>Y</mi><mo>|</mo><mi>X</mi><mo>)</mo><mo>≠</mo><msub><mi>P</mi><mtext>t2</mtext></msub><mo>(</mo><mi>Y</mi><mo>|</mo><mi>X</mi><mo>)</mo></mrow></math></div><p>例如预测未来 7 天购买意向的服务，当天还不知道未来完整 7 天结果，不能把未成熟标签记为负类。日志需要通过预测 ID、模型版本与发生时间和标签成熟时间关联，且注意是否只对部分用户收集到了标签，从而产生选择偏差。</p></section><section id="sec9" aria-labelledby="title9"><h2 id="title9">09 · 发布前检查与来源</h2><ul><li><strong>事实完整性：</strong>同输入的离线/在线预测一致，模型和预处理版本固定，工件来源及校验和可追溯。</li><li><strong>安全：</strong>认证鉴权、限流、Pydantic 输入验证、无恶意反序列化、最小权限及日志脱敏。</li><li><strong>性能：</strong>在目标 CPU/GPU 与真实并发下实测 QPS、P50/P95/P99、成本和峰值内存，不引用未经复现的通用加速倍数。</li><li><strong>模型质量：</strong>验证集完成阈值/校准选择，测试集只最终报告，线上标签按成熟时间对齐。</li><li><strong>发布：</strong>灰度、告警、审批、版本固定、回滚演练和故障复盘。</li></ul><p>可上线系统不只是“能够返回一个数值”，而是能回答：这次请求读取了什么数据、运行了哪个模型、为何给出这个分数、出错时怎样恢复。</p></section><section id="references" aria-labelledby="ref-title"><h2 id="ref-title">官方文档、版本约束与证据边界</h2><p>Python 示例使用小型合成数据与 CPU；Dockerfile 未构建、生产服务未部署、延迟与门禁数值为示意，不能充当线上指标。API/ONNX 的具体行为应结合依赖锁文件与运行环境验证。</p><ul class="refs"><li><a href="https://fastapi.tiangolo.com/tutorial/body/" rel="noopener noreferrer">FastAPI Request Body 与 Pydantic</a></li><li><a href="https://fastapi.tiangolo.com/advanced/events/" rel="noopener noreferrer">FastAPI Lifespan</a></li><li><a href="https://scikit-learn.org/stable/model_persistence.html" rel="noopener noreferrer">scikit-learn Model Persistence 安全和兼容性</a></li><li><a href="https://onnxruntime.ai/docs/get-started/with-python" rel="noopener noreferrer">ONNX Runtime Python API</a></li><li><a href="https://onnxruntime.ai/docs/api/python/api_summary.html" rel="noopener noreferrer">ONNX Runtime API summary</a></li><li><a href="https://scikit-learn.org/stable/modules/compose.html" rel="noopener noreferrer">scikit-learn Pipeline 和特征处理一致性</a></li><li><a href="https://docs.cloud.google.com/architecture/mlops-continuous-delivery-and-automation-pipelines-in-machine-learning" rel="noopener noreferrer">Google Cloud MLOps：CI/CD/CT、模型验证和发布</a></li></ul></section><nav class="article-footer" aria-label="章节导航"><a href="26.html">← 上一章</a><a href="../index.html">全部章节</a><a href="28.html">下一章 →</a></nav></article></main></div><footer class="site-footer"><span>机器学习图解教程 · 第 27 章</span><span>契约、数值一致性与上线可靠性</span></footer></body></html>

@@ -1,222 +1,74 @@
-<!DOCTYPE html>
-<html lang="zh-CN">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.5, user-scalable=yes">
-    <title>第26章 大语言模型与RAG</title>
-    <style>
-        * { margin:0; padding:0; box-sizing:border-box; }
-        body {
-            background: linear-gradient(135deg, #f5f3ff 0%, #e8f5f0 100%);
-            font-family: system-ui, -apple-system, 'Segoe UI', 'PingFang SC', Roboto, 'Helvetica Neue', sans-serif;
-            padding: 20px;
-        }
-        .double-border {
-            max-width: 1400px;
-            margin: 0 auto;
-            background: #ffffff;
-            border: 2px solid #8b5cf6;
-            border-radius: 24px;
-            box-shadow: 0 20px 30px -15px rgba(0,0,0,0.2), inset 0 1px 0 0 #f5f3ff;
-            overflow: hidden;
-        }
-        .container { display: grid; grid-template-columns: 260px 1fr; gap: 0; }
-        .sidebar {
-            background: #faf8ff; border-right: 2px solid #c4b5fd; padding: 24px 16px;
-        }
-        .sidebar h3 { font-size: 1.4rem; color: #6d28d9; border-left: 5px solid #8b5cf6; padding-left: 15px; margin-bottom: 25px; }
-        .chapter-list { list-style: none; }
-        .chapter-list li { margin-bottom: 6px; }
-        .chapter-list a {
-            display: block; padding: 8px 12px; text-decoration: none;
-            color: #334155; border-radius: 12px; transition: all 0.2s;
-            font-weight: 500; font-size: 0.92rem;
-        }
-        .chapter-list a:hover { background: #ede9fe; transform: translateX(3px); }
-        .chapter-list .active { background: #7c3aed; color: white; box-shadow: 0 2px 5px rgba(124,58,237,0.3); }
-        .main-content { padding: 30px 35px; background: white; }
-        .footer-nav {
-            margin-top: 45px; padding-top: 20px; border-top: 2px solid #c4b5fd;
-            display: flex; justify-content: space-between;
-        }
-        .footer-nav a {
-            padding: 8px 24px; background: #f1f5f9; text-decoration: none;
-            color: #5b21b6; border-radius: 40px; font-weight: 500; transition: 0.2s;
-        }
-        .footer-nav a:hover { background: #ede9fe; transform: translateY(-2px); }
-        h2 { color: #4c1d95; border-left: 6px solid #8b5cf6; padding-left: 15px; margin: 20px 0 15px; font-size: 1.5rem; }
-        h3 { color: #5b21b6; margin: 20px 0 10px; font-size: 1.2rem; }
-        h4 { color: #6d28d9; margin: 15px 0 8px; font-size: 1.05rem; }
-        p { line-height: 1.85; margin: 10px 0; color: #1e293b; }
-        ul, ol { margin: 10px 0 10px 20px; line-height: 1.8; }
-        li { color: #1e293b; margin-bottom: 4px; }
-        pre { background: #1e1035; color: #e8e8f0; padding: 15px; border-radius: 12px; overflow-x: auto; font-family: 'JetBrains Mono', 'Fira Code', monospace; margin: 15px 0; font-size: 0.9rem; line-height: 1.5; }
-        code { background: #f5f3ff; padding: 2px 6px; border-radius: 4px; font-family: 'JetBrains Mono', monospace; font-size: 0.85em; }
-        pre code { background: none; padding: 0; }
-        table { width: 100%; border-collapse: collapse; margin: 15px 0; background: #fafafe; }
-        th, td { border: 1px solid #c4b5fd; padding: 10px; text-align: left; }
-        th { background: #f5f3ff; color: #5b21b6; font-weight: 600; }
-        .tip, .warning, .highlight { padding: 12px 18px; border-radius: 16px; margin: 15px 0; line-height: 1.7; }
-        .tip { background: #e0f2fe; border-left: 6px solid #0ea5e9; }
-        .warning { background: #fee2e2; border-left: 6px solid #ef4444; }
-        .highlight { background: #fef9c3; border: 1px solid #facc15; }
-        strong { color: #1e1b4b; }
-        @media (max-width: 768px) {
-            .container { grid-template-columns: 1fr; }
-            .sidebar { border-right: none; border-bottom: 2px solid #c4b5fd; }
-            body { padding: 10px; }
-            .main-content { padding: 20px; }
-        }
-    </style>
-    <link rel="stylesheet" href="theme.css">
-</head>
-<body>
-<div class="double-border">
-<div class="container">
-    <div class="sidebar">
-        <h3>🤖 课程目录</h3>
-        <ul class="chapter-list">
-            <li><a href="01.html">第1章 机器学习概述</a></li>
-            <li><a href="02.html">第2章 数学基础：线性代数</a></li>
-            <li><a href="03.html">第3章 数学基础：概率统计</a></li>
-            <li><a href="04.html">第4章 数学基础：优化理论</a></li>
-            <li><a href="05.html">第5章 数据预处理与探索</a></li>
-            <li><a href="06.html">第6章 第一个ML项目实战</a></li>
-            <li><a href="07.html">第7章 模型评估与选择</a></li>
-            <li><a href="08.html">第8章 线性回归与正则化</a></li>
-            <li><a href="09.html">第9章 逻辑回归与分类</a></li>
-            <li><a href="10.html">第10章 决策树与随机森林</a></li>
-            <li><a href="11.html">第11章 支持向量机 SVM</a></li>
-            <li><a href="12.html">第12章 朴素贝叶斯与KNN</a></li>
-            <li><a href="13.html">第13章 聚类算法</a></li>
-            <li><a href="14.html">第14章 降维与特征工程</a></li>
-            <li><a href="15.html">第15章 模型调参与AutoML</a></li>
-            <li><a href="16.html">第16章 处理不平衡数据</a></li>
-            <li><a href="17.html">第17章 模型可解释性</a></li>
-            <li><a href="18.html">第18章 ML系统工程化</a></li>
-            <li><a href="19.html">第19章 神经网络基础</a></li>
-            <li><a href="20.html">第20章 深度学习框架实战</a></li>
-            <li><a href="21.html">第21章 CNN卷积神经网络</a></li>
-            <li><a href="22.html">第22章 RNN与序列模型</a></li>
-            <li><a href="23.html">第23章 NLP自然语言处理</a></li>
-            <li><a href="24.html">第24章 生成式模型</a></li>
-            <li><a href="25.html">第25章 强化学习入门</a></li>
-            <li><a href="26.html" class="active">第26章 大语言模型与RAG</a></li>
-            <li><a href="27.html">第27章 模型部署与服务化</a></li>
-            <li><a href="28.html">第28章 毕业项目：端到端ML系统</a></li>
-        </ul>
-    </div>
-    <div class="main-content">
-        <h2>26.1 LLM：2020年代最大的技术浪潮</h2>
-        <p>2022年11月ChatGPT发布，两个月内用户突破1亿——成为历史上增长最快的消费产品。这不仅仅是又一个AI模型，而是一个时代的转折点。GPT-4、Claude、Gemini、LLaMA、Qwen——这些大语言模型（LLM）正在重塑软件开发、内容创作、客户服务和科学研究的每一个角落。</p>
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="description" content="从自回归解码和 KV cache，到 RAG 索引与权限、证据支持、Agent 工具授权和 LoRA 低秩微调，构建可审计的语言模型系统。"><title>大语言模型、RAG、Agent 与 LoRA · 机器学习图解教程</title><link rel="stylesheet" href="../assets/css/article.css"></head><body class="article-page"><a class="skip-link" href="#content">跳转至正文</a><header class="site-header"><div class="header-inner"><a class="wordmark" href="../index.html"><span class="mark">M<span>·</span>L</span><span>机器学习图解教程<small>Machine Learning, Explained</small></span></a><nav aria-label="顶部导航"><a href="../index.html">课程目录</a><a href="https://github.com/1998x-stack/machine-learning-tutorial">GitHub</a></nav></div></header><div class="article-shell"><aside class="article-nav"><nav aria-label="文章目录"><details open><summary>本章目录</summary><div class="nav-items"><a href="../index.html">← 全部章节</a><a href="#sec1">为什么 LLM 能续写，却不能代替事实数据库</a><a href="#sec2">从 token、因果掩码走到 KV Cache</a><a href="#sec3">预训练、指令微调与推理阶段的不同目标</a><a href="#sec4">RAG 的两条路径：索引不等于问答</a><a href="#sec5">检索实验：有权限的候选才能进入上下文</a><a href="#sec6">RAG 评估：检索、事实支持与拒答</a><a href="#sec7">工具调用与 Agent：权限控制器必须独立于模型</a><a href="#sec8">LoRA：冻结权重与低秩可训练增量</a><a href="#sec9">架构选择与上线检查</a><a href="#references">来源与边界</a></div></details></nav></aside><main class="article-main" id="content"><article><div class="breadcrumb"><a href="../index.html">课程目录</a><span>/</span><span>第 26 章</span></div><header class="article-header"><div class="chapter-number">CHAPTER 26 / 28</div><h1>大语言模型、RAG、Agent 与 LoRA</h1><p class="dek">从自回归 token 生成出发，逐步理解 KV Cache、外部检索、访问控制、引用证据、工具执行和低秩微调。每一种机制都解决不同的问题，也有不同的失败边界。</p><div class="lead-question">如果一份最新政策既不在模型训练数据里，又只允许部分员工访问，系统怎样回答才正确、可审计且不会泄漏？</div></header><section id="sec1" aria-labelledby="title1"><h2 id="title1">01 · 为什么 LLM 能续写，却不能代替事实数据库</h2><p>给定“公司今年的休假政策是什么？”，语言模型可能写出流畅答案，但流畅并不证明正确。自回归语言模型通过数据学习 token 条件分布：模型权重压缩了训练中的统计规律，却不自带可靠的实时外部数据库，也不自动识别答案是否有权限或已经过期。专业应用必须区分<strong>语言生成</strong>、<strong>资料检索</strong>、<strong>工具执行</strong>与<strong>事实验证</strong>。</p><div class="eq" role="group" aria-label="自回归序列概率分解为各时间步的条件 token 概率" tabindex="0"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block" aria-label="自回归序列概率分解为各时间步的条件 token 概率"><mrow><mi>p</mi><mo>(</mo><msub><mi>x</mi><mrow><mn>1</mn><mo>:</mo><mi>T</mi></mrow></msub><mo>)</mo><mo>=</mo><munderover><mo>∏</mo><mrow><mi>t</mi><mo>=</mo><mn>1</mn></mrow><mi>T</mi></munderover><mi>p</mi><mo>(</mo><msub><mi>x</mi><mi>t</mi></msub><mo>|</mo><msub><mi>x</mi><mrow><mo>&lt;</mo><mi>t</mi></mrow></msub><mo>)</mo></mrow></math></div><p>这里 <code>x_t</code> 是第 t 个 token，条件是同序列中已出现的前缀，而非独立采样。训练时可以同时计算多个位置的损失，但<strong>自回归推理</strong>需要生成一步、追加一步。训练与服务还可能采用不同的精度、缓存、采样温度和批处理策略，这些是工程配置，不是概率公式本身的不同定义。</p></section><section id="sec2" aria-labelledby="title2"><h2 id="title2">02 · 从 token、因果掩码走到 KV Cache</h2><p>Tokenizer 负责把 Unicode 文本映射为模型词表的整数 ID；不同模型的 ID 不可混用。Embedding 将 ID 映射为连续向量，加入位置相关表示，送入一层或多层因果自注意力与前馈网络，最终投影到词表维度 <code>V</code> 得到 logits。对最新位置的 logits 进行采样得到下一 token；是否使用贪心、温度或 top-p 只改变解码选择，不会自动修复事实性。</p><figure><div class="figure-scroll"><img src="../assets/svg/26/decoder-inference.svg" width="1100" height="540" loading="lazy" alt="因果 decoder 从 token IDs 生成 logits，并在每个生成步骤缓存历史 key/value 张量，避免重复计算相同前缀。"></div><figcaption>因果 decoder 从 token IDs 生成 logits，并在每个生成步骤缓存历史 key/value 张量，避免重复计算相同前缀。</figcaption></figure><p>KV cache 保存各层已处理 token 的 key/value；它并不缓存所有未来 token，也不能让自回归生成在时间上完全并行。典型每层形状是 <code>K,V: [B, H, T, d_head]</code>，实际 GQA/MQA 的 KV head 数可能小于 Query head 数。缓存省计算但增加显存，长上下文服务还要考虑分页缓存、并发和序列淘汰策略。</p><pre><code>import torch
+torch.manual_seed(26)
+batch, heads, head_dim = 2, 3, 8
+cache_k = torch.empty(batch, heads, 0, head_dim)
+cache_v = torch.empty_like(cache_k)
+for _ in range(5):
+    new_k = torch.randn(batch, heads, 1, head_dim)
+    new_v = torch.randn(batch, heads, 1, head_dim)
+    cache_k = torch.cat([cache_k, new_k], dim=2)
+    cache_v = torch.cat([cache_v, new_v], dim=2)
+assert cache_k.shape == cache_v.shape == (batch, heads, 5, head_dim)
+print("KV shape:", tuple(cache_k.shape))</code></pre><p>代码只核验一个抽象 KV 缓存的形状变化；真实 Transformer 还需 rotary/绝对位置处理、attention mask、重复前缀管理、cache_position 和内存布局，不等同于可运行 LLM。</p></section><section id="sec3" aria-labelledby="title3"><h2 id="title3">03 · 预训练、指令微调与推理阶段的不同目标</h2><p>预训练通常在大规模文本上最小化 next-token 负对数似然；指令微调（SFT）使用经过筛选的“输入—期望输出”示例学习任务遵循；偏好训练可能使用奖励建模与强化学习，或 DPO 一类直接偏好目标。不同产品路线不必都包含相同阶段；微调目标也不意味着模型拥有可靠事实依据。</p><div class="eq" role="group" aria-label="语言模型负对数似然平均损失" tabindex="0"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block" aria-label="语言模型负对数似然平均损失"><mrow><mi>ℒ</mi><mo>=</mo><mo>−</mo><mfrac><mn>1</mn><mi>T</mi></mfrac><munderover><mo>∑</mo><mrow><mi>t</mi><mo>=</mo><mn>1</mn></mrow><mi>T</mi></munderover><mi>log</mi><msub><mi>p</mi><mi>θ</mi></msub><mo>(</mo><msub><mi>x</mi><mi>t</mi></msub><mo>|</mo><msub><mi>x</mi><mrow><mo>&lt;</mo><mi>t</mi></mrow></msub><mo>)</mo></mrow></math></div><p>上下文长度、模型参数量、训练 tokens 与推理成本之间有实际预算约束。Scaling Laws 是给定模型家族、优化和数据条件下的经验关系，不可写成“无限增大模型必然更好”。不同模型的 token/字比例和上下文窗口也会随 tokenizer、版本及服务配置变化，不应把未经官方核实的参数数量或容量当作常量。</p><p>提示词是接口而不是权限系统。明确结构化输出 schema、允许拒答、设置检索资料时间范围，比单纯要求“你是专家”更有审计价值。评估需要任务代表性数据与失败切片；提示词示例中的流畅回答不能充当准确性证据。</p></section><section id="sec4" aria-labelledby="title4"><h2 id="title4">04 · RAG 的两条路径：索引不等于问答</h2><p>RAG 将参数化模型与外部资料检索结合。离线路径从来源文件提取内容、按照段落或语义边界分块、记录文档版本与访问权限，再建立词项或向量索引；在线路径从用户查询出发，执行身份过滤、检索、重排、上下文预算选择，最后把有来源的片段作为<strong>不可信外部内容</strong>交给生成模型。</p><figure><div class="figure-scroll"><img src="../assets/svg/26/rag-two-paths.svg" width="1100" height="540" loading="lazy" alt="RAG 离线索引和在线问答双路径；索引包括文档版本与 ACL，在线检索在生成前执行权限过滤和重排。"></div><figcaption>RAG 离线索引和在线问答双路径；索引包括文档版本与 ACL，在线检索在生成前执行权限过滤和重排。</figcaption></figure><p>原始 Lewis 等人论文中，RAG-Sequence 与 RAG-Token 对潜在检索文档的使用与边缘化方式不同；如今工程上常把 top-k 片段拼进 prompt，但这只是广义 RAG 系统的一种设计。**嵌入距离不是事实真值**：查询语义接近错误版本的政策，也可能产生高分。最新知识需要文档更新时间、有效期、租户身份与删除同步，而不是只“重新 embedding”即可。</p><p>固定长度分块（例如按段落并设重叠）有利于简单实现，却可能截断定义、表格、代码或跨段落关系。选择分块大小、重叠、embedding 模型、倒排 BM25、向量索引与 reranker，都需要用真实查询评估，而不是默认为一组固定推荐参数。</p></section><section id="sec5" aria-labelledby="title5"><h2 id="title5">05 · 检索实验：有权限的候选才能进入上下文</h2><p>下面演示一个完全离线、合成的企业政策检索器。使用 <code>TfidfVectorizer</code> 的字符 n-gram 表示做<strong>词法检索</strong>；它不是 BGE、语义向量库或生产级 RAG。关键在于先过滤访问级别，再在允许文档上检索，且保留来源 ID。</p><pre><code>from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.metrics.pairwise import cosine_similarity
 
-        <p>作为ML从业者，你不需要从零训练一个LLM（那需要数千万美元），但你必须理解LLM的工作原理、如何微调、如何用RAG构建应用——这些是2026年最炙手可热的工程技能。</p>
-
-        <h2>26.2 LLM如何工作：从token到文本</h2>
-        <p>LLM的核心是一个"下一个token预测器"。给定一段文本，它预测最可能的下一个词（准确说是token）。这个过程重复下去，就生成了连贯的文本。</p>
-
-        <h3>Tokenization</h3>
-        <p>文字不能直接喂给模型，需要先切成token。英文大约1个token ≈ 0.75个词，中文约1个token ≈ 0.5个字。GPT-4的上下文窗口128K tokens大约能容纳一本300页的书。</p>
-
-        <h3>Scaling Laws</h3>
-        <p>一个被反复验证的规律：模型越大 + 数据越多 = 效果越好，且这个趋势似乎没有触顶的迹象。这就是为什么各大公司都在疯狂扩大模型规模和训练数据量。</p>
-
-        <table>
-            <tr><th>模型</th><th>参数规模</th><th>上下文窗口</th><th>开源？</th></tr>
-            <tr><td>GPT-4</td><td>~1.8T（未官方确认）</td><td>128K</td><td>否</td></tr>
-            <tr><td>Claude 4 (Opus)</td><td>未公开</td><td>200K</td><td>否</td></tr>
-            <tr><td>LLaMA 3-405B</td><td>405B</td><td>128K</td><td>是</td></tr>
-            <tr><td>Qwen 2.5-72B</td><td>72B</td><td>128K</td><td>是</td></tr>
-            <tr><td>DeepSeek-V3</td><td>671B (MoE)</td><td>128K</td><td>是</td></tr>
-        </table>
-
-        <h2>26.3 Prompt Engineering：撬动LLM的杠杆</h2>
-        <p>好的prompt和差的prompt，效果可以差一个数量级。几个关键技巧：</p>
-
-        <ul>
-            <li><strong>Chain-of-Thought（CoT）：</strong>让模型"一步一步思考"再给答案。比如加上"Let's think step by step"，在推理类任务上准确率大幅提升</li>
-            <li><strong>Few-shot：</strong>给几个示例（输入→输出），模型就能学会输出的格式和风格</li>
-            <li><strong>System Prompt：</strong>设定角色和约束，如"你是一个有10年经验的Python工程师"</li>
-            <li><strong>结构化输出：</strong>明确要求JSON/Markdown格式，方便程序解析</li>
-        </ul>
-
-        <div class="tip">
-            <strong>💡 CoT的原理：</strong>大语言模型是"自回归"的——先输出的token会影响后续的token。当模型先输出推理步骤再输出答案时，它实际上在"给自己的思考分配更多计算"。这就像让一个学生在草稿纸上演算而不是心算——多写几步中间推导能显著提高最终正确率。没有CoT的模型相当于"直觉判断"，有CoT的模型相当于"推理判断"。
-        </div>
-
-        <h2>26.4 RAG：让LLM拥有"外部知识库"</h2>
-        <p>LLM有两个致命弱点：(1) 知识截止于训练日期，不知道最新信息；(2) 对不熟悉的内容可能"幻想"（hallucination）出看起来合理但完全错误的答案。</p>
-
-        <p><strong>RAG（Retrieval-Augmented Generation）</strong>是解决这两个问题的首选方案：</p>
-
-        <ol>
-            <li><strong>索引（Indexing）：</strong>把你的文档（产品手册、公司wiki、知识库）切成小段，用embedding模型转成向量，存入向量数据库</li>
-            <li><strong>检索（Retrieval）：</strong>用户提问时，把问题也转成向量，在数据库中搜索最相关的文档片段</li>
-            <li><strong>生成（Generation）：</strong>把检索到的相关文档片段和用户问题一起塞进prompt，让LLM基于这些资料回答</li>
-        </ol>
-
-        <pre><code>import chromadb
-from sentence_transformers import SentenceTransformer
-
-# 1. 初始化embedding模型和向量数据库
-embedder = SentenceTransformer('BAAI/bge-large-zh-v1.5')
-client = chromadb.Client()
-collection = client.create_collection("company_docs")
-
-# 2. 索引文档
-documents = [
-    "公司年假政策：入职满1年享有5天年假，满3年10天，满5年15天。",
-    "加班政策：工作日加班1.5倍工资，周末2倍，法定假日3倍。",
-    "远程办公政策：每周可申请2天远程办公，需主管审批。",
+docs = [
+    {"id": "public-1", "scope": "public", "text": "远程办公每周最多两天，须先取得主管批准。"},
+    {"id": "public-2", "scope": "public", "text": "公司年假以人事系统最终审批记录为准。"},
+    {"id": "private-3", "scope": "private", "text": "远程办公每周五天，无需主管批准。"},
 ]
-for i, doc in enumerate(documents):
-    collection.add(
-        embeddings=[embedder.encode(doc).tolist()],
-        documents=[doc],
-        ids=[f"doc_{i}"]
-    )
+query = "远程办公每周几天，需要批准吗？"
+allowed = [d for d in docs if d["scope"] == "public"]
+vectorizer = TfidfVectorizer(analyzer="char", ngram_range=(2, 3))
+corpus = vectorizer.fit_transform([d["text"] for d in allowed])
+q = vectorizer.transform([query])
+scores = cosine_similarity(q, corpus).ravel()
+ranked = [allowed[i] for i in scores.argsort()[::-1]]
+assert ranked[0]["id"] == "public-1"
+assert all(d["scope"] == "public" for d in ranked)
+print("top source:", ranked[0]["id"], "score:", round(scores.max(), 3))</code></pre><figure><div class="figure-scroll"><img src="../assets/svg/26/retrieval-gates.svg" width="1100" height="540" loading="lazy" alt="检索从混合召回经过 ACL 与时效性检查，再重排、形成有 ID 的证据上下文，最终检查回答的引用支持率。"></div><figcaption>检索从混合召回经过 ACL 与时效性检查，再重排、形成有 ID 的证据上下文，最终检查回答的引用支持率。</figcaption></figure><p>真实部署必须用授权身份而非“客户端传一个 scope 字符串”来决定可读文档；读取原始内容、向量召回、rerank 和 LLM 上下文拼装都应遵守相同的权限边界。不可把检索结果直接视为可信系统指令。</p></section><section id="sec6" aria-labelledby="title6"><h2 id="title6">06 · RAG 评估：检索、事实支持与拒答</h2><p>一个 RAG 回答可能检索对了、生成错了，也可能检索错了却恰好答对。至少区分：<strong>Recall@k</strong>（标注相关证据有多少进入前 k）、<strong>引用正确率/支持率</strong>（答案关键主张能否由所引用片段支持）、<strong>答案正确性</strong>（对真实任务是否正确）与<strong>拒答质量</strong>（无足够证据时是否拒答）。</p><div class="eq" role="group" aria-label="检索召回率等于前 k 命中相关文档数除以所有相关文档数" tabindex="0"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block" aria-label="检索召回率等于前 k 命中相关文档数除以所有相关文档数"><mrow><mi>Recall</mi><mo>@</mo><mi>k</mi><mo>=</mo><mfrac><mrow><mo>|</mo><msub><mi>R</mi><mi>k</mi></msub><mo>∩</mo><msub><mi>R</mi><mtext>relevant</mtext></msub><mo>|</mo></mrow><mrow><mo>|</mo><msub><mi>R</mi><mtext>relevant</mtext></msub><mo>|</mo></mrow></mfrac></mrow></math></div><p>需要预先标注相关证据集合；没有完整相关集就不能假定 Recall@k 准确。若同一政策有互相冲突的旧版和新版，引用旧版即使看起来文字支持，也可能对用户查询时间不成立。人工核验样本、边界问题、拒答场景、越权测试、对抗文档和模型版本记录缺一不可。</p><p>真正的答案要能逐条指向支持它的片段与版本，而不是在回答末尾随便附几个链接。交叉来源冲突时应暴露冲突、日期与无法确定的部分。</p></section><section id="sec7" aria-labelledby="title7"><h2 id="title7">07 · 工具调用与 Agent：权限控制器必须独立于模型</h2><p>Agent 不是给模型加上一个“我会执行指令”的提示词。模型最多负责<strong>提出结构化工具请求</strong>；是否允许调用、参数是否合法、是否触发资金/文件/账号变更、如何限制次数和时限，应由模型之外的可信控制器执行。ReAct 展示了在推理与环境交互之间交替的范式，但不是一个无需权限系统的生产规范。</p><figure><div class="figure-scroll"><img src="../assets/svg/26/tool-boundary.svg" width="1100" height="540" loading="lazy" alt="Agent 的结构化工具请求必须经过独立 Policy Gate、schema 校验及必要的用户审批，工具返回只作不可信数据。"></div><figcaption>Agent 的结构化工具请求必须经过独立 Policy Gate、schema 校验及必要的用户审批，工具返回只作不可信数据。</figcaption></figure><pre><code>from dataclasses import dataclass
 
-# 3. 检索
-query = "我工作3年了，一年有多少天假期？"
-query_embedding = embedder.encode(query).tolist()
-results = collection.query(query_embeddings=[query_embedding], n_results=2)
+@dataclass(frozen=True)
+class ToolRequest:
+    name: str
+    args: dict
 
-# 4. 构建prompt发给LLM
-context = "\n".join(results['documents'][0])
-prompt = f"""基于以下公司政策回答问题：
+ALLOWED = {"get_policy"}
+def execute_tool(request: ToolRequest, identity: str):
+    if identity != "reader" or request.name not in ALLOWED:
+        raise PermissionError("tool or identity denied")
+    if set(request.args) != {"policy_id"}:
+        raise ValueError("unexpected arguments")
+    policy_id = request.args["policy_id"]
+    if policy_id not in {"public-1", "public-2"}:
+        raise PermissionError("document not authorized")
+    return {"source_id": policy_id, "text": "illustrative public policy"}
 
-{context}
+print(execute_tool(ToolRequest("get_policy", {"policy_id": "public-1"}), "reader"))
+try:
+    execute_tool(ToolRequest("delete_records", {"table": "users"}), "reader")
+except PermissionError:
+    print("destructive tool denied")</code></pre><p>示例只在内存里模拟无副作用的工具；实际系统要记录主体身份、资源 ACL、工具审计与拒绝原因，且对写操作配置幂等键、额度控制与明确审批。只用关键词过滤“忽略之前的指令”无法阻止提示注入，因为恶意说明可以藏在检索文档、网页、PDF 或工具返回中。</p></section><section id="sec8" aria-labelledby="title8"><h2 id="title8">08 · LoRA：冻结权重与低秩可训练增量</h2><p>LoRA 的主要思路是冻结原预训练线性层权重 <code>W0</code>，新增两个较小的可训练矩阵 A、B，令权重增量为低秩乘积。假定 <code>W0∈R^(d_out×d_in)</code>，则 <code>A∈R^(r×d_in)</code>、<code>B∈R^(d_out×r)</code>，其中 <code>r≪min(d_in,d_out)</code>。新增加的可训练参数数量为 <code>r(d_in+d_out)</code>，不包括偏置及未冻结的其他层。</p><div class="eq" role="group" aria-label="LoRA 增量线性层 y 等于输入经冻结 W0 和 alpha 除 r 缩放的 B 乘 A 输出相加" tabindex="0"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block" aria-label="LoRA 增量线性层 y 等于输入经冻结 W0 和 alpha 除 r 缩放的 B 乘 A 输出相加"><mrow><mi>y</mi><mo>=</mo><msub><mi>W</mi><mn>0</mn></msub><mi>x</mi><mo>+</mo><mfrac><mi>α</mi><mi>r</mi></mfrac><mi>B</mi><mi>A</mi><mi>x</mi></mrow></math></div><figure><div class="figure-scroll"><img src="../assets/svg/26/lora-matrix.svg" width="1100" height="540" loading="lazy" alt="LoRA 冻结原 W0，只训练矩阵 A 与 B，通过低秩更新 BA 与原前向输出求和。"></div><figcaption>LoRA 冻结原 W0，只训练矩阵 A 与 B，通过低秩更新 BA 与原前向输出求和。</figcaption></figure><pre><code>import torch
+from torch import nn
 
-问题：{query}
-回答："""
-# 把这个prompt发给LLM...
-</code></pre>
-
-        <div class="highlight">
-            <strong>🔑 RAG的最佳实践要点：</strong>(1) 文档分块（chunking）大小很关键——太小缺乏上下文，太大检索不准。常用500-1000字符一块，且块之间要有重叠。(2) 检索时不仅用向量相似度，还可以加入关键词匹配（BM25）做混合检索。(3) rerank——检索到20条候选，再用更精准的模型（如Cohere Rerank或BGE-Reranker）精排到5条。(4) 在prompt中明确要求"如果找不到相关信息，就说不知道，不要编造"——这是减少幻觉的有效手段。
-        </div>
-
-        <h2>26.5 Agent：让LLM使用工具</h2>
-        <p>LLM不仅能回答问题，还能作为"大脑"调用外部工具：搜索引擎、代码解释器、数据库查询、API调用。这就是Agent架构——给LLM配上一个工具箱，让它自己决定什么时候用什么工具。</p>
-
-        <p>ReAct（Reasoning + Acting）模式是目前最流行的Agent范式：Thought（思考我需要做什么）→ Action（执行工具调用）→ Observation（观察结果）→ Thought（基于结果重新思考）→ ... 循环直到任务完成。这种"思考-行动-观察"的循环让LLM能够处理之前无法完成的多步复杂任务。</p>
-
-        <h2>26.6 LoRA微调：用小成本定制大模型</h2>
-        <p>全参数微调一个70B的模型需要几十张GPU。但LoRA（Low-Rank Adaptation）通过在预训练权重旁插入小的可训练矩阵，将可训练参数量减少99%以上，同时效果接近全参数微调。8B模型用LoRA微调甚至能在单张消费级GPU上完成。</p>
-
-        <div class="tip">
-            <strong>💡 什么时候用RAG，什么时候用微调？</strong>需要<strong>动态更新的知识</strong>（如实时数据、最新政策）→ RAG。需要改变<strong>模型行为/风格/输出格式</strong>（如医疗报告风格、特定领域术语）→ 微调。需要两者兼顾 → RAG + 微调。现实中最强的企业应用往往两者都做：微调确保模型理解领域规范，RAG注入最新数据。
-        </div>
-
-        <p>LLM和RAG是现代ML工程中最活跃的领域。下一章我们学习如何把你训练好的模型部署成稳定的线上服务。</p>
-
-        <div class="footer-nav">
-            <a href="25.html">← 上一章</a>
-            <a href="index.html">📖 返回目录</a>
-            <a href="27.html">下一章 →</a>
-        </div>
-    </div>
-</div>
-</div>
-</body>
-</html>
+torch.manual_seed(26)
+in_features, out_features, rank = 4, 6, 2
+base = nn.Linear(in_features, out_features, bias=False)
+base.requires_grad_(False)
+A = nn.Parameter(torch.randn(rank, in_features) * 0.02)
+B = nn.Parameter(torch.zeros(out_features, rank))
+x = torch.randn(5, in_features)
+target = torch.randn(5, out_features)
+scaling = 4.0 / rank
+before = base(x).detach().clone()
+assert torch.allclose(base(x) + scaling * (x @ A.T @ B.T), before)
+optimizer = torch.optim.SGD([A, B], lr=0.1)
+prediction = base(x) + scaling * (x @ A.T @ B.T)
+loss = (prediction - target).square().mean()
+optimizer.zero_grad()
+loss.backward()
+assert base.weight.grad is None and B.grad is not None
+optimizer.step()
+after = base(x) + scaling * (x @ A.T @ B.T)
+assert not torch.allclose(after, before)
+print("trainable adapter parameters:", A.numel() + B.numel())</code></pre><p>低秩改写不保证效果与全参数微调完全相同；目标层、rank、alpha、数据、量化与硬件内存都会影响结果。RAG 主要负责外部动态知识供给，LoRA 主要改变可学习行为，两者可以组合但解决不同问题。小样本或高风险任务不能只靠训练 loss 决定上线。</p></section><section id="sec9" aria-labelledby="title9"><h2 id="title9">09 · 架构选择与上线检查</h2><table><thead><tr><th>问题</th><th>优先考虑</th><th>必须量化的约束</th></tr></thead><tbody><tr><td>资料频繁更新且需要来源</td><td>RAG + 版本/权限索引</td><td>Recall@k、引用支持、过期率、访问控制</td></tr><tr><td>输出格式、术语和特定任务行为</td><td>结构化 prompt / SFT / LoRA</td><td>可复现任务评估、灾难性遗忘、合规性</td></tr><tr><td>调用外部 API 执行动作</td><td>有控制器的工具执行</td><td>allowlist、审批、幂等、日志和重试成本</td></tr><tr><td>长上下文生成服务</td><td>KV cache、批处理/分页与限额</td><td>吞吐、首 token 延迟、P95、缓存显存</td></tr></tbody></table><p>在做技术选型前，先建立一个可复现的固定测试集：覆盖正常回答、过期政策、缺证据拒答、越权请求、指令注入、长文本、低延迟需求及引用审计。将模型版本、tokenizer 版本、索引版本和 prompt 模板版本同时记录；发布前后用同一套数据做回归检查。</p></section><section id="references" aria-labelledby="ref-title"><h2 id="ref-title">原始论文、接口文档与证据边界</h2><p>机制图与代码采用合成数据，未训练、下载或调用真实大语言模型。原始论文、当前实现文档与安全规范分别用于核对算法、接口和工程约束；未检验的 benchmark、参数规模和延迟不在本文报告范围内。</p><ul class="refs"><li><a href="https://arxiv.org/abs/1706.03762" rel="noopener noreferrer">Vaswani et al. (2017), Attention Is All You Need</a></li><li><a href="https://arxiv.org/abs/2005.11401" rel="noopener noreferrer">Lewis et al. (2020), Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks</a></li><li><a href="https://arxiv.org/abs/2106.09685" rel="noopener noreferrer">Hu et al. (2021), LoRA: Low-Rank Adaptation of Large Language Models</a></li><li><a href="https://arxiv.org/abs/2210.03629" rel="noopener noreferrer">Yao et al. (2022), ReAct: Synergizing Reasoning and Acting in Language Models</a></li><li><a href="https://huggingface.co/docs/transformers/en/kv_cache" rel="noopener noreferrer">Hugging Face Transformers: KV Cache 策略与显存约束</a></li><li><a href="https://cheatsheetseries.owasp.org/cheatsheets/LLM_Prompt_Injection_Prevention_Cheat_Sheet.html" rel="noopener noreferrer">OWASP Prompt Injection Prevention Cheat Sheet</a></li><li><a href="https://learn.microsoft.com/en-us/azure/foundry/concepts/evaluation-evaluators/rag-evaluators" rel="noopener noreferrer">Microsoft Foundry RAG evaluation metrics: Groundedness 和检索评估</a></li><li><a href="https://docs.pytorch.org/docs/stable/generated/torch.nn.functional.scaled_dot_product_attention.html" rel="noopener noreferrer">PyTorch SDPA Bool mask 语义与接口</a></li></ul></section><nav class="article-footer" aria-label="章节导航"><a href="25.html">← 上一章</a><a href="../index.html">全部章节</a><a href="27.html">下一章 →</a></nav></article></main></div><footer class="site-footer"><span>机器学习图解教程 · 第 26 章</span><span>检索、生成与授权边界</span></footer></body></html>

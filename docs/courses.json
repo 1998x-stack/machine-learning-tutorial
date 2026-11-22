@@ -283,10 +283,10 @@
       "num": "26",
       "title": "大语言模型与RAG",
       "topics": [
-        "LLM原理",
-        "Prompt工程",
-        "RAG架构",
-        "LoRA微调"
+        "自回归推理与 KV Cache",
+        "RAG 索引、ACL、混合检索与引用支持",
+        "Agent 工具授权与 prompt injection",
+        "LoRA 低秩微调与训练边界"
       ],
       "file": "26.html"
     },
@@ -294,10 +294,10 @@
       "num": "27",
       "title": "模型部署与服务化",
       "topics": [
-        "FastAPI推理服务",
-        "ONNX优化",
-        "Docker容器化",
-        "模型监控"
+        "FastAPI / Pydantic 输入契约",
+        "ONNX Runtime 数值一致性",
+        "Docker 容器与模型工件安全",
+        "P95 延迟、金丝雀回滚与漂移监控"
       ],
       "file": "27.html"
     },
@@ -305,10 +305,10 @@
       "num": "28",
       "title": "毕业项目：端到端ML系统",
       "topics": [
-        "电商购买预测",
-        "架构设计",
-        "全链路实现",
-        "进阶路线图"
+        "未来七天购买标签与 as-of 特征",
+        "时序留白、Pipeline 与验证阈值",
+        "预测倾向与优惠券因果增量",
+        "模型工件、服务闭环与发布门禁"
       ],
       "file": "28.html"
     }
