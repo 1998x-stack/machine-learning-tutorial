@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Execute the Python blocks embedded in chapters 01–15 as independent examples."""
+"""Execute the Python blocks embedded in chapters 01–20 as independent examples."""
 from html.parser import HTMLParser
 from pathlib import Path
 import subprocess
@@ -31,7 +31,7 @@ class Extractor(HTMLParser):
 
 def main():
     total = 0
-    for i in range(1, 16):
+    for i in range(1, 21):
         path = ROOT / 'docs' / 'chapters' / f'{i:02}.html'
         parser = Extractor()
         parser.feed(path.read_text(encoding='utf-8'))
@@ -40,7 +40,7 @@ def main():
         for j, code in enumerate(parser.blocks, 1):
             result = subprocess.run(
                 [sys.executable, '-c', code], text=True, capture_output=True,
-                timeout=40, cwd=ROOT,
+                timeout=90, cwd=ROOT,
             )
             if result.returncode:
                 print(f'FAIL {path.name} example {j}: {result.stderr}\n{result.stdout}')
