@@ -323,8 +323,8 @@ def main():
     # Validate CSS imports and url() assets as well as HTML references.
     for css in (DOCS / "assets" / "css").rglob("*.css"):
         text = css.read_text(encoding="utf-8")
-        css_urls = re.findall(r"url\\(\\s*['\\\"]?([^'\\\")]+)", text, re.I)
-        css_imports = re.findall(r"@import\\s+(?:url\\()?\\s*['\\\"]?([^'\\\"\\s)]+)", text, re.I)
+        css_urls = re.findall(r"url\(\s*['\"]?([^'\")]+)", text, re.I)
+        css_imports = re.findall(r"@import\s+(?:url\()?\s*['\"]?([^'\"\s)]+)", text, re.I)
         for raw in css_urls + css_imports:
             raw = raw.strip()
             if not raw or raw.startswith(("data:", "http://", "https://", "#")):
