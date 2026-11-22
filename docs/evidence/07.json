@@ -1,0 +1,41 @@
+{
+  "chapter": "07",
+  "claims": [
+    {
+      "id": "confusion-matrix-layout",
+      "claim": "A confusion matrix counts true and predicted class combinations; row/column interpretation depends on the documented label order and normalization.",
+      "kind": "implementation",
+      "source_url": "https://scikit-learn.org/stable/modules/generated/sklearn.metrics.confusion_matrix.html",
+      "locator": "confusion_matrix parameters and examples",
+      "status": "verified",
+      "notes": "The article fixes labels=[0,1] and states true rows / predicted columns."
+    },
+    {
+      "id": "average-precision",
+      "claim": "Average precision summarizes the precision-recall curve using recall increments weighted by precision at each threshold.",
+      "kind": "implementation",
+      "source_url": "https://scikit-learn.org/stable/modules/generated/sklearn.metrics.average_precision_score.html",
+      "locator": "Average precision definition",
+      "status": "verified",
+      "notes": "Average precision is not generally the trapezoidal area under a linearly interpolated PR curve."
+    },
+    {
+      "id": "cv-selection",
+      "claim": "Model selection should happen within training/development data; final test data is reserved for a final independent estimate.",
+      "kind": "method",
+      "source_url": "https://scikit-learn.org/stable/modules/cross_validation.html",
+      "locator": "Cross-validation and model selection",
+      "status": "verified",
+      "notes": "Repeatedly tuning against the test set invalidates its independence."
+    },
+    {
+      "id": "metric-context",
+      "claim": "A metric's interpretation depends on the positive class, class prevalence, decision threshold, and error costs.",
+      "kind": "method",
+      "source_url": "https://scikit-learn.org/stable/modules/model_evaluation.html",
+      "locator": "Classification metrics",
+      "status": "derived",
+      "notes": "No single classification metric is universally optimal."
+    }
+  ]
+}
