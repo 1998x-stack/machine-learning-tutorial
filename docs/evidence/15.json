@@ -1,0 +1,41 @@
+{
+  "chapter": "15",
+  "claims": [
+    {
+      "id": "grid-search",
+      "claim": "GridSearchCV evaluates a finite parameter grid under the supplied cross-validation procedure and scoring rule.",
+      "kind": "implementation",
+      "source_url": "https://scikit-learn.org/stable/modules/generated/sklearn.model_selection.GridSearchCV.html",
+      "locator": "param_grid, cv, scoring and refit",
+      "status": "verified",
+      "notes": "Total fit count depends on parameter combinations, folds, and refit."
+    },
+    {
+      "id": "randomized-search",
+      "claim": "RandomizedSearchCV samples a fixed number of parameter settings from configured distributions or lists.",
+      "kind": "implementation",
+      "source_url": "https://scikit-learn.org/stable/modules/generated/sklearn.model_selection.RandomizedSearchCV.html",
+      "locator": "n_iter and parameter distributions",
+      "status": "verified",
+      "notes": "A larger budget is not automatically better if validation selection is overfit."
+    },
+    {
+      "id": "nested-cv",
+      "claim": "Nested cross-validation uses an inner loop for selection and an outer loop for estimating the selected procedure's generalization.",
+      "kind": "method",
+      "source_url": "https://scikit-learn.org/stable/auto_examples/model_selection/plot_nested_cross_validation_iris.html",
+      "locator": "Nested versus non-nested CV example",
+      "status": "verified",
+      "notes": "The outer estimate still has sampling uncertainty and must match deployment data."
+    },
+    {
+      "id": "optuna-pruning",
+      "claim": "Optuna pruning relies on intermediate values reported during iterative trials; it is not meaningful when a trial has no comparable intermediate metric.",
+      "kind": "implementation",
+      "source_url": "https://optuna.readthedocs.io/en/stable/tutorial/10_key_features/003_efficient_optimization_algorithms.html",
+      "locator": "Pruning algorithms and report/should_prune",
+      "status": "verified",
+      "notes": "The tutorial's pruning example is an optional extension, not a mandatory dependency of all search methods."
+    }
+  ]
+}
