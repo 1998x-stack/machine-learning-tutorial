@@ -1,52 +1,60 @@
-# 📊 机器学习 · 从入门到精通
+# 机器学习图解教程 · Machine Learning, Explained
 
-> 📘 28章 实战体系 · 交互式 HTML 课程
+一条从 **问题 → 直觉 → 原创图解 → 数学推导 → 代码复核 → 适用边界** 的中文机器学习学习路线，共 28 章。
 
-> **English TL;DR:** An all-Chinese 28-chapter end-to-end course on **machine learning** — foundations (ML overview, linear algebra/probability/optimization math, data preprocessing & EDA), a first real project (California housing), model evaluation & selection, the classic algorithm toolbox (linear/logistic regression, decision trees & random forests, SVM, Naive Bayes & KNN), unsupervised learning (clustering, PCA/t-SNE), hyperparameter tuning & AutoML (Optuna/AutoGluon), imbalance handling, interpretability (SHAP/LIME), and ML engineering (pipelines, MLflow, feature stores). Then deep learning (NN/backprop, PyTorch, CNN/ResNet, RNN/seq2seq, NLP/Transformer/BERT, GAN/VAE/diffusion, RL), LLM & RAG, and deployment (FastAPI, ONNX, Docker), capped by an end-to-end ML-system capstone (e-commerce purchase prediction).
+[课程首页](docs/index.html) · [GitHub Pages](https://1998x-stack.github.io/machine-learning-tutorial/)（上线状态以实际部署为准） · [内容工程规范](AGENTS.md) · [来源与核验](docs/references.md)
 
-## 📖 课程简介
+## 首批精修 · 01–05
 
-本课程从零构建**机器学习的完整知识体系**：先打牢三大数学基础（线性代数、概率统计、优化）与数据处理、评估选择，再系统掌握经典算法（线性/逻辑回归、决策树与随机森林、SVM、朴素贝叶斯/KNN、聚类、降维），覆盖调参 AutoML、不平衡处理、可解释性（SHAP/LIME）与 ML 工程化；随后进入深度学习——神经网络、PyTorch、CNN/RNN/Transformers、NLP、生成式模型（GAN/VAE/扩散）与强化学习，再衔接大语言模型与 RAG，最后以 FastAPI/ONNX/Docker 部署与电商购买预测的端到端毕业项目收束。
+| 章节 | 重点问题 | 图解 |
+| --- | --- | --- |
+| [01 机器学习概述](docs/chapters/01.html) | 监督信号、经验风险、泛化与数据切分 | 学习范式 / 训练验证测试 |
+| [02 线性代数](docs/chapters/02.html) | 矩阵乘法、维度、PCA 与 SVD | 逐元素乘法展开 / PCA 主轴 |
+| [03 概率统计](docs/chapters/03.html) | 贝叶斯基准率、MLE 与 MAP | 检测树 / 似然与后验 |
+| [04 优化理论](docs/chapters/04.html) | 梯度下降、学习率、链式法则 | 收敛发散轨迹 / 反向传播 |
+| [05 预处理与 EDA](docs/chapters/05.html) | 缺失值、管线与信息泄漏 | 正误流程 / ColumnTransformer |
 
-## 🚀 快速开始
+其余 **06–28** 已原样迁移至 `docs/chapters/`，还未完成逐章数学与代码技术审计。所有根目录 `01.html`–`28.html` 是旧地址兼容跳转，避免破坏外部链接。
 
-```bash
-open index.html   # macOS，纯静态即开即看
-```
-
-## 📂 项目结构
+## 目录结构
 
 ```text
-machine-learning-tutorial/
-├── index.html / 01.html ~ 28.html / courses.json / theme.css
+docs/
+├── index.html                      # 全站门户、章节搜索及学习路线
+├── courses.json                    # 28 篇原始章节元数据
+├── chapters/
+│   ├── 01.html ... 05.html         # 独立重构长文
+│   ├── 06.html ... 28.html         # 原稿迁移，等待下批次
+│   └── theme.css                   # 老页面的向后兼容样式
+├── assets/
+│   ├── css/site.css                # 门户 tokens & responsive
+│   ├── css/article.css             # 文章排版、公式、打印和导航
+│   ├── js/site.js                  # 首页无依赖搜索增强
+│   └── svg/01...05/               # 每篇两幅独立原创 SVG
+└── references.md                   # 技术来源及证据边界
+scripts/validate_site.py            # 无依赖静态验证
+.github/workflows/validate.yml      # PR / push 自动质量检查
+.github/workflows/deploy-pages.yml  # main 部署 docs 到 Pages
+AGENTS.md                           # 编辑、SVG、数学、QA 与发布规范
+index.html, 01.html...28.html       # 老链接转发层
 ```
 
-## 📖 章节分段
+## 本地预览与校验
 
-| 阶段 | 章节 | 核心 |
-|------|------|------|
-| **基础与数学** | 01–05 | 概述、线代、概率、优化、数据预处理 |
-| **首个项目与评估** | 06–07 | 加州房价项目、评估选择 |
-| **经典算法** | 08–13 | 线性/逻辑/树/集成/SVM/贝叶斯-KNN、聚类 |
-| **进阶与工程** | 14–18 | 降维、调参/AutoML、不平衡、可解释、MLOps |
-| **深度学习** | 19–25 | 神经网络、PyTorch、CNN/RNN、NLP、生成式、强化学习 |
-| **LLM 与部署** | 26–28 | LLM/RAG、部署服务化、端到端毕业项目 |
+只需要 Python 3.10+：
 
-## ✨ 亮点
+```bash
+python3 -m http.server 8000
+# 浏览 http://localhost:8000/docs/
+python3 scripts/validate_site.py
+```
 
-- 覆盖传统 ML → 深度学习 → LLM/RAG 的完整路线
-- 理论 + 工程 + 部署三位一体，含 AutoML、MLOps 与可解释性
-- 端到端毕业项目（电商购买预测）收束
+每篇正文不依赖 CDN。文章中的代码示例按照自身依赖说明单独执行，例如 NumPy、pandas、scikit-learn。静态脚本验证文件、相对路径、SVG XML、目录数量等；**不等同于浏览器截图与实验执行测试**。桌面 1440px、移动端 390/360px、键盘交互、公式显示与 print 仍需按 AGENTS.md 做浏览器复审。
 
-## 🎯 前置知识
+## GitHub Pages 配置
 
-- 适合：机器学习初学者到进阶者
-- 建议具备：Python 基础；可选线性代数/概率先修
+推荐 **Settings → Pages → Build and deployment → GitHub Actions**。合并至 `main` 后，`deploy-pages.yml` 会校验并发布整个 `docs/`。若仍按仓库根目录发布，根目录首页及章节跳转文件可继续将读者带到 `docs/`，但最终部署需实际验证。PR 的存在并不代表已合并或上线。
 
-## ✨ 特色
+## 设计原则
 
-- 28 章一条龙「数学 → 算法 → 工程 → 深度学习 → 部署」
-- 即开即用纯静态 HTML
-
----
-*本课程由 `machine-learning-tutorial/` 项目维护。*
+优先保证独立可读、论证正确和证据可追踪；每幅 SVG 的箭头必须对应有意义的计算或数据依赖；所有数值教学示例注明它不是论文实验。启发于 [Olah-style-posts](https://github.com/1998x-stack/Olah-style-posts) 及相关解释性写作实践，图解与正文为重新设计，不复制原作。
