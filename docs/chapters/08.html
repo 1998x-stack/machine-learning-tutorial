@@ -20,12 +20,15 @@ models = {
                              ElasticNet(alpha=0.08, l1_ratio=0.5, max_iter=5000)),
 }
 folds = KFold(n_splits=5, shuffle=True, random_state=19)
+scores = {}
 for name, model in models.items():
     mse = -cross_val_score(model, Xtr, ytr, cv=folds,
                            scoring=&quot;neg_mean_squared_error&quot;)
-    model.fit(Xtr, ytr)
-    test_mse = mean_squared_error(ytest, model.predict(Xtest))
-    print(name, &quot;CV RMSE:&quot;, np.sqrt(mse).mean(),
-          &quot;test RMSE:&quot;, np.sqrt(test_mse))
-    assert np.isfinite(test_mse) and test_mse &gt;= 0
-assert Xtr.shape[0] + Xtest.shape[0] == 240</code></pre><p>依赖 Python 3.10+、NumPy、scikit-learn。这里同时打印不同候选的测试误差只是为了教学审查：在真实模型选择中，应根据 CV 选定模型，再只对最终模型使用测试集；不要因为看到其他模型测试分数更好就改选它们。真正的生产实验应去掉这个跨模型测试比较步骤。</p></section><section id="sec9" aria-labelledby="title9"><h2 id="title9">09 · 局限与来源</h2><p>样本外关系非线性、噪声分布偏斜、特征强相关或观测分布移动时，线性回归可能产生可观系统误差。带正则化并不保证无偏系数、稳定特征选择或准确不确定性区间；针对推断需求还要审查误差过程和模型设定。</p><ul class="refs"><li><a href="https://scikit-learn.org/stable/modules/linear_model.html">scikit-learn 线性模型、Ridge/Lasso/ElasticNet 的目标与用途</a></li><li><a href="https://scikit-learn.org/stable/modules/generated/sklearn.linear_model.Ridge.html">Ridge API</a></li><li><a href="https://scikit-learn.org/stable/modules/generated/sklearn.linear_model.Lasso.html">Lasso API</a></li><li><a href="https://scikit-learn.org/stable/modules/generated/sklearn.linear_model.ElasticNet.html">ElasticNet API</a></li></ul></section><nav class="article-footer" aria-label="章节导航"><a href="07.html">← 上一章</a><a href="../index.html">全部章节</a><a href="09.html">下一章 →</a></nav></article></main></div><footer class="site-footer"><span>机器学习图解教程 · 第 08 章</span><span>解释优先、证据可追踪</span></footer></body></html>
+    scores[name] = float(np.sqrt(mse).mean())
+print(&quot;CV RMSE by candidate:&quot;, scores)
+winner = min(scores, key=scores.get)
+selected = models[winner].fit(Xtr, ytr)
+test_mse = mean_squared_error(ytest, selected.predict(Xtest))
+print(&quot;selected:&quot;, winner, &quot;held-out RMSE:&quot;, np.sqrt(test_mse))
+assert np.isfinite(test_mse) and test_mse &gt;= 0
+assert Xtr.shape[0] + Xtest.shape[0] == 240</code></pre><p>依赖 Python 3.10+、NumPy、scikit-learn。此处只用 CV 分数选择一个模型，然后对获选模型评估一次保留测试集；不利用其他模型的测试分数反复挑选，避免测试集参与模型选择。</p></section><section id="sec9" aria-labelledby="title9"><h2 id="title9">09 · 局限与来源</h2><p>样本外关系非线性、噪声分布偏斜、特征强相关或观测分布移动时，线性回归可能产生可观系统误差。带正则化并不保证无偏系数、稳定特征选择或准确不确定性区间；针对推断需求还要审查误差过程和模型设定。</p><ul class="refs"><li><a href="https://scikit-learn.org/stable/modules/linear_model.html">scikit-learn 线性模型、Ridge/Lasso/ElasticNet 的目标与用途</a></li><li><a href="https://scikit-learn.org/stable/modules/generated/sklearn.linear_model.Ridge.html">Ridge API</a></li><li><a href="https://scikit-learn.org/stable/modules/generated/sklearn.linear_model.Lasso.html">Lasso API</a></li><li><a href="https://scikit-learn.org/stable/modules/generated/sklearn.linear_model.ElasticNet.html">ElasticNet API</a></li></ul></section><nav class="article-footer" aria-label="章节导航"><a href="07.html">← 上一章</a><a href="../index.html">全部章节</a><a href="09.html">下一章 →</a></nav></article></main></div><footer class="site-footer"><span>机器学习图解教程 · 第 08 章</span><span>解释优先、证据可追踪</span></footer></body></html>
