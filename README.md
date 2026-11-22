@@ -1,8 +1,11 @@
 # 机器学习图解教程 · Machine Learning, Explained
 
-一条从**直觉、原理、机制 SVG、数学推导、可运行代码到失败模式**的中文机器学习学习路线。全书 28 章，其中 **01–15 章已三批重构**，16–28 章保持旧稿等待技术审计。
+一条从问题、数学、算法、可解释性到深度学习工程的中文机器学习学习路线。全书 28 章，其中 **01–20 章已四批深度重构**；21–28 章保留原稿，等待下一轮逐篇技术审计。
 
-[GitHub Pages 首页](https://1998x-stack.github.io/machine-learning-tutorial/) · [课程索引](docs/index.html) · [AGENTS.md 写作与验证规范](AGENTS.md) · [技术来源](docs/references.md)
+GitHub Pages 首页：https://1998x-stack.github.io/machine-learning-tutorial/
+课程索引：docs/index.html
+写作规范：AGENTS.md
+技术来源：docs/references.md
 
 ## 课程进展
 
@@ -11,77 +14,66 @@
 | 第一批 | 01–05 | 学习范式、线性代数、概率、优化、数据预处理 | 完成正文、数学和 10 幅章节 SVG |
 | 第二批 | 06–10 | 端到端回归项目、评估、线性/逻辑回归、树与森林 | 完成正文、15 幅 SVG、可操作阈值实验 |
 | 第三批 | 11–15 | SVM、朴素贝叶斯/KNN、聚类、降维/特征、调参与 AutoML | 完成正文、15 幅 SVG、可运行示例 |
-| 待精修 | 16–28 | 后续传统 ML、神经网络、现代应用与部署 | 原稿保留，未作深度技术审计 |
+| 第四批 | 16–20 | 不平衡分类、XAI、MLOps、神经网络、PyTorch | 完成正文、18 幅 SVG、证据台账与可运行示例 |
+| 待精修 | 21–28 | CNN、序列模型、NLP、生成模型、强化学习、LLM/RAG、部署、毕业项目 | 原稿保留，未作深度技术审计 |
 
-### 新完成的 5 章
+### 第四批新完成的五章
 
-| 章节 | 重点解释 | 机制图 |
+| 章节 | 核心问题 | 图解与实验 |
 | --- | --- | --- |
-| [11 · SVM](docs/chapters/11.html) | 最大间隔、支持向量、hinge loss、核与 C/gamma | 间隔、损失曲线、RBF 影响 |
-| [12 · 朴素贝叶斯与 KNN](docs/chapters/12.html) | 条件独立、Laplace 平滑、近邻投票、维度影响 | NB 证据分解、词频概率、最近邻 |
-| [13 · 聚类](docs/chapters/13.html) | K-Means 迭代、DBSCAN 密度、层次合并、Silhouette | 质心更新、核心/边界/噪声、轮廓 |
-| [14 · 降维与特征工程](docs/chapters/14.html) | PCA、t-SNE、特征选择、目标编码交叉拟合 | 降维目标、筛选路径、编码防泄漏 |
-| [15 · 超参数优化](docs/chapters/15.html) | Grid/Random、Nested CV、Optuna、pruning | 搜索覆盖、嵌套评估、预算分配 |
+| [16 · 不平衡分类](docs/chapters/16.html) | 为什么 Accuracy 会掩盖少数类失败？ | 混淆矩阵、SMOTE 插值、PR/阈值；验证集选成本阈值，测试集不重采样 |
+| [17 · 模型可解释性](docs/chapters/17.html) | 归因能否解释现实因果？ | SHAP waterfall、LIME 局部代理、PDP/ICE；验证加法一致性与局部拟合 |
+| [18 · ML 系统工程化](docs/chapters/18.html) | 怎样让实验可追溯、服务可回滚？ | MLOps pipeline、离线/在线特征、模型谱系；Pipeline 与 MLflow Tracking 实验 |
+| [19 · 神经网络基础](docs/chapters/19.html) | 深层网络如何传递信号与梯度？ | 神经元张量形状、激活曲线、反向传播、初始化、BN/Dropout；有限差分核验梯度 |
+| [20 · PyTorch 训练实战](docs/chapters/20.html) | 怎样构成正确、可恢复的训练循环？ | Autograd DAG、DataLoader、训练步、Checkpoint/AMP；CPU 训练与状态恢复实验 |
 
-所有章节均可从 [课程首页](docs/index.html) 访问，也可直接使用 `docs/chapters/NN.html` 的相对路径。旧的根目录及 Pages 章节地址保留重定向入口。
+每篇新文章独立解释问题、符号、假设、机制和失败条件；docs/evidence/16.json 至 20.json 将重要主张映射到官方文档或原始论文。所有图中手工数字均标明是推导或教学示例，不伪装成 benchmark。
 
-## 目录
+## 仓库结构
 
-```text
-docs/
-├── index.html                       # 首页、学习路线、28 章目录与搜索
-├── chapters/
-│   ├── 01.html ... 15.html          # 按独立长文规范精修
-│   ├── 16.html ... 28.html          # 迁移旧稿，待技术审计
-│   └── theme.css                    # 旧文兼容样式
-├── assets/
-│   ├── css/{site,article,labs}.css  # 共享视觉/文章/交互设计系统
-│   ├── js/{site,threshold-lab}.js
-│   └── svg/01/...15/                # 40 幅章节机制图 + 首页图
-├── courses.json                     # 28 章目录数据
-└── references.md                    # 事实、一手文献与 API 来源
-examples/
-├── 06_california_housing.py         # 可选网络下载的真实历史房价数据
-└── 15_optuna_search.py              # 可选 Optuna 搜索示例
-scripts/
-├── validate_site.py                 # 资源路径、语义结构与 SVG XML
-├── run_examples.py                  # 01–15 章代码块逐个执行
-└── browser_qa.py                    # 48 组浏览器尺寸/页面测试
-.github/workflows/                  # PR QA 和 Pages 部署
-AGENTS.md                            # 编辑、数学、SVG、证据及验收门禁
-```
+    docs/
+    ├── index.html                         # 课程门户、学习路线、28 章目录与搜索
+    ├── chapters/
+    │   ├── 01.html ... 20.html            # 按独立长文规范重构
+    │   ├── 21.html ... 28.html            # 原稿保留，待技术审计
+    │   └── theme.css                      # 旧文兼容样式
+    ├── assets/
+    │   ├── css/{site,article,labs}.css    # 共享视觉/文章/交互设计系统
+    │   ├── js/{site,threshold-lab}.js
+    │   └── svg/01/...20/                  # 58 幅章节机制图 + 首页图
+    ├── evidence/16.json ... 20.json       # 逐章主张—来源—状态台账
+    ├── courses.json                       # 28 章目录单一来源
+    └── references.md                      # 一手论文、官方 API 与适用边界
+    examples/
+    ├── 06_california_housing.py           # 可选网络下载的历史区域房价数据
+    └── 15_optuna_search.py                # 可选 Optuna 搜索示例
+    scripts/
+    ├── validate_site.py                   # 资源路径、语义结构、SVG XML、证据台账
+    ├── run_examples.py                    # 01–20 章正文代码块逐个执行
+    └── browser_qa.py                      # 63 组页面/视口检查
+    .github/workflows/                     # PR QA 和 Pages 部署
+    AGENTS.md                              # 写作、数学、SVG、证据及验收门禁
 
 ## 本地预览和验收
 
-```bash
-python3 -m http.server 8000
-# http://localhost:8000/docs/
+    python3 -m http.server 8000
+    # http://localhost:8000/docs/
 
-python3 -m pip install numpy pandas scikit-learn playwright joblib
-python3 -m playwright install chromium
+    python3 -m pip install numpy pandas scikit-learn imbalanced-learn shap mlflow-skinny joblib
+    python3 -m pip install torch --index-url https://download.pytorch.org/whl/cpu
+    python3 -m pip install playwright
+    python3 -m playwright install chromium
 
-python3 scripts/validate_site.py
-python3 scripts/run_examples.py
-python3 scripts/browser_qa.py
-```
+    python3 scripts/validate_site.py
+    python3 scripts/run_examples.py
+    python3 scripts/browser_qa.py
 
-在 GitHub Actions 中，静态检查覆盖全部 28 章位置、前 15 章新模板、40 幅章节 SVG、双重旧链接和资源路径；Python 示例验证前 15 章所有正文代码块；浏览器检查覆盖首页与前 15 章在 1440/390/360px 下的图片、MathML、水平溢出和已有阈值交互。
+GitHub Actions 的默认 Python 示例路径使用 CPU PyTorch；CUDA AMP 仅在具有兼容 CUDA 设备的环境中启用，CI 不把 CPU 测试冒充 GPU 性能验证。浏览器检查覆盖首页和前 20 章在 1440/390/360px 的页面溢出、图片、MathML 与搜索/阈值交互。
 
-可选脚本：
-
-```bash
-# 首次下载 California Housing 历史区域数据需联网
-python3 examples/06_california_housing.py
-
-# 需要额外 optuna 依赖，不计入正文默认离线实验
-python3 -m pip install optuna
-python3 examples/15_optuna_search.py
-```
-
-California Housing 是历史街区级别数据，不能代表当代单套房产交易；Optuna 脚本额外输出真实搜索结果，但不能将它当作任何真实业务的最优模型。**未在 CI 或终端实际运行的外部示例不得标注为“已验收”。**
+可选脚本：首次下载 California Housing 历史区域数据需要联网；Optuna 搜索脚本需要额外安装 optuna。California Housing 是历史街区级别数据，不代表当代单套房产交易；Optuna 脚本是可选搜索演示。未在 CI 或终端实际运行的外部示例不得标注为已验收。
 
 ## 发布与设计约束
 
-GitHub Pages 使用 `.github/workflows/deploy-pages.yml` 从 `main` 部署 `docs/`。在 Pages 设置中选 **GitHub Actions**；PR 经静态、代码、浏览器检查后方可合并。参考 [Olah-style-posts](https://github.com/1998x-stack/Olah-style-posts) 的循序解释原则，但图形和正文均独立制作，不复制其视觉资产或原文。
+GitHub Pages 使用 .github/workflows/deploy-pages.yml 从 main 部署 docs/。在 Pages 设置中选 GitHub Actions；PR 经静态、代码、浏览器检查后方可合并。参考 Olah-style-posts 的渐进解释、图解分镜、公式语义、证据台账和浏览器验收方法；文章文字与 SVG 均独立制作，不复制其视觉资产或原文。
 
-每篇必须独立解释定义、变量及适用条件，区分“公式解析的教学值”“手工示例”“真实运行的实验输出”。全站应支持无 JS 正文阅读、可聚焦导航、屏幕窄时局部横向滚动、MathML 与打印排版。
+每篇必须独立解释定义、变量及适用条件，区分论文结论、官方 API 行为、推导值、教学示例和真实实验输出。全站支持无 JS 正文阅读、键盘导航、局部横向滚动、MathML 与打印排版。
