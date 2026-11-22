@@ -56,14 +56,16 @@ with tempfile.TemporaryDirectory() as tmp:
     np.testing.assert_allclose(before, after)
     print(&quot;model artifact:&quot;, path.name, &quot;bytes:&quot;, path.stat().st_size)
 print(&quot;probabilities:&quot;, np.round(after, 3))
-assert np.all(np.isfinite(after))</code></pre><p>需要 Python 3.10+、NumPy、pandas、scikit-learn 与 joblib。该示例只证明本地管线保存/加载和未知类别的处理，不构成远程模型服务或生产部署演示。</p></section><section id="sec9" aria-labelledby="title9"><h2 id="title9">09 · 可运行实验：记录一次 MLflow 运行</h2><p>MLflow Tracking 可以在本地记录参数、指标和工件。下面使用临时目录创建隔离的 file-based tracking store，避免在仓库根目录留下运行数据；正式团队部署应配置受控的 tracking server、后端数据库和 artifact store。</p><pre><code>import json
+assert np.all(np.isfinite(after))</code></pre><p>需要 Python 3.10+、NumPy、pandas、scikit-learn 与 joblib。该示例只证明本地管线保存/加载和未知类别的处理，不构成远程模型服务或生产部署演示。</p></section><section id="sec9" aria-labelledby="title9"><h2 id="title9">09 · 可运行实验：记录一次 MLflow 运行</h2><p>MLflow Tracking 可以在本地记录参数、指标和工件。下面使用临时目录中的 SQLite 后端创建隔离的 tracking store，避免在仓库根目录留下运行数据；现代 MLflow 已将旧 file-based backend 置于维护模式。正式团队部署仍应配置受控的 tracking server、后端数据库和 artifact store。</p><pre><code>import json
 import tempfile
 from pathlib import Path
 import mlflow
 
 with tempfile.TemporaryDirectory() as tmp:
     tracking = Path(tmp) / &quot;mlruns&quot;
-    mlflow.set_tracking_uri(tracking.as_uri())
+    tracking.mkdir(parents=True, exist_ok=True)
+    database = tracking / &quot;mlflow.db&quot;
+    mlflow.set_tracking_uri(f&quot;sqlite:///{database}&quot;)
     mlflow.set_experiment(&quot;mlops-tutorial-18&quot;)
 
     with mlflow.start_run(run_name=&quot;pipeline-contract-demo&quot;) as run:
