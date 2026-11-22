@@ -15,7 +15,7 @@
       "claim": "t-SNE focuses on preserving local neighborhood similarities and does not make plotted global distances or cluster sizes directly interpretable.",
       "kind": "implementation",
       "source_url": "https://scikit-learn.org/stable/modules/manifold.html#t-sne",
-      "locator": "t-SNE user guide",
+      "locator": "scikit-learn t-SNE guide: local structure, stochastic optimization and limits on global geometry",
       "status": "verified",
       "notes": "Embedding shape and appearance can vary with perplexity, initialization, seed and sample."
     },
