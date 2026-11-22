@@ -1,184 +1,40 @@
-<!DOCTYPE html>
-<html lang="zh-CN">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.5, user-scalable=yes">
-    <title>第17章 模型可解释性</title>
-    <style>
-        * { margin:0; padding:0; box-sizing:border-box; }
-        body {
-            background: linear-gradient(135deg, #f5f3ff 0%, #e8f5f0 100%);
-            font-family: system-ui, -apple-system, 'Segoe UI', 'PingFang SC', Roboto, 'Helvetica Neue', sans-serif;
-            padding: 20px;
-        }
-        .double-border {
-            max-width: 1400px;
-            margin: 0 auto;
-            background: #ffffff;
-            border: 2px solid #8b5cf6;
-            border-radius: 24px;
-            box-shadow: 0 20px 30px -15px rgba(0,0,0,0.2), inset 0 1px 0 0 #f5f3ff;
-            overflow: hidden;
-        }
-        .container { display: grid; grid-template-columns: 260px 1fr; gap: 0; }
-        .sidebar {
-            background: #faf8ff; border-right: 2px solid #c4b5fd; padding: 24px 16px;
-        }
-        .sidebar h3 { font-size: 1.4rem; color: #6d28d9; border-left: 5px solid #8b5cf6; padding-left: 15px; margin-bottom: 25px; }
-        .chapter-list { list-style: none; }
-        .chapter-list li { margin-bottom: 6px; }
-        .chapter-list a {
-            display: block; padding: 8px 12px; text-decoration: none;
-            color: #334155; border-radius: 12px; transition: all 0.2s;
-            font-weight: 500; font-size: 0.92rem;
-        }
-        .chapter-list a:hover { background: #ede9fe; transform: translateX(3px); }
-        .chapter-list .active { background: #7c3aed; color: white; box-shadow: 0 2px 5px rgba(124,58,237,0.3); }
-        .main-content { padding: 30px 35px; background: white; }
-        .footer-nav {
-            margin-top: 45px; padding-top: 20px; border-top: 2px solid #c4b5fd;
-            display: flex; justify-content: space-between;
-        }
-        .footer-nav a {
-            padding: 8px 24px; background: #f1f5f9; text-decoration: none;
-            color: #5b21b6; border-radius: 40px; font-weight: 500; transition: 0.2s;
-        }
-        .footer-nav a:hover { background: #ede9fe; transform: translateY(-2px); }
-        h2 { color: #4c1d95; border-left: 6px solid #8b5cf6; padding-left: 15px; margin: 20px 0 15px; font-size: 1.5rem; }
-        h3 { color: #5b21b6; margin: 20px 0 10px; font-size: 1.2rem; }
-        h4 { color: #6d28d9; margin: 15px 0 8px; font-size: 1.05rem; }
-        p { line-height: 1.85; margin: 10px 0; color: #1e293b; }
-        ul, ol { margin: 10px 0 10px 20px; line-height: 1.8; }
-        li { color: #1e293b; margin-bottom: 4px; }
-        pre { background: #1e1035; color: #e8e8f0; padding: 15px; border-radius: 12px; overflow-x: auto; font-family: 'JetBrains Mono', 'Fira Code', monospace; margin: 15px 0; font-size: 0.9rem; line-height: 1.5; }
-        code { background: #f5f3ff; padding: 2px 6px; border-radius: 4px; font-family: 'JetBrains Mono', monospace; font-size: 0.85em; }
-        pre code { background: none; padding: 0; }
-        table { width: 100%; border-collapse: collapse; margin: 15px 0; background: #fafafe; }
-        th, td { border: 1px solid #c4b5fd; padding: 10px; text-align: left; }
-        th { background: #f5f3ff; color: #5b21b6; font-weight: 600; }
-        .tip, .warning, .highlight { padding: 12px 18px; border-radius: 16px; margin: 15px 0; line-height: 1.7; }
-        .tip { background: #e0f2fe; border-left: 6px solid #0ea5e9; }
-        .warning { background: #fee2e2; border-left: 6px solid #ef4444; }
-        .highlight { background: #fef9c3; border: 1px solid #facc15; }
-        strong { color: #1e1b4b; }
-        @media (max-width: 768px) {
-            .container { grid-template-columns: 1fr; }
-            .sidebar { border-right: none; border-bottom: 2px solid #c4b5fd; }
-            body { padding: 10px; }
-            .main-content { padding: 20px; }
-        }
-    </style>
-    <link rel="stylesheet" href="theme.css">
-</head>
-<body>
-<div class="double-border">
-<div class="container">
-    <div class="sidebar">
-        <h3>🤖 课程目录</h3>
-        <ul class="chapter-list">
-            <li><a href="01.html">第1章 机器学习概述</a></li>
-            <li><a href="02.html">第2章 数学基础：线性代数</a></li>
-            <li><a href="03.html">第3章 数学基础：概率统计</a></li>
-            <li><a href="04.html">第4章 数学基础：优化理论</a></li>
-            <li><a href="05.html">第5章 数据预处理与探索</a></li>
-            <li><a href="06.html">第6章 第一个ML项目实战</a></li>
-            <li><a href="07.html">第7章 模型评估与选择</a></li>
-            <li><a href="08.html">第8章 线性回归与正则化</a></li>
-            <li><a href="09.html">第9章 逻辑回归与分类</a></li>
-            <li><a href="10.html">第10章 决策树与随机森林</a></li>
-            <li><a href="11.html">第11章 支持向量机 SVM</a></li>
-            <li><a href="12.html">第12章 朴素贝叶斯与KNN</a></li>
-            <li><a href="13.html">第13章 聚类算法</a></li>
-            <li><a href="14.html">第14章 降维与特征工程</a></li>
-            <li><a href="15.html">第15章 模型调参与AutoML</a></li>
-            <li><a href="16.html">第16章 处理不平衡数据</a></li>
-            <li><a href="17.html" class="active">第17章 模型可解释性</a></li>
-            <li><a href="18.html">第18章 ML系统工程化</a></li>
-            <li><a href="19.html">第19章 神经网络基础</a></li>
-            <li><a href="20.html">第20章 深度学习框架实战</a></li>
-            <li><a href="21.html">第21章 CNN卷积神经网络</a></li>
-            <li><a href="22.html">第22章 RNN与序列模型</a></li>
-            <li><a href="23.html">第23章 NLP自然语言处理</a></li>
-            <li><a href="24.html">第24章 生成式模型</a></li>
-            <li><a href="25.html">第25章 强化学习入门</a></li>
-            <li><a href="26.html">第26章 大语言模型与RAG</a></li>
-            <li><a href="27.html">第27章 模型部署与服务化</a></li>
-            <li><a href="28.html">第28章 毕业项目：端到端ML系统</a></li>
-        </ul>
-    </div>
-    <div class="main-content">
-        <h2>17.1 "为什么拒绝我的贷款？"</h2>
-        <p>想象一个场景：用户申请贷款被AI拒绝，打电话质问客服"为什么？"如果你的模型是XGBoost或者神经网络，你只能耸耸肩——"算法是这么说的"。这在商业上不可接受，在监管上（如欧盟GDPR的"解释权"条款）甚至可能违法。</p>
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="description" content="可解释性不是“把黑盒刷白”，而是选择与问题匹配的工具：内生模型给系数，置换重要性给预测依赖，SHAP 给可加的贡献分解，PDP/ICE 给平均与个体曲线——但都不等于因果。"><title>模型可解释性：解释预测，而非因果 · 机器学习图解教程</title><link rel="stylesheet" href="../assets/css/article.css"></head><body class="article-page"><a class="skip-link" href="#content">跳转至正文</a><header class="site-header"><div class="header-inner"><a class="wordmark" href="../index.html"><span class="mark">M<span>·</span>L</span><span>机器学习图解教程<small>Machine Learning, Explained</small></span></a><nav aria-label="顶部导航"><a href="../index.html">课程目录</a><a href="https://github.com/1998x-stack/machine-learning-tutorial">GitHub</a></nav></div></header><div class="article-shell"><aside class="article-nav"><nav aria-label="文章目录"><details open><summary>本章目录</summary><div class="nav-items"><a href="../index.html">← 全部章节</a><a href="#sec1">从“为什么拒绝我”说起</a><a href="#sec2">内生可解释与后置解释的谱系</a><a href="#sec3">特征重要性：置换与不纯度的陷阱</a><a href="#sec4">SHAP：把预测拆成可加的贡献</a><a href="#sec5">LIME：局部代理模型</a><a href="#sec6">PDP 与 ICE：平均效应与个体异质性</a><a href="#sec7">陷阱：解释的是预测，不是因果</a><a href="#sec8">离线实验：置换重要性与加性核验</a><a href="#sec9">来源、版本与验收界限</a></div></details></nav></aside><main class="article-main" id="content"><article><div class="breadcrumb"><a href="../index.html">课程目录</a><span>/</span><span>第 17 章</span></div><header class="article-header"><div class="chapter-number">CHAPTER 17 / 28</div><h1>模型可解释性：解释预测，而非因果</h1><p class="dek">可解释性不是“把黑盒刷白”，而是选择与问题匹配的工具：内生模型给系数，置换重要性给预测依赖，SHAP 给可加的贡献分解，PDP/ICE 给平均与个体曲线——但都不等于因果。</p><div class="lead-question">当一个模型拒绝了你的贷款申请，你真正想知道的究竟是“哪些数据影响了这次判断”，还是“怎样改变才能通过”？这两个问题需要的工具并不相同。</div></header>
+<section id="sec1" aria-labelledby="title1"><h2 id="title1">01 · 从“为什么拒绝我”说起</h2><p>当模型拒绝一笔贷款、标记一次交易为欺诈，或把一份简历排在末位时，相关方往往需要一个交代：是哪些数据、以何种方式影响了这次判断？这既关系到模型调试与信任，也与合规相关——例如欧盟 GDPR 针对完全自动化决策设有专门条款。但要注意：<strong>提供解释并不自动等于合规</strong>，法律要求、模型行为与工具输出是三件事。</p><p>可解释性工具大体在回答三类问题，且彼此不能互相替代：</p><ul><li><strong>哪些特征影响最大？</strong>——全局重要性，回答“模型整体依赖什么”。</li><li><strong>这个预测是怎么来的？</strong>——把单次预测拆成各特征的贡献。</li><li><strong>改变一个特征会怎样？</strong>——特征与预测的依赖关系（且仍不等于因果）。</li></ul><p>先想清楚要回答哪一类问题，再选工具；反之，拿一个全局重要性排名去回答“怎样才通过”，往往会得出错误结论。</p></section>
+<section id="sec2" aria-labelledby="title2"><h2 id="title2">02 · 内生可解释与后置解释的谱系</h2><p>可解释性有两条路线：<strong>内生（intrinsic）</strong>模型的判决过程本身就接近人类可读，如线性/逻辑回归的系数、浅层决策树的规则；<strong>后置（post-hoc）</strong>解释则在不改变模型的前提下，用外部工具反推它的行为，适用于随机森林、梯度提升树与神经网络。</p><figure id="fig-xai-spectrum"><div class="figure-scroll"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 340" role="img" aria-labelledby="t17a d17a"><title id="t17a">从内生可解释到黑盒的谱系</title><desc id="t17a">一条从左到白盒、右到黑盒的谱系：线性/逻辑回归、浅树为白盒；随机森林、GBDT 为灰盒；深度网络为黑盒。上方标注内生解释，下方标注后置解释工具及其适用范围。</desc><rect x="1" y="1" width="998" height="338" rx="18" fill="#fffdf9" stroke="#d8e2d9"/><g font-family="system-ui,'PingFang SC','Microsoft YaHei',sans-serif"><text x="40" y="45" font-size="22" fill="#213a37" font-weight="760">可解释性是一条谱系，不是二元标签</text><path d="M70 170 H930" stroke="#a4b2aa" stroke-width="2"/><path d="M920 164 L936 170 L920 176 Z" fill="#a4b2aa"/><text x="70" y="204" font-size="14" fill="#147b70" font-weight="700">白盒（内生）</text><text x="856" y="204" font-size="14" fill="#c4774b" font-weight="700">黑盒</text><g><rect x="70" y="120" width="180" height="46" rx="9" fill="#e7f3ef" stroke="#147b70"/><text x="160" y="149" font-size="14" fill="#147b70" text-anchor="middle">线性 / 逻辑回归</text><rect x="290" y="120" width="180" height="46" rx="9" fill="#e7f3ef" stroke="#147b70"/><text x="380" y="149" font-size="14" fill="#147b70" text-anchor="middle">浅层决策树</text><rect x="510" y="120" width="180" height="46" rx="9" fill="#f8ede6" stroke="#c4774b"/><text x="600" y="149" font-size="14" fill="#b5673f" text-anchor="middle">随机森林 / GBDT</text><rect x="730" y="120" width="200" height="46" rx="9" fill="#efeaf7" stroke="#7863b0"/><text x="830" y="149" font-size="14" fill="#66529e" text-anchor="middle">深度神经网络</text></g><text x="160" y="104" font-size="13" fill="#57706c" text-anchor="middle">系数 / 规则直接可读</text><text x="830" y="104" font-size="13" fill="#57706c" text-anchor="middle">需要外部工具</text><path d="M70 252 H930" stroke="#d8e2d9" stroke-width="1.4" stroke-dasharray="5 5"/><text x="70" y="284" font-size="14" fill="#57706c">后置解释工具（SHAP / LIME / PDP）适用于整条谱系，</text><text x="70" y="310" font-size="14" fill="#57706c">但对高度非线性模型的近似误差可能更大，需用一致性检查验证。</text></g></svg></div><figcaption>可解释性谱系：左端是系数/规则可直接阅读的内生模型，右端是需外部工具反推的黑盒。后置解释工具对整条谱系都适用，但近似质量可能随模型复杂度下降。示意图。</figcaption></figure><p>如何在两条路线间取舍？如果业务、合规或高风险场景对透明度有硬性要求，优先选内生模型并在开发数据上与复杂模型对比性能；若复杂模型带来的提升在独立测试集上确实显著，再引入后置解释。</p></section>
+<section id="sec3" aria-labelledby="title3"><h2 id="title3">03 · 特征重要性：置换与不纯度的陷阱</h2><p>最常用的“特征重要性”实际上有好几种，彼此口径不同：</p><ul><li><strong>树的不纯度重要性（MDI）</strong>：统计每个特征在分裂中减少的不纯度之和。它免费、快，但<strong>偏好高基数特征</strong>（如用户 ID），且在训练集上计算，会高估过拟合特征。</li><li><strong>置换重要性</strong>：把某一列打乱后重测模型在<strong>留出数据</strong>上的得分，得分下降越多越重要。它对模型无偏、不需要重构模型，但当特征相关时，打乱一列会造出训练分布之外的点，导致重要性被低估或分摊到相关特征上。</li></ul><figure id="fig-permutation"><div class="figure-scroll"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 330" role="img" aria-labelledby="t17b d17b"><title id="t17b">置换重要性的做法与相关性陷阱</title><desc id="t17b">左侧：将某一列的值在样本间打乱，重测模型得分，得分下降幅度即该特征的重要性；右侧：当两列高度相关时，单独打乱一列会造出分布外组合，低估两者重要性。</desc><rect x="1" y="1" width="998" height="328" rx="18" fill="#fffdf9" stroke="#d8e2d9"/><g font-family="system-ui,'PingFang SC','Microsoft YaHei',sans-serif"><text x="40" y="45" font-size="22" fill="#213a37" font-weight="760">置换重要性：打乱一列，看重测得分掉多少</text><text x="60" y="92" font-size="15" fill="#147b70" font-weight="720">做法</text><g font-size="13" fill="#304442"><text x="60" y="126">原始数据 → 基线得分 0.90</text><text x="60" y="154">打乱列 A → 得分 0.62</text><text x="60" y="182">重要性（A）≈ 0.90 − 0.62 = 0.28</text></g><g><rect x="60" y="206" width="110" height="34" rx="6" fill="#e7f3ef" stroke="#147b70"/><text x="115" y="228" font-size="13" fill="#147b70" text-anchor="middle">基线 0.90</text><rect x="190" y="206" width="130" height="34" rx="6" fill="#f8ede6" stroke="#c4774b"/><text x="255" y="228" font-size="13" fill="#b5673f" text-anchor="middle">打乱 A 0.62</text></g><path d="M320 223 H360" stroke="#a4b2aa" stroke-width="1.8" marker-end="url(#a17)"/><text x="372" y="228" font-size="13" fill="#57706c">降幅 = 重要性</text><path d="M540 70 V300" stroke="#d8e2d9" stroke-width="1.4" stroke-dasharray="5 5"/><text x="570" y="92" font-size="15" fill="#b5452f" font-weight="720">相关性陷阱</text><text x="570" y="126" font-size="13.5" fill="#304442">当列 A 与列 B 高度相关时：</text><text x="570" y="154" font-size="13.5" fill="#304442">单独打乱 A，模型还能从 B 恢复信息，</text><text x="570" y="182" font-size="13.5" fill="#304442">得分几乎不掉 → 低估 A；</text><text x="570" y="210" font-size="13.5" fill="#304442">反之也可能造出训练中不存在的组合，</text><text x="570" y="238" font-size="13.5" fill="#304442">让两列都显得不重要。</text><text x="570" y="272" font-size="13" fill="#57706c">避免：对相关特征分组一起置换，</text><text x="570" y="296" font-size="13" fill="#57706c">或改用条件置换 / SHAP 分摊。</text><text x="40" y="316" font-size="13" fill="#57706c">教学示意：得分为虚构示例。</text><defs><marker id="a17" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto"><path d="M1 1 L7 4 L1 7" fill="none" stroke="#a4b2aa" stroke-width="1.6"/></marker></defs></g></svg></div><figcaption>置换重要性的做法：在留出数据上打乱一列并重测得分，降幅即重要性；右侧说明当特征相关时，单独置换会低估或错分重要性。得分为虚构示例。</figcaption></figure><p>还有一个容易被忽略的前提：置换重要性应在<strong>留出数据或交叉验证的各验证折</strong>上计算，而不是在训练集上；在训练集上打乱一列，模型可能早已记住了噪声模式，结论会失真。</p></section>
+<section id="sec4" aria-labelledby="title4"><h2 id="title4">04 · SHAP：把预测拆成可加的贡献</h2><p>SHAP（SHapley Additive exPlanations）把每个特征看作合作博弈里的“玩家”，把一次预测看作需要分配的“收益”，用博弈论中的<strong>Shapley 值</strong>计算每个特征应分到的公平份额。它最关键的性质是<strong>局部精确性与可加性</strong>：对单个样本，各特征贡献加上基值恰好等于模型输出。</p><div class="eq eq-scroll" role="region" tabindex="0" aria-label="SHAP 可加性：模型输出等于基值加上各特征贡献之和"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block" aria-label="SHAP 可加性公式"><mrow><mi>f</mi><mo>(</mo><mi>x</mi><mo>)</mo><mo>=</mo><msub><mi>φ</mi><mn>0</mn></msub><mo>+</mo><munderover><mo>∑</mo><mrow><mi>i</mi><mo>=</mo><mn>1</mn></mrow><mi>M</mi></munderover><msub><mi>φ</mi><mi>i</mi></msub></mrow></math></div><p>其中 <code>φ₀</code> 是基值（通常是训练数据的平均预测），<code>φᵢ</code> 是第 i 个特征的贡献，M 是特征数。当 <code>φᵢ &gt; 0</code> 时该特征把预测推高，<code>φᵢ &lt; 0</code> 时推低。由于所有特征的贡献之和等于预测值，可以画成从基值到预测的“瀑布图”。</p><figure id="fig-shap-waterfall"><div class="figure-scroll"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 340" role="img" aria-labelledby="t17c d17c"><title id="t17c">SHAP 瀑布图：从基值到单样本预测</title><desc id="t17c">水平条形图展示基值 0.30 加各特征贡献逐次累加得到预测值。年龄贡献 +0.05、近 30 天登录次数 -0.15、历史履约 +0.10，合计回到 0.30。</desc><rect x="1" y="1" width="998" height="338" rx="18" fill="#fffdf9" stroke="#d8e2d9"/><g font-family="system-ui,'PingFang SC','Microsoft YaHei',sans-serif"><text x="40" y="45" font-size="22" fill="#213a37" font-weight="760">瀑布图：基值 + 各贡献 = 本次预测</text><path d="M90 80 V300" stroke="#a4b2aa" stroke-width="1.8"/><g font-size="13" fill="#57706c"><text x="90" y="322" text-anchor="middle">0.0</text><text x="300" y="322" text-anchor="middle">0.3</text><text x="510" y="322" text-anchor="middle">0.6</text><text x="650" y="322" text-anchor="middle">0.9</text></g><g stroke="#d8e2d9" stroke-width="1" stroke-dasharray="3 5"><path d="M300 80 V300"/><path d="M510 80 V300"/><path d="M650 80 V300"/></g><rect x="90" y="96" width="210" height="26" fill="#e7f3ef" stroke="#147b70"/><text x="96" y="114" font-size="12.5" fill="#147b70">基值 E[f(X)] = 0.30</text><rect x="300" y="136" width="35" height="26" fill="#c4774b"/><text x="345" y="154" font-size="13" fill="#b5673f">年龄 +0.05</text><rect x="335" y="176" width="105" height="26" fill="#7863b0"/><text x="450" y="194" font-size="13" fill="#66529e">历史履约 +0.15</text><rect x="335" y="216" width="105" height="26" fill="#147b70"/><text x="450" y="234" font-size="13" fill="#147b70">近期活跃 −0.15</text><rect x="335" y="256" width="35" height="26" fill="#cdd6d0" stroke="#a4b2aa"/><text x="380" y="274" font-size="13" fill="#57706c">其余特征 +0.05</text><path d="M440 160 H500 V268 H440" fill="none" stroke="#213a37" stroke-width="2"/><text x="508" y="218" font-size="15" fill="#213a37" font-weight="740">f(x) = 0.30</text><text x="508" y="242" font-size="13" fill="#57706c">预测与平均持平</text><text x="40" y="326" font-size="13" fill="#57706c">教学示意：贡献为虚构示例，非某模型真实输出。</text></g></svg></div><figcaption>SHAP 瀑布图：从基值 0.30 出发，各特征贡献逐次累加得到样本预测。正贡献把预测推高、负贡献拉低，最终之和等于预测值。数值为虚构示例。</figcaption></figure><p>实现上，树模型有快速精确算法（TreeSHAP），一般模型用 KernelSHAP 近似。但 Shapley 值是在<strong>给定背景/基线</strong>下计算的：基线取训练集、子集或零向量会得到不同归因。报告中应同时说明背景数据、特征是否相关以及采样近似次数，否则无法复现。</p></section>
+<section id="sec5" aria-labelledby="title5"><h2 id="title5">05 · LIME：局部代理模型</h2><p>LIME（Local Interpretable Model-agnostic Explanations）的思路不同：它在待解释样本附近扰动生成一批新样本，用原模型给它们打标签，再在这些邻点上拟合一个<strong>简单的可解释模型</strong>（如加权线性回归），用这个代理模型的系数作为解释。</p><p>因此 LIME 是<strong>局部忠实</strong>的：代理模型只在被解释样本附近有效，换个样本就要重新拟合。产物通常是一个稀疏的“支持/反对”列表。与 SHAP 的对照如下：</p><table><thead><tr><th>维度</th><th>SHAP</th><th>LIME</th></tr></thead><tbody><tr><td>理论基础</td><td>Shapley 值，满足可加性与一致性公理</td><td>局部加权代理，无全局一致性保证</td></tr><tr><td>可加性</td><td>贡献之和等于预测</td><td>代理模型只在邻域内近似</td></tr><tr><td>稳定性</td><td>较稳定（有精确/一致估计器）</td><td>对扰动分布与随机种子敏感</td></tr><tr><td>代价</td><td>一般模型较贵，树模型很快</td><td>便宜，适合快速探索</td></tr></tbody></table><div class="note"><p><strong>实践提醒：</strong>LIME 的扰动分布与核宽度是超参数，不同设置可能给出不同解释。若要用于高风险的对外解释，应报告这些设置并做重复试验看解释是否稳定；不要把一次 LIME 输出当作唯一真相。</p></div></section>
+<section id="sec6" aria-labelledby="title6"><h2 id="title6">06 · PDP 与 ICE：平均效应与个体异质性</h2><p>部分依赖图（PDP）回答：“平均而言，改变某个特征的值会如何影响模型预测？”做法是把该特征在所有样本上换成同一取值，其余特征保持不动，再对预测取平均。ICE（Individual Conditional Expectation）则是 PDP 的逐样本版本：为每个样本单独画一条“特征值→预测”的曲线，不做平均。</p><p><strong>PDP 的主要风险是掩盖异质性</strong>：当不同子群的依赖方向相反时，平均曲线甚至可能与每个子群都不同。ICE 曲线族能暴露这种“亚群效应”——例如总体看“年龄对流失影响不大”，但 ICE 可能显示一个特定年龄段的人群流失概率陡升。</p><figure id="fig-pdp-ice"><div class="figure-scroll"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 360" role="img" aria-labelledby="t17d d17d"><title id="t17d">PDP 平均曲线与 ICE 个体曲线的差异</title><desc id="t17d">左侧 PDP 是许多 ICE 曲线的平均，近似水平；右侧展示若干 ICE 曲线：一个子群随年龄升高而上升，另一个子群下降，两者平均后相互抵消。</desc><rect x="1" y="1" width="998" height="358" rx="18" fill="#fffdf9" stroke="#d8e2d9"/><g font-family="system-ui,'PingFang SC','Microsoft YaHei',sans-serif"><text x="40" y="45" font-size="22" fill="#213a37" font-weight="760">平均可以掩盖反向的子群趋势</text><rect x="40" y="70" width="430" height="240" rx="10" fill="#fff" stroke="#d8e2d9"/><text x="62" y="100" font-size="16" fill="#7863b0" font-weight="740">PDP（平均）</text><path d="M70 280 V116 M70 280 H430" fill="none" stroke="#a4b2aa" stroke-width="1.6"/><path d="M80 196 C160 200, 300 192, 420 198" fill="none" stroke="#7863b0" stroke-width="3"/><text x="120" y="180" font-size="13" fill="#66529e">平均曲线近水平</text><text x="70" y="300" font-size="13" fill="#57706c">→ 似乎“年龄没什么影响”</text><rect x="520" y="70" width="440" height="240" rx="10" fill="#fff" stroke="#d8e2d9"/><text x="542" y="100" font-size="16" fill="#c4774b" font-weight="740">ICE（个体曲线族）</text><path d="M550 280 V116 M550 280 H930" fill="none" stroke="#a4b2aa" stroke-width="1.6"/><path d="M560 240 C660 200, 800 165, 920 150" fill="none" stroke="#c4774b" stroke-width="2.4"/><path d="M560 160 C660 200, 800 240, 920 260" fill="none" stroke="#147b70" stroke-width="2.4"/><path d="M560 205 C660 210, 800 195, 920 200" fill="none" stroke="#a4b2aa" stroke-width="1.6" stroke-dasharray="4 4"/><text x="800" y="150" font-size="13" fill="#b5673f">子群 A：↑</text><text x="800" y="278" font-size="13" fill="#147b70">子群 B：↓</text><text x="600" y="196" font-size="12" fill="#57706c">灰虚线=平均</text><text x="40" y="344" font-size="13.5" fill="#57706c">教学示意：曲线为虚构，非真实模型。</text></g></svg></div><figcaption>PDP 是 ICE 曲线的平均，因此当不同子群的依赖方向相反时会相互抵消，形成近水平的平均曲线；ICE 曲线族能暴露被平均掩盖的亚群效应。曲线为教学示意。</figcaption></figure><p>PDP/ICE 也有前提：它们假设特征之间<strong>相互独立</strong>。当特征强相关时，为某特征强行赋所有取值会造出不可能的样本组合，于是同一份数据上 PDP 与 ICE 都可能不可信。此时应改用累积局部效应（ALE）或在受控子集上分析。</p></section>
+<section id="sec7" aria-labelledby="title7"><h2 id="title7">07 · 陷阱：解释的是预测，不是因果</h2><p>所有上述工具解释的都是<strong>模型做了什么</strong>，而不是<strong>世界如何运作</strong>。特征重要性高只说明“模型依赖它来做预测”，不等于“改变它就能改变结果”。一个经典例子：冰淇淋销量与溺水人数在数据上高度相关，重要性排名会把二者都排得很前；但如果干预“禁卖冰淇淋”，溺水并不会减少，因为两者都被“天气热”这个混淆变量驱动。</p><div class="note"><p><strong>关键区分：</strong>想回答“哪些因素影响预测”（预测性问题）时，用 SHAP/LIME/PDP；想回答“做了某个干预会怎样”（因果问题）时，应使用随机对照实验、双重差分、工具变量、断点回归或 uplift 建模等方法，而不是对可解释性输出做因果解读。</p></div><p>还有一个更隐蔽的风险：解释工具会给人<strong>虚假的安心感</strong>。一条好看的 SHAP 瀑布图看似在“讲道理”，但若模型本身学到了捷径（如用医院标识预测肺炎风险），解释只会把这个捷径清晰地展示出来，并不会纠正它。可解释性应与错误分析、公平性评估、分布外探测一起使用。</p></section>
+<section id="sec8" aria-labelledby="title8"><h2 id="title8">08 · 离线实验：置换重要性与加性核验</h2><p>下面用内置的乳腺肿瘤数据演示两件事：在<strong>留出验证集</strong>上用置换重要性排序特征；并用线性模型的决策函数验证“各特征贡献之和等于预测”这一加性事实。全部只用 scikit-learn 与 NumPy，不需要额外的解释库。</p><pre><code>import numpy as np
+from sklearn.datasets import load_breast_cancer
+from sklearn.model_selection import train_test_split
+from sklearn.pipeline import make_pipeline
+from sklearn.preprocessing import StandardScaler
+from sklearn.linear_model import LogisticRegression
+from sklearn.inspection import permutation_importance
+from sklearn.metrics import roc_auc_score
 
-        <p>模型可解释性（Explainable AI / XAI）就是为这个问题而生的。它的核心目标是回答三个问题：<strong>这个预测结果是怎么来的？哪些特征影响最大？如果改变一个特征值，预测结果会怎么变？</strong></p>
+X, y = load_breast_cancer(return_X_y=True)
+names = load_breast_cancer().feature_names
+Xtr, Xte, ytr, yte = train_test_split(
+    X, y, test_size=0.3, stratify=y, random_state=17)
+pipe = make_pipeline(StandardScaler(),
+    LogisticRegression(max_iter=5000)).fit(Xtr, ytr)
 
-        <h2>17.2 天生可解释 vs 需要解释</h2>
+# 1) 在验证集上做置换重要性（不是训练集）
+imp = permutation_importance(
+    pipe, Xte, yte, n_repeats=10, random_state=17,
+    scoring=&quot;roc_auc&quot;)
+order = np.argsort(imp.importances_mean)[::-1]
+print(&quot;top features:&quot;, [names[i] for i in order[:3]])
 
-        <table>
-            <tr><th>模型类型</th><th>可解释性</th><th>代表</th></tr>
-            <tr><td>白盒（天生可解释）</td><td>系数、规则直接告诉你原因</td><td>线性回归、逻辑回归、决策树</td></tr>
-            <tr><td>灰盒（部分可解释）</td><td>有特征重要性，但缺乏细粒度解释</td><td>随机森林、GBDT</td></tr>
-            <tr><td>黑盒（需要额外工具）</td><td>模型本身无法解释，必须借助外部工具</td><td>神经网络、深度学习</td></tr>
-        </table>
-
-        <p>如果你的场景对可解释性有硬性要求（金融、医疗、法律），优先考虑白盒模型。很多问题用逻辑回归做到0.83 AUC就足够好了，用深度学习做到0.85但无法解释——多出的0.02不值当。</p>
-
-        <h2>17.3 SHAP：解释任何模型的"瑞士军刀"</h2>
-        <p>SHAP（SHapley Additive exPlanations）是目前最主流的模型解释工具。它的理论基础来自博弈论中的Shapley值——把每个特征看作"玩家"，预测结果看作"游戏的收益"，每个特征对预测的贡献就是它应该分到的"公平份额"。</p>
-
-        <pre><code>import shap
-import xgboost as xgb
-
-model = xgb.XGBClassifier(n_estimators=100)
-model.fit(X_train, y_train)
-
-# 创建SHAP解释器
-explainer = shap.TreeExplainer(model)
-shap_values = explainer.shap_values(X_test)
-
-# 1. 全局特征重要性
-shap.summary_plot(shap_values, X_test, feature_names=feature_names)
-
-# 2. 单个样本的解释 — "为什么这个用户被预测为流失？"
-shap.waterfall_plot(explainer(X_test.iloc[0]))
-
-# 3. 特征依赖图 — "年龄如何影响预测？"
-shap.dependence_plot("age", shap_values, X_test, feature_names=feature_names)
-</code></pre>
-
-        <p>SHAP值有很好的可加性：<strong>基值（base value）+ 所有特征的SHAP值之和 = 模型对该样本的预测值</strong>。这让你可以精确地解释每个预测。</p>
-
-        <div class="tip">
-            <strong>💡 SHAP值直觉：</strong>假设所有样本的平均预测概率是0.3（基值）。对于用户张三，年龄=35贡献了+0.05（让他更可能流失），收入=5万贡献了+0.10，最近登录天数=30贡献了-0.15（让他更不容易流失）。最终预测 = 0.3 + 0.05 + 0.10 - 0.15 = 0.30。张三的流失概率正好是平均水平——虽然年龄和收入是危险信号，但活跃度起到了保护作用。
-        </div>
-
-        <h2>17.4 LIME：局部忠实解释</h2>
-        <p>LIME（Local Interpretable Model-agnostic Explanations）的思想：在你要解释的那个样本附近，用一个简单的可解释模型（如线性回归）去近似复杂模型的行为。这个简单模型只在这个小区域有效，所以叫"局部"解释。</p>
-
-        <p>SHAP提供的是全局一致的解释（基于博弈论），LIME提供的是局部忠实的近似。在实践中，SHAP使用更广泛（理论基础更强，结果更稳定），LIME更适合快速验证。</p>
-
-        <h2>17.5 部分依赖图与ICE</h2>
-        <p>部分依赖图（Partial Dependence Plot, PDP）回答的问题是：<strong>平均来说，改变一个特征的值对模型预测有什么影响？</strong></p>
-
-        <p>比如PDP显示"年龄从20到60，流失概率单调递增"——这对业务非常有价值。ICE（Individual Conditional Expectation）是PDP的增强版，不仅看平均效果，还画出每个个体的变化曲线，能发现PDP所掩盖的异质性——比如"对大部分人年龄不影响流失，但有一小群人25-30岁时流失率暴涨"。这种"亚群效应"用PDP是看不到的。</p>
-
-        <h2>17.6 解释的陷阱：相关性≠因果性</h2>
-
-        <div class="warning">
-            <strong>⚠️ 最常见的误解：</strong>SHAP值大 ≠ 因果关系。SHAP告诉你"这个特征对预测很重要"，但不是说"改变这个特征就能改变结果"。一个经典案例：冰淇淋销量和溺水死亡人数高度相关，SHAP会给冰淇淋销量很高的特征重要度。但如果你禁止卖冰淇淋（干预），溺水死亡不会减少——因为两者都被"天气热"这个混淆变量驱动。特征重要度衡量的是<strong>预测价值</strong>，不是<strong>因果效应</strong>。
-        </div>
-
-        <p>如果你需要因果推断（"如果给用户发优惠券，他会购买吗？"），请使用因果推断的方法（随机实验、双重差分、工具变量、uplift modeling），而不是依赖SHAP或LIME。</p>
-
-        <p>好了，可解释性就讲到这里。下一章我们学习ML系统工程化——如何让模型从"实验代码"变成"生产系统"。</p>
-
-        <div class="footer-nav">
-            <a href="16.html">← 上一章</a>
-            <a href="index.html">📖 返回目录</a>
-            <a href="18.html">下一章 →</a>
-        </div>
-    </div>
-</div>
-</div>
-</body>
-</html>
+# 2) 加性核验：线性模型的 logit 等于截距加各特征贡献
+scaled = pipe.named_steps[&quot;standardscaler&quot;].transform(Xte)
+pred = pipe.named_steps[&quot;logisticregression&quot;]
+manual = scaled @ pred.coef_[0] + pred.intercept_[0]
+assert np.allclose(manual, pipe.decision_function(Xte), atol=1e-8)
+print(&quot;test AUC=%.3f&quot; % roc_auc_score(yte, manual))
+assert len(order) == X.shape[1]</code></pre><p>这里的要点是：置换重要性应在留出数据上计算，且线性模型的加性是精确可验证的；对于树模型与网络，SHAP 的加性也成立，但需额外安装对应解释库，本离线示例未运行该部分，不声称已验证。若要得到稳定的重要性排序，应固定随机种子、重复多次置换，并在不同折上观察波动。</p></section>
+<section id="sec9" aria-labelledby="title9"><h2 id="title9">09 · 来源、版本与验收界限</h2><p>SHAP 与 LIME 的定义以原始论文为准，置换重要性、PDP 与 ICE 的行为以 scikit-learn 官方文档为准；不同版本的默认参数（如扰动次数、背景样本数）可能不同，复现时应记录版本与随机种子。</p><ul class="refs"><li><a href="https://arxiv.org/abs/1705.07874" rel="noopener noreferrer">Lundberg &amp; Lee, A Unified Approach to Interpreting Model Predictions（SHAP）, NeurIPS 2017</a></li><li><a href="https://arxiv.org/abs/1602.04938" rel="noopener noreferrer">Ribeiro et al., “Why Should I Trust You?”（LIME）, KDD 2016</a></li><li><a href="https://scikit-learn.org/stable/modules/permutation_importance.html" rel="noopener noreferrer">scikit-learn 置换重要性用户指南</a></li><li><a href="https://scikit-learn.org/stable/modules/partial_dependence.html" rel="noopener noreferrer">scikit-learn 部分依赖与 ICE 用户指南</a></li><li><a href="https://christophm.github.io/interpretable-ml-book/" rel="noopener noreferrer">Molnar, Interpretable Machine Learning（开放书）</a></li></ul><p class="note"><strong>验收界限：</strong>本章所有重要性数值、瀑布图贡献与 PDP/ICE 曲线均为教学示意，不是真实模型输出或基准实验；代码示例应在本地实际运行后才可声称得到具体数值。</p></section>
+<nav class="article-footer" aria-label="章节导航"><a href="16.html">← 上一章</a><a href="../index.html">全部章节</a><a href="18.html">下一章 →</a></nav></article></main></div><footer class="site-footer"><span>机器学习图解教程 · 第 17 章</span><span>解释与因果之间的边界</span></footer></body></html>
