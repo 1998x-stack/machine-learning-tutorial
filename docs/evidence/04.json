@@ -32,8 +32,8 @@
       "id": "adamw-decoupling",
       "claim": "AdamW applies weight decay separately from Adam's adaptive gradient update rather than treating it as the same L2 penalty in the gradient.",
       "kind": "implementation",
-      "source_url": "https://pytorch.org/docs/stable/generated/torch.optim.AdamW.html",
-      "locator": "AdamW algorithm and weight_decay",
+      "source_url": "https://docs.pytorch.org/docs/stable/generated/torch.optim.AdamW.html",
+      "locator": "PyTorch AdamW: decoupled weight decay and optimizer parameters",
       "status": "verified",
       "notes": "The distinction depends on optimizer formulation; do not conflate every weight-decay option."
     }
