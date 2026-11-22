@@ -1,275 +1,32 @@
-<!DOCTYPE html>
-<html lang="zh-CN">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.5, user-scalable=yes">
-    <title>第7章 模型评估与选择</title>
-    <style>
-        * { margin:0; padding:0; box-sizing:border-box; }
-        body {
-            background: linear-gradient(135deg, #f5f3ff 0%, #e8f5f0 100%);
-            font-family: system-ui, -apple-system, 'Segoe UI', 'PingFang SC', Roboto, 'Helvetica Neue', sans-serif;
-            padding: 20px;
-        }
-        .double-border {
-            max-width: 1400px;
-            margin: 0 auto;
-            background: #ffffff;
-            border: 2px solid #8b5cf6;
-            border-radius: 24px;
-            box-shadow: 0 20px 30px -15px rgba(0,0,0,0.2), inset 0 1px 0 0 #f5f3ff;
-            overflow: hidden;
-        }
-        .container {
-            display: grid;
-            grid-template-columns: 260px 1fr;
-            gap: 0;
-        }
-        .sidebar {
-            background: #faf8ff;
-            border-right: 2px solid #c4b5fd;
-            padding: 24px 16px;
-        }
-        .sidebar h3 {
-            font-size: 1.4rem;
-            color: #6d28d9;
-            border-left: 5px solid #8b5cf6;
-            padding-left: 15px;
-            margin-bottom: 25px;
-        }
-        .chapter-list { list-style: none; }
-        .chapter-list li { margin-bottom: 6px; }
-        .chapter-list a {
-            display: block; padding: 8px 12px; text-decoration: none;
-            color: #334155; border-radius: 12px; transition: all 0.2s;
-            font-weight: 500; font-size: 0.92rem;
-        }
-        .chapter-list a:hover { background: #ede9fe; transform: translateX(3px); }
-        .chapter-list .active {
-            background: #7c3aed; color: white;
-            box-shadow: 0 2px 5px rgba(124,58,237,0.3);
-        }
-        .main-content { padding: 30px 35px; background: white; }
-        .footer-nav {
-            margin-top: 45px; padding-top: 20px; border-top: 2px solid #c4b5fd;
-            display: flex; justify-content: space-between;
-        }
-        .footer-nav a {
-            padding: 8px 24px; background: #f1f5f9; text-decoration: none;
-            color: #5b21b6; border-radius: 40px; font-weight: 500; transition: 0.2s;
-        }
-        .footer-nav a:hover { background: #ede9fe; transform: translateY(-2px); }
-        footer {
-            text-align: center; margin-top: 30px; padding: 15px; color: #64748b;
-            border-top: 1px dashed #cbd5e1; font-size: 0.9rem;
-        }
-        h2 { color: #4c1d95; border-left: 6px solid #8b5cf6; padding-left: 15px; margin: 20px 0 15px; font-size: 1.5rem; }
-        h3 { color: #5b21b6; margin: 20px 0 10px; font-size: 1.2rem; }
-        h4 { color: #6d28d9; margin: 15px 0 8px; font-size: 1.05rem; }
-        p { line-height: 1.85; margin: 10px 0; color: #1e293b; }
-        ul, ol { margin: 10px 0 10px 20px; line-height: 1.8; }
-        li { color: #1e293b; margin-bottom: 4px; }
-        pre {
-            background: #1e1035; color: #e8e8f0; padding: 15px; border-radius: 12px;
-            overflow-x: auto; font-family: 'JetBrains Mono', 'Fira Code', monospace;
-            margin: 15px 0; font-size: 0.9rem; line-height: 1.5;
-        }
-        code { background: #f5f3ff; padding: 2px 6px; border-radius: 4px; font-family: 'JetBrains Mono', monospace; font-size: 0.85em; }
-        pre code { background: none; padding: 0; }
-        table { width: 100%; border-collapse: collapse; margin: 15px 0; background: #fafafe; }
-        th, td { border: 1px solid #c4b5fd; padding: 10px; text-align: left; }
-        th { background: #f5f3ff; color: #5b21b6; font-weight: 600; }
-        .tip, .warning, .highlight {
-            padding: 12px 18px; border-radius: 16px; margin: 15px 0; line-height: 1.7;
-        }
-        .tip { background: #e0f2fe; border-left: 6px solid #0ea5e9; }
-        .warning { background: #fee2e2; border-left: 6px solid #ef4444; }
-        .highlight { background: #fef9c3; border: 1px solid #facc15; }
-        strong { color: #1e1b4b; }
-        @media (max-width: 768px) {
-            .container { grid-template-columns: 1fr; }
-            .sidebar { border-right: none; border-bottom: 2px solid #c4b5fd; }
-            body { padding: 10px; }
-            .main-content { padding: 20px; }
-        }
-    </style>
-    <link rel="stylesheet" href="theme.css">
-</head>
-<body>
-<div class="double-border">
-<div class="container">
-    <div class="sidebar">
-        <h3>🤖 课程目录</h3>
-        <ul class="chapter-list">
-            <li><a href="01.html">第1章 机器学习概述</a></li>
-            <li><a href="02.html">第2章 数学基础：线性代数</a></li>
-            <li><a href="03.html">第3章 数学基础：概率统计</a></li>
-            <li><a href="04.html">第4章 数学基础：优化理论</a></li>
-            <li><a href="05.html">第5章 数据预处理与探索</a></li>
-            <li><a href="06.html">第6章 第一个ML项目实战</a></li>
-            <li><a href="07.html" class="active">第7章 模型评估与选择</a></li>
-            <li><a href="08.html">第8章 线性回归与正则化</a></li>
-            <li><a href="09.html">第9章 逻辑回归与分类</a></li>
-            <li><a href="10.html">第10章 决策树与随机森林</a></li>
-            <li><a href="11.html">第11章 支持向量机 SVM</a></li>
-            <li><a href="12.html">第12章 朴素贝叶斯与KNN</a></li>
-            <li><a href="13.html">第13章 聚类算法</a></li>
-            <li><a href="14.html">第14章 降维与特征工程</a></li>
-            <li><a href="15.html">第15章 模型调参与AutoML</a></li>
-            <li><a href="16.html">第16章 处理不平衡数据</a></li>
-            <li><a href="17.html">第17章 模型可解释性</a></li>
-            <li><a href="18.html">第18章 ML系统工程化</a></li>
-            <li><a href="19.html">第19章 神经网络基础</a></li>
-            <li><a href="20.html">第20章 深度学习框架实战</a></li>
-            <li><a href="21.html">第21章 CNN卷积神经网络</a></li>
-            <li><a href="22.html">第22章 RNN与序列模型</a></li>
-            <li><a href="23.html">第23章 NLP自然语言处理</a></li>
-            <li><a href="24.html">第24章 生成式模型</a></li>
-            <li><a href="25.html">第25章 强化学习入门</a></li>
-            <li><a href="26.html">第26章 大语言模型与RAG</a></li>
-            <li><a href="27.html">第27章 模型部署与服务化</a></li>
-            <li><a href="28.html">第28章 毕业项目：端到端ML系统</a></li>
-        </ul>
-    </div>
-    <div class="main-content">
-        <h2>7.1 99%准确率也可能是垃圾模型</h2>
-        <p>先讲一个让我印象深刻的真实案例。一个同事兴冲冲地说他的信用卡欺诈检测模型准确率99.8%，我问他欺诈样本占比多少，他说大概0.2%。真相瞬间大白了：如果模型对所有交易都预测"正常"，准确率就是99.8%。这个模型什么都没学到，但指标看起来完美。这就是为什么<strong>选择合适的评估指标比模型本身更重要</strong>。</p>
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="description" content="同一个预测器可以拥有很高的准确率，却产生大量误报。评价必须与具体错误成本、样本分布、决策阈值和验证设计一起解释。"><title>模型评估：从混淆矩阵到可信选择 · 机器学习图解教程</title><link rel="stylesheet" href="../assets/css/article.css"><link rel="stylesheet" href="../assets/css/labs.css"><script src="../assets/js/threshold-lab.js" defer></script></head><body class="article-page"><a class="skip-link" href="#content">跳转至正文</a><header class="site-header"><div class="header-inner"><a class="wordmark" href="../index.html"><span class="mark">M<span>·</span>L</span><span>机器学习图解教程<small>Machine Learning, Explained</small></span></a><nav aria-label="顶部导航"><a href="../index.html">课程目录</a><a href="https://github.com/1998x-stack/machine-learning-tutorial">GitHub</a></nav></div></header><div class="article-shell"><aside class="article-nav"><nav aria-label="文章目录"><details open><summary>本章目录</summary><div class="nav-items"><a href="../index.html">← 全部章节</a><a href="#sec1">先明确在什么分布上衡量好坏</a><a href="#sec2">四格混淆矩阵导出所有分类指标</a><a href="#sec3">分数排序与固定阈值的关系</a><a href="#sec4">回归预测不能只看 R²</a><a href="#sec5">交叉验证不是简单地反复试随机种子</a><a href="#sec6">偏差与方差、学习曲线如何诊断</a><a href="#sec7">一个可运行的分层交叉验证实验</a><a href="#sec8">评估审查和来源</a></div></details></nav></aside><main class="article-main" id="content"><article><div class="breadcrumb"><a href="../index.html">课程目录</a><span>/</span><span>第 07 章</span></div><header class="article-header"><div class="chapter-number">CHAPTER 07 / 28</div><h1>模型评估：从混淆矩阵到可信选择</h1><p class="dek">同一个预测器可以拥有很高的准确率，却产生大量误报。评价必须与具体错误成本、样本分布、决策阈值和验证设计一起解释。</p><div class="lead-question">如果正类只占 1%，一个永远预测负类的模型为什么依然能达到 99% accuracy？</div></header><section id="sec1" aria-labelledby="title1"><h2 id="title1">01 · 先明确在什么分布上衡量好坏</h2><p>评价指标的第一步不是调用 <code>metrics</code>，而是定义目标人群、预测时点、类别含义与错误成本。假设 1000 条样本仅 10 条正例，恒定预测负例可以获得 990/1000 的 accuracy，却识别不到任何正例。对欺诈检测或罕见风险筛查，这类数值不能代表实际价值。</p><p>训练损失与部署决策成本也可能不同：模型优化对数损失产生概率分数，业务随后必须在阈值处将分数转换为“报警 / 不报警”的动作。评估分数、选择阈值、衡量成本是三个不同阶段。</p></section><section id="sec2" aria-labelledby="title2"><h2 id="title2">02 · 四格混淆矩阵导出所有分类指标</h2><p>二分类首先固定哪个类别算“正类”。真实正且预测正为 TP；真实正但预测负为 FN；真实负但预测正为 FP；真实负且预测负为 TN。用 100 个样本的教学例子：TP=8、FN=2、FP=12、TN=78，准确率为 86%，但精确率只有 40%，召回率为 80%。</p><figure><div class="figure-scroll"><img src="../assets/svg/07/confusion-matrix.svg" width="1000" height="430" loading="lazy" alt="在 100 个虚构观测中，混淆矩阵逐格计数，并在右边计算 accuracy、precision 和 recall。"></div><figcaption>在 100 个虚构观测中，混淆矩阵逐格计数，并在右边计算 accuracy、precision 和 recall。</figcaption></figure><p><strong>Precision</strong> 回答“被我判成正类的样本有多少是真的”；<strong>Recall</strong> 回答“真实正类被我找出多少”。F1 是 precision 与 recall 的调和平均，在两者都定义且分母非零时写成 <code>2PR/(P+R)</code>；它对不同业务成本并不自动最优。</p><div class="eq" tabindex="0" role="group" aria-label="精确率等于 TP 除以 TP 加 FP；召回率等于 TP 除以 TP 加 FN"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><mrow><mi>Precision</mi><mo>=</mo><mfrac><mi>TP</mi><mrow><mi>TP</mi><mo>+</mo><mi>FP</mi></mrow></mfrac><mspace width="1em"/><mi>Recall</mi><mo>=</mo><mfrac><mi>TP</mi><mrow><mi>TP</mi><mo>+</mo><mi>FN</mi></mrow></mfrac></mrow></math></div><p>当预测正类数为零时 precision 不存在普通分母意义下的数值，应明确指标约定。对多分类问题还需要区分逐类别指标与 macro、micro、weighted 的平均方法，不能直接套二分类 TP、FP 的语义。</p></section><section id="sec3" aria-labelledby="title3"><h2 id="title3">03 · 分数排序与固定阈值的关系</h2><p>很多分类器先产生一个连续分数。假设系统输出 0.92、0.80、0.71 等八个分数，默认规则是分数大于等于 0.50 时预测正类。提高阈值通常会减少预测正类，从而改变 FP 与 FN 的数量，而不会改变样本原本的排名。</p><figure><div class="figure-scroll"><img src="../assets/svg/07/threshold-scores.svg" width="1000" height="430" loading="lazy" alt="八个虚构分数以绿色表示真实正类、橙色表示真实负类；阈值为 0.5 时 TP=2、FP=2、FN=1、TN=3。"></div><figcaption>八个虚构分数以绿色表示真实正类、橙色表示真实负类；阈值为 0.5 时 TP=2、FP=2、FN=1、TN=3。</figcaption></figure><div class="threshold-lab" data-labels="1,0,1,0,1,0,0,0" data-scores="0.92,0.80,0.71,0.54,0.46,0.30,0.14,0.05"><label for="threshold-07">分类阈值 <strong>Threshold</strong></label><div class="lab-controls"><input id="threshold-07" type="range" min="0.05" max="0.95" step="0.05" value="0.50"><output aria-live="polite" class="lab-value">0.50</output></div><div class="lab-grid" aria-live="polite"><span>TP <strong data-field="tp">2</strong></span><span>FP <strong data-field="fp">2</strong></span><span>FN <strong data-field="fn">1</strong></span><span>TN <strong data-field="tn">3</strong></span><span>Precision <strong data-field="precision">0.50</strong></span><span>Recall <strong data-field="recall">0.67</strong></span></div><p>修改阈值会立即重新计算上面的混淆矩阵。若精确率分母为零，这里展示 N/A，不把它伪装成模型质量为零。</p></div><p><strong>ROC AUC</strong> 概括不同阈值下的真阳性率与假阳性率关系，强调排序能力；<strong>PR 曲线</strong>同时展示 precision 与 recall。在正例稀少时，PR 或 average precision 通常能更直观看到“报警中到底有多少命中”，但指标仍取决于基准率与业务需求。scikit-learn 的 <code>average_precision_score</code> 不是简单的梯形插值 PR AUC，不能随意互换名称。</p></section><section id="sec4" aria-labelledby="title4"><h2 id="title4">04 · 回归预测不能只看 R²</h2><p>回归要对照常数基线，并说明目标单位。<code>MAE</code> 对每个样本的绝对误差等权求平均；<code>RMSE</code> 对大误差更敏感；<code>R² = 1 − SSE/SST</code> 将残差平方和与“预测测试目标均值”的基准方差比较，某些情况下可能小于 0。</p><p>如果同一测试集所有真实目标完全相同，<code>SST=0</code>，传统 R² 不按普通公式定义；某些实现会提供有限值替代约定。比较不同目标单位或不同时间分布的 RMSE 前，需要先检查定义是否一致。</p></section><section id="sec5" aria-labelledby="title5"><h2 id="title5">05 · 交叉验证不是简单地反复试随机种子</h2><p>交叉验证在开发数据内部轮流使用训练折与验证折，让模型比较不只依赖某一次划分。每一折的标准化、缺失填充、特征选择都必须只在该折训练部分 <code>fit</code>；把它们放在 <code>Pipeline</code> 中才能维持该边界。独立测试集不应该出现在 CV 循环里。</p><figure><div class="figure-scroll"><img src="../assets/svg/07/cross-validation.svg" width="1000" height="430" loading="lazy" alt="五折轮换训练与验证，每一折都有新的 fit；测试区在所有模型选择完成之前被锁定。"></div><figcaption>五折轮换训练与验证，每一折都有新的 fit；测试区在所有模型选择完成之前被锁定。</figcaption></figure><p><strong>分组数据</strong>需要 <code>GroupKFold</code> 等按实体隔离的策略；预测未来的时间序列应考虑滚动或扩张窗口，而不是随机打乱时间。超参数搜索所用 CV 分数并不等于独立测试精度；如果要对模型选择算法本身做无偏比较，可进一步考虑嵌套交叉验证。</p></section><section id="sec6" aria-labelledby="title6"><h2 id="title6">06 · 偏差与方差、学习曲线如何诊断</h2><p>若训练和验证误差都很高，可能是模型过弱、关键特征缺失、目标噪声高或优化不足；若训练误差极低、验证误差很高，可能是复杂度、泄漏、分布差异或样本不足导致的泛化失败。这些是诊断线索，不是根据一张图便能直接推断的原因。</p><p>学习曲线以训练样本数为横轴，分别绘制训练与交叉验证分数。若更多数据有助于缩小两者差距，可以评估增量数据的价值；若两者长期都差，则应优先反思问题定义与特征表达。任何学习曲线都应标明分割策略及误差的不确定性。</p></section><section id="sec7" aria-labelledby="title7"><h2 id="title7">07 · 一个可运行的分层交叉验证实验</h2><p>以下在合成不平衡数据上比较 ROC AUC 与 average precision，并以固定 0.5 阈值输出一次独立测试的混淆矩阵。数据由 <code>make_classification</code> 生成，因此输出<strong>不代表任何真实领域</strong>。测试仅用于演示最终报告，阈值没有通过该测试集调优。</p><pre><code>import numpy as np
+from sklearn.datasets import make_classification
+from sklearn.model_selection import train_test_split, StratifiedKFold, cross_validate
+from sklearn.pipeline import make_pipeline
+from sklearn.preprocessing import StandardScaler
+from sklearn.linear_model import LogisticRegression
+from sklearn.metrics import (confusion_matrix, roc_auc_score,
+                             average_precision_score, precision_score, recall_score)
 
-        <h2>7.2 分类问题的评估指标</h2>
-
-        <h3>混淆矩阵：所有分类指标的母体</h3>
-        <p>一切分类指标都来自混淆矩阵的四个数字：</p>
-
-        <table>
-            <tr><th></th><th>预测为正</th><th>预测为负</th></tr>
-            <tr><td><strong>实际为正</strong></td><td>TP（真正例）</td><td>FN（假负例，漏报）</td></tr>
-            <tr><td><strong>实际为负</strong></td><td>FP（假正例，误报）</td><td>TN（真负例）</td></tr>
-        </table>
-
-        <p>这四个数字衍生出所有分类指标：</p>
-
-        <table>
-            <tr><th>指标</th><th>公式</th><th>关注什么</th><th>适用场景</th></tr>
-            <tr><td>Accuracy</td><td>(TP+TN)/ALL</td><td>整体正确率</td><td>类别平衡时</td></tr>
-            <tr><td>Precision</td><td>TP/(TP+FP)</td><td>预测为正的里面有多少是对的</td><td>不能误报：垃圾邮件检测</td></tr>
-            <tr><td>Recall</td><td>TP/(TP+FN)</td><td>实际为正的里面找到了多少</td><td>不能漏报：癌症筛查</td></tr>
-            <tr><td>F1 Score</td><td>2PR/(P+R)</td><td>Precision和Recall的调和平均</td><td>类别不平衡时的综合指标</td></tr>
-            <tr><td>AUC-ROC</td><td>ROC曲线下面积</td><td>模型排序能力</td><td>二分类通用</td></tr>
-        </table>
-
-        <div class="tip">
-            <strong>💡 怎么记P和R：</strong>Precision = "我说对的有多少是对的"（精准度），Recall = "该找出来的我找出来了多少"（召回率）。在搜索场景里，Precision是搜出来的结果里相关的占多少，Recall是相关的结果里搜出来了多少。宁可漏掉也不误报 → 高Precision；宁可误报也不漏掉 → 高Recall。
-        </div>
-
-        <h2>7.3 回归问题的评估指标</h2>
-
-        <table>
-            <tr><th>指标</th><th>公式</th><th>特点</th><th>何时用</th></tr>
-            <tr><td>MSE</td><td>平均(真实-预测)²</td><td>对大误差惩罚极重</td><td>损失函数（可导）</td></tr>
-            <tr><td>RMSE</td><td>√MSE</td><td>和原数值同单位，可读</td><td>汇报给业务方</td></tr>
-            <tr><td>MAE</td><td>平均|真实-预测|</td><td>对异常值不敏感</td><td>有离群值的时候</td></tr>
-            <tr><td>R²</td><td>1-SS_res/SS_tot</td><td>解释了多少方差</td><td>通用评估，-∞到1</td></tr>
-            <tr><td>MAPE</td><td>平均|(真实-预测)/真实|</td><td>百分比误差</td><td>和业务方沟通用</td></tr>
-        </table>
-
-        <div class="warning">
-            <strong>⚠️ R²的陷阱：</strong>R²不是"准确率百分比"。R²=0.8不是说模型80%准确，而是模型解释了目标变量80%的方差。而且R²会随着特征数量增加而"虚高"——哪怕你加的是随机噪声特征。所以要用调整后的R²（Adjusted R²），或者在测试集上看R²。
-        </div>
-
-        <h2>7.4 交叉验证：别被一次划分骗了</h2>
-        <p>很多人做ML的流程是：固定一个train_test_split的random_state → 调参调到这个划分上效果最好 → 沾沾自喜。但实际上，你的"好结果"可能只是运气好——恰好碰到了一个对你模型友好的数据划分。</p>
-
-        <p>这就是为什么需要交叉验证（Cross-Validation）：</p>
-
-        <ul>
-            <li><strong>K-Fold CV：</strong>把数据分成K份，用K-1份训练、1份验证，轮流K次，取平均。K通常取5或10</li>
-            <li><strong>Stratified K-Fold：</strong>在分类问题中保证每折的类别比例一致 —— <strong>分类问题默认用这个</strong></li>
-            <li><strong>TimeSeriesSplit：</strong>对时序数据，保证训练集的时间在验证集之前 —— 时序预测专用</li>
-        </ul>
-
-        <pre><code>from sklearn.model_selection import cross_val_score, StratifiedKFold
-
-# 分类问题：必须用StratifiedKFold确保每折类别比例一致
-skf = StratifiedKFold(n_splits=5, shuffle=True, random_state=42)
-cv_scores = cross_val_score(model, X, y, cv=skf, scoring='f1')
-print(f"F1: {cv_scores.mean():.4f} ± {cv_scores.std():.4f}")
-
-# 如果std太大（比如 > mean的10%），说明模型对数据划分很敏感
-# 这时候需要更多的数据，或者更强的正则化
-</code></pre>
-
-        <h2>7.5 偏差-方差权衡：ML永恒的主题</h2>
-        <p>这是机器学习中最核心的概念之一，理解了它，你就理解了为什么简单模型和复杂模型各有各的用武之地。</p>
-
-        <table>
-            <tr><th></th><th>高偏差 (Underfitting)</th><th>高方差 (Overfitting)</th></tr>
-            <tr><td>表现</td><td>训练集和测试集效果都差</td><td>训练集极好，测试集差</td></tr>
-            <tr><td>原因</td><td>模型太简单，学不到规律</td><td>模型太复杂，记住了噪声</td></tr>
-            <tr><td>解决方法</td><td>加特征、换复杂模型、减少正则化</td><td>加数据、加正则化、换简单模型</td></tr>
-            <tr><td>典型模型</td><td>线性回归拟合非线性数据</td><td>深度决策树记住训练集每个点</td></tr>
-        </table>
-
-        <div class="highlight">
-            <strong>🔑 核心洞察：</strong>总误差 = 偏差² + 方差 + 不可约误差。偏差和方差像跷跷板——降低一个往往升高另一个。最好的模型是在两者之间找到平衡点。交叉验证是诊断过拟合最直接的工具：<strong>训练集CV分数 >> 测试集CV分数 → 过拟合；两者都很低 → 欠拟合</strong>。
-        </div>
-
-        <h2>7.6 学习曲线：最被低估的诊断工具</h2>
-        <p>画一条学习曲线（随着训练样本量增加，训练误差和验证误差的变化）能帮你快速诊断模型的问题：</p>
-
-        <pre><code>from sklearn.model_selection import learning_curve
-
-train_sizes, train_scores, test_scores = learning_curve(
-    model, X, y, cv=5, scoring='r2',
-    train_sizes=np.linspace(0.1, 1.0, 10)
-)
-
-train_mean = train_scores.mean(axis=1)
-test_mean = test_scores.mean(axis=1)
-
-plt.plot(train_sizes, train_mean, 'o-', label='训练集')
-plt.plot(train_sizes, test_mean, 'o-', label='验证集')
-plt.xlabel('训练样本数')
-plt.ylabel('R²')
-plt.legend()
-plt.show()
-</code></pre>
-
-        <p>解读：如果两条线收敛在一起且分数低 → 欠拟合（加模型复杂度）。如果两条线差距很大 → 过拟合（加数据或正则化）。如果两条线收敛且分数高 → 模型到位了。</p>
-
-        <h2>7.7 模型选择实战：多模型对比</h2>
-        <p>实际项目中，你应该并行比较多个模型，而不是一个一个试：</p>
-
-        <pre><code>from sklearn.linear_model import LogisticRegression
-from sklearn.ensemble import RandomForestClassifier, GradientBoostingClassifier
-from sklearn.svm import SVC
-
-models = {
-    'Logistic Regression': LogisticRegression(max_iter=1000),
-    'Random Forest': RandomForestClassifier(n_estimators=100),
-    'Gradient Boosting': GradientBoostingClassifier(n_estimators=100),
-    'SVM': SVC(kernel='rbf')
-}
-
-results = {}
-for name, model in models.items():
-    cv_scores = cross_val_score(model, X_train, y_train,
-                                cv=5, scoring='f1')
-    results[name] = {'mean': cv_scores.mean(), 'std': cv_scores.std()}
-    print(f"{name:20s}: F1 = {cv_scores.mean():.4f} ± {cv_scores.std():.4f}")
-
-best_model_name = max(results, key=lambda k: results[k]['mean'])
-print(f"\n🏆 最佳模型: {best_model_name}")
-</code></pre>
-
-        <p>好了，模型评估的内容都在这里了。下一章我们正式进入核心算法——从线性回归开始，逐个击破每种经典ML算法。</p>
-
-        <div class="footer-nav">
-            <a href="06.html">← 上一章</a>
-            <a href="index.html">📖 返回目录</a>
-            <a href="08.html">下一章 →</a>
-        </div>
-    </div>
-</div>
-</div>
-</body>
-</html>
+X, y = make_classification(n_samples=600, n_features=8,
+    n_informative=4, n_redundant=2, weights=[0.9, 0.1],
+    flip_y=0.01, random_state=7)
+Xdev, Xtest, ydev, ytest = train_test_split(
+    X, y, test_size=0.2, stratify=y, random_state=7)
+pipe = make_pipeline(StandardScaler(), LogisticRegression(max_iter=1000))
+folds = StratifiedKFold(n_splits=5, shuffle=True, random_state=7)
+cv = cross_validate(pipe, Xdev, ydev, cv=folds,
+                    scoring=[&quot;roc_auc&quot;, &quot;average_precision&quot;])
+print(&quot;CV ROC AUC:&quot;, np.round(cv[&quot;test_roc_auc&quot;], 3))
+print(&quot;CV AP:&quot;, np.round(cv[&quot;test_average_precision&quot;], 3))
+pipe.fit(Xdev, ydev)
+score = pipe.predict_proba(Xtest)[:, 1]
+pred = (score &gt;= 0.5).astype(int)
+cm = confusion_matrix(ytest, pred, labels=[0, 1])
+print(&quot;test confusion rows true[0,1], cols pred[0,1]:&quot;, cm.tolist())
+print(&quot;test ROC AUC:&quot;, roc_auc_score(ytest, score))
+print(&quot;test AP:&quot;, average_precision_score(ytest, score))
+print(&quot;test precision/recall:&quot;,
+      precision_score(ytest, pred, zero_division=0),
+      recall_score(ytest, pred, zero_division=0))
+assert cm.sum() == len(ytest)
+assert all(len(cv[k]) == 5 for k in [&quot;test_roc_auc&quot;, &quot;test_average_precision&quot;])</code></pre><p>需要 Python 3.10+、NumPy、scikit-learn。小样本下各折置信区间可能较宽，CV 分数也取决于数据生成过程。模型输出 0.8 不一定代表真实事件频率恰好 80%，该问题属于概率校准，将在第 09 章展开。</p></section><section id="sec8" aria-labelledby="title8"><h2 id="title8">08 · 评估审查和来源</h2><p>交付指标前，必须记录正类含义、阈值选择策略、评价对象与数据量、验证切分方式，以及误报和漏报的实际成本；查看是否存在重复实体或数据泄漏。切勿用测试集反复挑模型、挑阈值，最后又宣称这是独立性能。</p><ul class="refs"><li><a href="https://scikit-learn.org/stable/modules/model_evaluation.html">scikit-learn 指标总览</a></li><li><a href="https://scikit-learn.org/stable/modules/generated/sklearn.metrics.average_precision_score.html">Average precision 计算与定义</a></li><li><a href="https://scikit-learn.org/stable/modules/cross_validation.html">交叉验证的设计与陷阱</a></li><li><a href="https://scikit-learn.org/stable/common_pitfalls.html">scikit-learn 数据泄漏</a></li></ul></section><nav class="article-footer" aria-label="章节导航"><a href="06.html">← 上一章</a><a href="../index.html">全部章节</a><a href="08.html">下一章 →</a></nav></article></main></div><footer class="site-footer"><span>机器学习图解教程 · 第 07 章</span><span>概念、计算、实验与限制条件</span></footer></body></html>
