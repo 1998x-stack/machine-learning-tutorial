@@ -1,0 +1,59 @@
+{
+  "chapter": "17",
+  "claims": [
+    {
+      "id": "shap-game-theory",
+      "claim": "SHAP assigns additive feature attributions using Shapley-value properties for individual model predictions.",
+      "kind": "algorithm",
+      "source_url": "https://proceedings.neurips.cc/paper/2017/hash/8a20a8621978632d76c43dfd28b67767-Abstract.html",
+      "locator": "Lundberg & Lee (2017), abstract and method",
+      "status": "verified",
+      "notes": "Attributions depend on the definition of coalition value and missing-feature semantics."
+    },
+    {
+      "id": "shap-additivity",
+      "claim": "For a single output, base value plus SHAP values reconstructs the explained model output up to approximation error.",
+      "kind": "implementation",
+      "source_url": "https://shap.readthedocs.io/en/latest/generated/shap.Explanation.html",
+      "locator": "Explanation additivity relationship",
+      "status": "verified",
+      "notes": "The explained output need not equal predict_proba; output space must be recorded."
+    },
+    {
+      "id": "tree-dependence",
+      "claim": "TreeExplainer exposes interventional and tree-path-dependent feature perturbation assumptions for dependent features.",
+      "kind": "implementation",
+      "source_url": "https://shap.readthedocs.io/en/latest/generated/shap.TreeExplainer.html",
+      "locator": "feature_perturbation parameter",
+      "status": "verified",
+      "notes": "The background dataset and chosen dependence assumption affect attribution."
+    },
+    {
+      "id": "lime-local-surrogate",
+      "claim": "LIME explains a prediction by fitting an interpretable model locally around the instance using proximity-weighted perturbations.",
+      "kind": "algorithm",
+      "source_url": "https://doi.org/10.1145/2939672.2939778",
+      "locator": "Ribeiro et al. (2016), LIME method",
+      "status": "verified",
+      "notes": "The runnable Ridge example is explicitly a simplified LIME-style demonstration, not the original implementation."
+    },
+    {
+      "id": "pdp-ice",
+      "claim": "PDP averages model responses over complement features, while ICE shows per-sample response curves; correlated features can create unrealistic combinations.",
+      "kind": "implementation",
+      "source_url": "https://scikit-learn.org/stable/modules/partial_dependence.html",
+      "locator": "Partial dependence and ICE guide; correlated feature note",
+      "status": "verified",
+      "notes": "These are descriptions of model response, not causal effects."
+    },
+    {
+      "id": "shap-waterfall",
+      "claim": "The displayed SHAP-style waterfall sums a 0.30 baseline and contributions +0.18, -0.10, +0.07 to 0.45.",
+      "kind": "numerical",
+      "source_url": "https://github.com/1998x-stack/machine-learning-tutorial/blob/main/docs/assets/svg/17/shap-waterfall.svg",
+      "locator": "shap-waterfall.svg",
+      "status": "derived",
+      "notes": "Constructed arithmetic example, not a model output."
+    }
+  ]
+}
