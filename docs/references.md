@@ -62,6 +62,7 @@
 | 章节 | 一手/官方来源 | 边界和关键纠错 |
 | --- | --- | --- |
 | 24 | [GAN（Goodfellow et al., 2014）](https://arxiv.org/abs/1406.2661) · [VAE（Kingma & Welling, 2013）](https://arxiv.org/abs/1312.6114) · [DDPM（Ho et al., 2020）](https://arxiv.org/abs/2006.11239) · [Latent Diffusion（Rombach et al., 2021）](https://arxiv.org/abs/2112.10752) · [top-p（Holtzman et al., 2019）](https://arxiv.org/abs/1904.09751) · [GPT-3（Brown et al., 2020）](https://arxiv.org/abs/2005.14165) | 判别式建模 p(y\|x)、生成式建模 p(x)；GAN 极小极大博弈、判别器最优时才等价于最小化 JS 散度、训练不稳与模式坍塌；VAE 最大化的是证据下界而非真似然、重参数化、对角高斯 KL 有闭式解；扩散前向固定、可一步采样任意 t、简化目标为预测噪声的 MSE、潜空间扩散降算量；自回归逐词分解、温度只重塑分布、top-p 阈值动态；不复述二手基准分数 |
+| 25 | [Sutton & Barto, RL: An Introduction（第 2 版）](http://incompleteideas.net/book/the-book-2nd.html) · [DQN（Mnih et al., 2015, Nature）](https://doi.org/10.1038/nature14236) · [Playing Atari with DRL（2013）](https://arxiv.org/abs/1312.5602) · [Double DQN（van Hasselt et al., 2015）](https://arxiv.org/abs/1509.06461) · [PPO（Schulman et al., 2017）](https://arxiv.org/abs/1707.06347) | 监督有标签、RL 只有奖励、数据由行动产生；MDP 马尔可夫假设与折扣 γ；贝尔曼最优方程与 Q-Learning 的 TD 更新、max 使其成为 off-policy；DQN 用神经网络逼近 Q、经验回放打散相关性、目标网络稳定靶子、max 带来过高估计（Double DQN 修正）；策略梯度定理用回报加权 log π、基线降方差；奖励稀疏与 reward hacking；不复述二手基准分数 |
 
 ## 跨批次共用事实约束
 
