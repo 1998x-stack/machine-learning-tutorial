@@ -1,180 +1,45 @@
-<!DOCTYPE html>
-<html lang="zh-CN">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.5, user-scalable=yes">
-    <title>第24章 生成式模型</title>
-    <style>
-        * { margin:0; padding:0; box-sizing:border-box; }
-        body {
-            background: linear-gradient(135deg, #f5f3ff 0%, #e8f5f0 100%);
-            font-family: system-ui, -apple-system, 'Segoe UI', 'PingFang SC', Roboto, 'Helvetica Neue', sans-serif;
-            padding: 20px;
-        }
-        .double-border {
-            max-width: 1400px;
-            margin: 0 auto;
-            background: #ffffff;
-            border: 2px solid #8b5cf6;
-            border-radius: 24px;
-            box-shadow: 0 20px 30px -15px rgba(0,0,0,0.2), inset 0 1px 0 0 #f5f3ff;
-            overflow: hidden;
-        }
-        .container { display: grid; grid-template-columns: 260px 1fr; gap: 0; }
-        .sidebar {
-            background: #faf8ff; border-right: 2px solid #c4b5fd; padding: 24px 16px;
-        }
-        .sidebar h3 { font-size: 1.4rem; color: #6d28d9; border-left: 5px solid #8b5cf6; padding-left: 15px; margin-bottom: 25px; }
-        .chapter-list { list-style: none; }
-        .chapter-list li { margin-bottom: 6px; }
-        .chapter-list a {
-            display: block; padding: 8px 12px; text-decoration: none;
-            color: #334155; border-radius: 12px; transition: all 0.2s;
-            font-weight: 500; font-size: 0.92rem;
-        }
-        .chapter-list a:hover { background: #ede9fe; transform: translateX(3px); }
-        .chapter-list .active { background: #7c3aed; color: white; box-shadow: 0 2px 5px rgba(124,58,237,0.3); }
-        .main-content { padding: 30px 35px; background: white; }
-        .footer-nav {
-            margin-top: 45px; padding-top: 20px; border-top: 2px solid #c4b5fd;
-            display: flex; justify-content: space-between;
-        }
-        .footer-nav a {
-            padding: 8px 24px; background: #f1f5f9; text-decoration: none;
-            color: #5b21b6; border-radius: 40px; font-weight: 500; transition: 0.2s;
-        }
-        .footer-nav a:hover { background: #ede9fe; transform: translateY(-2px); }
-        h2 { color: #4c1d95; border-left: 6px solid #8b5cf6; padding-left: 15px; margin: 20px 0 15px; font-size: 1.5rem; }
-        h3 { color: #5b21b6; margin: 20px 0 10px; font-size: 1.2rem; }
-        h4 { color: #6d28d9; margin: 15px 0 8px; font-size: 1.05rem; }
-        p { line-height: 1.85; margin: 10px 0; color: #1e293b; }
-        ul, ol { margin: 10px 0 10px 20px; line-height: 1.8; }
-        li { color: #1e293b; margin-bottom: 4px; }
-        pre { background: #1e1035; color: #e8e8f0; padding: 15px; border-radius: 12px; overflow-x: auto; font-family: 'JetBrains Mono', 'Fira Code', monospace; margin: 15px 0; font-size: 0.9rem; line-height: 1.5; }
-        code { background: #f5f3ff; padding: 2px 6px; border-radius: 4px; font-family: 'JetBrains Mono', monospace; font-size: 0.85em; }
-        pre code { background: none; padding: 0; }
-        table { width: 100%; border-collapse: collapse; margin: 15px 0; background: #fafafe; }
-        th, td { border: 1px solid #c4b5fd; padding: 10px; text-align: left; }
-        th { background: #f5f3ff; color: #5b21b6; font-weight: 600; }
-        .tip, .warning, .highlight { padding: 12px 18px; border-radius: 16px; margin: 15px 0; line-height: 1.7; }
-        .tip { background: #e0f2fe; border-left: 6px solid #0ea5e9; }
-        .warning { background: #fee2e2; border-left: 6px solid #ef4444; }
-        .highlight { background: #fef9c3; border: 1px solid #facc15; }
-        strong { color: #1e1b4b; }
-        @media (max-width: 768px) {
-            .container { grid-template-columns: 1fr; }
-            .sidebar { border-right: none; border-bottom: 2px solid #c4b5fd; }
-            body { padding: 10px; }
-            .main-content { padding: 20px; }
-        }
-    </style>
-    <link rel="stylesheet" href="theme.css">
-</head>
-<body>
-<div class="double-border">
-<div class="container">
-    <div class="sidebar">
-        <h3>🤖 课程目录</h3>
-        <ul class="chapter-list">
-            <li><a href="01.html">第1章 机器学习概述</a></li>
-            <li><a href="02.html">第2章 数学基础：线性代数</a></li>
-            <li><a href="03.html">第3章 数学基础：概率统计</a></li>
-            <li><a href="04.html">第4章 数学基础：优化理论</a></li>
-            <li><a href="05.html">第5章 数据预处理与探索</a></li>
-            <li><a href="06.html">第6章 第一个ML项目实战</a></li>
-            <li><a href="07.html">第7章 模型评估与选择</a></li>
-            <li><a href="08.html">第8章 线性回归与正则化</a></li>
-            <li><a href="09.html">第9章 逻辑回归与分类</a></li>
-            <li><a href="10.html">第10章 决策树与随机森林</a></li>
-            <li><a href="11.html">第11章 支持向量机 SVM</a></li>
-            <li><a href="12.html">第12章 朴素贝叶斯与KNN</a></li>
-            <li><a href="13.html">第13章 聚类算法</a></li>
-            <li><a href="14.html">第14章 降维与特征工程</a></li>
-            <li><a href="15.html">第15章 模型调参与AutoML</a></li>
-            <li><a href="16.html">第16章 处理不平衡数据</a></li>
-            <li><a href="17.html">第17章 模型可解释性</a></li>
-            <li><a href="18.html">第18章 ML系统工程化</a></li>
-            <li><a href="19.html">第19章 神经网络基础</a></li>
-            <li><a href="20.html">第20章 深度学习框架实战</a></li>
-            <li><a href="21.html">第21章 CNN卷积神经网络</a></li>
-            <li><a href="22.html">第22章 RNN与序列模型</a></li>
-            <li><a href="23.html">第23章 NLP自然语言处理</a></li>
-            <li><a href="24.html" class="active">第24章 生成式模型</a></li>
-            <li><a href="25.html">第25章 强化学习入门</a></li>
-            <li><a href="26.html">第26章 大语言模型与RAG</a></li>
-            <li><a href="27.html">第27章 模型部署与服务化</a></li>
-            <li><a href="28.html">第28章 毕业项目：端到端ML系统</a></li>
-        </ul>
-    </div>
-    <div class="main-content">
-        <h2>24.1 从"识别"到"创造"</h2>
-        <p>前面学的所有模型都是<strong>判别式模型</strong>——给定输入X，预测标签Y（P(Y|X)）。判别式模型关心的是"边界在哪里"。而生成式模型关心的是"数据是什么样的"——它学习数据本身的联合分布P(X,Y)或P(X)，从而能够<strong>生成新的、合理的样本</strong>。</p>
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="description" content="生成式模型不学决策边界，而是学数据本身的分布。本章从判别式与生成式的分工出发，讲清 GAN 的对抗目标、VAE 的证据下界、扩散模型的前向加噪与反向去噪，以及自回归采样的温度与 top-p。"><title>生成式模型：从对抗到扩散与自回归 · 机器学习图解教程</title><link rel="stylesheet" href="../assets/css/article.css"></head><body class="article-page"><a class="skip-link" href="#content">跳转至正文</a><header class="site-header"><div class="header-inner"><a class="wordmark" href="../index.html"><span class="mark">M<span>·</span>L</span><span>机器学习图解教程<small>Machine Learning, Explained</small></span></a><nav aria-label="顶部导航"><a href="../index.html">课程目录</a><a href="https://github.com/1998x-stack/machine-learning-tutorial">GitHub</a></nav></div></header><div class="article-shell"><aside class="article-nav"><nav aria-label="文章目录"><details open><summary>本章目录</summary><div class="nav-items"><a href="../index.html">← 全部章节</a><a href="#sec1">判别式与生成式的分工</a><a href="#sec2">GAN：两个网络的对弈</a><a href="#sec3">VAE：证据下界与潜在空间</a><a href="#sec4">扩散模型：前向加噪，反向去噪</a><a href="#sec5">自回归生成：温度与 top-p</a><a href="#sec6">三种范式怎么选</a><a href="#sec7">离线实验：核对采样与分布</a><a href="#sec8">来源、版本与验收界限</a></div></details></nav></aside><main class="article-main" id="content"><article><div class="breadcrumb"><a href="../index.html">课程目录</a><span>/</span><span>第 24 章</span></div><header class="article-header"><div class="chapter-number">CHAPTER 24 / 28</div><h1>生成式模型：从对抗到扩散与自回归</h1><p class="dek">生成式模型不学决策边界，而是学数据本身的分布，从而能采样出新的样本。本章比较三条主流路线：对抗、变分与扩散，并说明自回归语言模型如何逐词生成。</p><div class="lead-question">一个模型没有见过某张猫的图，它凭什么能画出一只从没存在过、却像真猫的猫？</div></header>
+<section id="sec1" aria-labelledby="title1"><h2 id="title1">01 · 判别式与生成式的分工</h2><p>前面二十几章的模型大多是<strong>判别式</strong>的：给定输入 <math class="math-inline" aria-label="x"><mi>x</mi></math>，输出标签 <math class="math-inline" aria-label="y"><mi>y</mi></math>，也就是建模条件分布 <math class="math-inline" aria-label="给定 x 的 y 条件概率"><mi>p</mi><mo>(</mo><mi>y</mi><mo>|</mo><mi>x</mi><mo>)</mo></math>。它们回答的问题是“边界在哪里”。一只训练好的猫狗分类器能把图片判成“猫”，但它画不出一只猫——因为它从一开始就没学过像素长什么样。</p><p><strong>生成式</strong>模型反过来，直接对数据本身建模：要么学联合分布 <math class="math-inline" aria-label="x 与 y 的联合概率"><mi>p</mi><mo>(</mo><mi>x</mi><mo>,</mo><mi>y</mi><mo>)</mo></math>，要么学无标签的 <math class="math-inline" aria-label="x 的边缘概率"><mi>p</mi><mo>(</mo><mi>x</mi><mo>)</mo></math>。学到一个可采样的 <math class="math-inline" aria-label="x 的概率密度"><mi>p</mi><mo>(</mo><mi>x</mi><mo>)</mo></math> 之后，我们就能做到判别式模型做不到的三件事：从分布里<strong>采样</strong>出新样本；用密度判断某个样本是否“正常”（异常检测）；以及在缺失部分维度时补全它（条件采样）。</p><p>本章的主线，是想清一个问题：<em>怎样让一个网络学会表达“什么样的猫看起来是真的”</em>。下面三条路线（对抗、变分、扩散）给出的答案完全不同，但都要解决同一个难点——数据的高维分布无法直接写下解析式。</p></section>
+<section id="sec2" aria-labelledby="title2"><h2 id="title2">02 · GAN：两个网络的对弈</h2><p>Goodfellow 等人在 2014 年提出生成对抗网络（GAN）：不直接写出数据的密度，而是让两个网络互相较量。<strong>生成器</strong> <math class="math-inline" aria-label="G"><mi>G</mi></math> 吃一个低维噪声 <math class="math-inline" aria-label="z"><mi>z</mi></math>，输出一个假样本 <math class="math-inline" aria-label="G(z)"><mi>G</mi><mo>(</mo><mi>z</mi><mo>)</mo></math>；<strong>判别器</strong> <math class="math-inline" aria-label="D"><mi>D</mi></math> 吃一个样本，输出它是“真实”的概率。生成器想骗过判别器，判别器想识破生成器。</p><p>把它写成一个目标函数就是下面的极小极大博弈：判别器 <math class="math-inline" aria-label="D"><mi>D</mi></math> 最大化对真假样本的判别对数似然，生成器 <math class="math-inline" aria-label="G"><mi>G</mi></math> 同时最小化它。</p><div class="eq eq-scroll" role="region" tabindex="0" aria-label="GAN 的极小极大目标：判别器最大化、生成器最小化真假样本的对数似然"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block" aria-label="G 最小化、D 最大化：真实样本 log D 与噪音样本 log(1 减 D(G(z))) 之和的期望"><mrow><munder><mi>min</mi><mi>G</mi></munder><munder><mi>max</mi><mi>D</mi></munder><mi>V</mi><mo>(</mo><mi>D</mi><mo>,</mo><mi>G</mi><mo>)</mo><mo>=</mo><msub><mi>𝔼</mi><mrow><mi>x</mi><mo>∼</mo><msub><mi>p</mi><mtext>data</mtext></msub></mrow></msub><mo>[</mo><mi>log</mi><mi>D</mi><mo>(</mo><mi>x</mi><mo>)</mo><mo>]</mo><mo>+</mo><msub><mi>𝔼</mi><mrow><mi>z</mi><mo>∼</mo><msub><mi>p</mi><mi>z</mi></msub></mrow></msub><mo>[</mo><mi>log</mi><mo>(</mo><mn>1</mn><mo>−</mo><mi>D</mi><mo>(</mo><mi>G</mi><mo>(</mo><mi>z</mi><mo>)</mo><mo>)</mo><mo>)</mo><mo>]</mo></mrow></math></div><figure id="fig-gan"><div class="figure-scroll"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 330" role="img" aria-labelledby="t24a d24a"><title id="t24a">GAN 的生成器与判别器对抗循环</title><desc id="d24a">噪声 z 经生成器 G 变成假样本；判别器 D 同时接收真样本 x 与假样本，输出其为真的概率；据此反向更新 G 使其更难被识破、更新 D 使其判别更准。</desc><rect x="1" y="1" width="998" height="328" rx="18" fill="#fffdf9" stroke="#d8e2d9"/><defs><marker id="ar24a" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto"><path d="M1 1 L7 4 L1 7" fill="none" stroke="#57706c" stroke-width="1.6"/></marker><marker id="ar24b" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto"><path d="M1 1 L7 4 L1 7" fill="none" stroke="#c4774b" stroke-width="1.6"/></marker></defs><g font-family="system-ui,'PingFang SC','Microsoft YaHei',sans-serif"><text x="40" y="45" font-size="22" fill="#213a37" font-weight="760">生成器造假，判别器验真</text><rect x="60" y="120" width="110" height="56" rx="8" fill="#efeaf7" stroke="#7863b0"/><text x="115" y="146" font-size="13" fill="#66529e" text-anchor="middle">噪声 z</text><text x="115" y="164" font-size="11.5" fill="#8a7db5" text-anchor="middle">z ∼ p_z</text><path d="M170 148 H206" fill="none" stroke="#57706c" stroke-width="1.6" marker-end="url(#ar24a)"/><rect x="210" y="120" width="120" height="56" rx="8" fill="#f7e9e2" stroke="#c4774b"/><text x="270" y="146" font-size="13" fill="#b5673f" text-anchor="middle">生成器 G</text><text x="270" y="164" font-size="11.5" fill="#c58a6f" text-anchor="middle">θ_g 待学</text><path d="M330 148 H376" fill="none" stroke="#57706c" stroke-width="1.6" marker-end="url(#ar24a)"/><rect x="380" y="120" width="120" height="56" rx="8" fill="#e7f3ef" stroke="#147b70"/><text x="440" y="146" font-size="13" fill="#147b70" text-anchor="middle">假样本 x̃</text><text x="440" y="164" font-size="11.5" fill="#4f8f88" text-anchor="middle">G(z)</text><rect x="380" y="228" width="120" height="56" rx="8" fill="#f3f7f3" stroke="#304442"/><text x="440" y="254" font-size="13" fill="#304442" text-anchor="middle">真实 x</text><text x="440" y="272" font-size="11.5" fill="#57706c" text-anchor="middle">x ∼ p_data</text><path d="M500 150 C528 152 536 166 556 176" fill="none" stroke="#57706c" stroke-width="1.6" marker-end="url(#ar24a)"/><path d="M500 254 C528 252 536 222 556 208" fill="none" stroke="#57706c" stroke-width="1.6" marker-end="url(#ar24a)"/><rect x="560" y="162" width="130" height="64" rx="8" fill="#efeaf7" stroke="#7863b0"/><text x="625" y="190" font-size="13" fill="#66529e" text-anchor="middle">判别器 D</text><text x="625" y="208" font-size="11.5" fill="#8a7db5" text-anchor="middle">θ_d 待学</text><path d="M690 194 H756" fill="none" stroke="#57706c" stroke-width="1.6" marker-end="url(#ar24a)"/><rect x="760" y="162" width="190" height="64" rx="8" fill="#fff7ec" stroke="#c4774b"/><text x="855" y="190" font-size="13" fill="#b5673f" text-anchor="middle">P(真) = D(·)</text><text x="855" y="208" font-size="11.5" fill="#c58a6f" text-anchor="middle">越接近 1 越像真</text><path d="M855 226 C855 292 300 300 270 180" fill="none" stroke="#c4774b" stroke-width="1.6" stroke-dasharray="6 5" marker-end="url(#ar24b)"/><text x="520" y="300" font-size="12.5" fill="#b5673f" text-anchor="middle">回传梯度：G 学着骗过 D，D 学着识破 G</text><text x="40" y="322" font-size="12.5" fill="#57706c">教学示意：箭头表示训练信号的流向，不含具体网络结构。</text></g></svg></div><figcaption>生成器把噪声映射成假样本，判别器同时评估真假样本；两者的梯度相互塑造，构成一个极小极大博弈。图为机制示意。</figcaption></figure>，生成器的目标等价于最小化真实分布与生成分布之间的 Jensen–Shannon 散度。但实践中的两点代价很明显：第一，训练是<strong>不稳定</strong>的，两个网络必须保持势均力敌，判别器太强会让生成器梯度消失，太弱又给不出有用信号；第二，容易<strong>模式坍塌</strong>——生成器找到少数几个能骗过判别器的样本后，无论输入什么噪声都生成相似的结果，丢掉了数据的多样性。</p><p>需要把“理论推导”和“工程实践”分开看：JS 散度的结论建立在判别器最优的假设上，而实际训练中判别器从来不会恰好最优，这正是 GAN 难调的根本原因之一。</p></section>
+<section id="sec3" aria-labelledby="title3"><h2 id="title3">03 · VAE：证据下界与潜在空间</h2><p>变分自编码器（VAE）用完全不同的思路：不做对抗，而是学一个从简单分布到数据分布的映射。它的网络结构像一个菱形——<strong>编码器</strong>把输入 <math class="math-inline" aria-label="x"><mi>x</mi></math> 压缩成一个潜在<strong>分布</strong>（输出均值 <math class="math-inline" aria-label="mu"><mi>μ</mi></math> 和方差 <math class="math-inline" aria-label="sigma 平方"><msup><mi>σ</mi><mn>2</mn></msup></math>，而不是一个固定向量），从中采样一个潜在向量 <math class="math-inline" aria-label="z"><mi>z</mi></math>，再由<strong>解码器</strong>重建输入。</p><figure id="fig-vae"><div class="figure-scroll"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 350" role="img" aria-labelledby="t24b d24b"><title id="t24b">VAE 的编码、重参数采样与解码流程</title><desc id="d24b">输入 x 经编码器得到均值 μ 和方差 σ²；外部噪声 ε 与它们组合得到潜在向量 z = μ + σ⊙ε；解码器由 z 重建 x̂。同时 KL 项把潜在分布拉向标准正态先验。</desc><rect x="1" y="1" width="998" height="348" rx="18" fill="#fffdf9" stroke="#d8e2d9"/><defs><marker id="ar24c" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto"><path d="M1 1 L7 4 L1 7" fill="none" stroke="#57706c" stroke-width="1.6"/></marker><marker id="ar24d" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto"><path d="M1 1 L7 4 L1 7" fill="none" stroke="#7863b0" stroke-width="1.6"/></marker></defs><g font-family="system-ui,'PingFang SC','Microsoft YaHei',sans-serif"><text x="40" y="45" font-size="22" fill="#213a37" font-weight="760">编码出一个分布，再从中采样</text><rect x="46" y="140" width="92" height="54" rx="8" fill="#e7f3ef" stroke="#147b70"/><text x="92" y="172" font-size="13" fill="#147b70" text-anchor="middle">输入 x</text><path d="M138 167 H166" fill="none" stroke="#57706c" stroke-width="1.6" marker-end="url(#ar24c)"/><rect x="170" y="140" width="130" height="54" rx="8" fill="#f7e9e2" stroke="#c4774b"/><text x="235" y="166" font-size="13" fill="#b5673f" text-anchor="middle">编码器 q(z|x)</text><text x="235" y="184" font-size="11" fill="#c58a6f" text-anchor="middle">输出 μ, log σ²</text><path d="M300 160 C315 154 322 148 330 140" fill="none" stroke="#57706c" stroke-width="1.6" marker-end="url(#ar24c)"/><path d="M300 174 C315 180 322 190 330 196" fill="none" stroke="#57706c" stroke-width="1.6" marker-end="url(#ar24c)"/><rect x="332" y="118" width="92" height="40" rx="8" fill="#efeaf7" stroke="#7863b0"/><text x="378" y="144" font-size="12.5" fill="#66529e" text-anchor="middle">均值 μ</text><rect x="332" y="194" width="92" height="40" rx="8" fill="#efeaf7" stroke="#7863b0"/><text x="378" y="220" font-size="12.5" fill="#66529e" text-anchor="middle">方差 σ²</text><path d="M424 138 C444 146 452 154 468 160" fill="none" stroke="#57706c" stroke-width="1.6" marker-end="url(#ar24c)"/><path d="M424 214 C444 206 452 186 468 176" fill="none" stroke="#57706c" stroke-width="1.6" marker-end="url(#ar24c)"/><rect x="470" y="140" width="100" height="54" rx="8" fill="#efeaf7" stroke="#7863b0"/><text x="520" y="166" font-size="13" fill="#66529e" text-anchor="middle">潜在 z</text><text x="520" y="184" font-size="11" fill="#8a7db5" text-anchor="middle">z = μ + σ ⊙ ε</text><rect x="470" y="48" width="110" height="42" rx="8" fill="#f3f7f3" stroke="#57706c" stroke-dasharray="5 4"/><text x="525" y="74" font-size="12.5" fill="#57706c" text-anchor="middle">噪声 ε ∼ 𝒩(0,I)</text><path d="M525 90 V136" fill="none" stroke="#57706c" stroke-width="1.6" marker-end="url(#ar24c)"/><path d="M570 167 H596" fill="none" stroke="#57706c" stroke-width="1.6" marker-end="url(#ar24c)"/><rect x="600" y="140" width="130" height="54" rx="8" fill="#f7e9e2" stroke="#c4774b"/><text x="665" y="166" font-size="13" fill="#b5673f" text-anchor="middle">解码器 p(x|z)</text><text x="665" y="184" font-size="11" fill="#c58a6f" text-anchor="middle">重建网络</text><path d="M730 167 H756" fill="none" stroke="#57706c" stroke-width="1.6" marker-end="url(#ar24c)"/><rect x="760" y="140" width="100" height="54" rx="8" fill="#e7f3ef" stroke="#147b70"/><text x="810" y="172" font-size="13" fill="#147b70" text-anchor="middle">重建 x̂</text><rect x="470" y="264" width="150" height="46" rx="8" fill="#f3f7f3" stroke="#57706c"/><text x="545" y="292" font-size="12.5" fill="#57706c" text-anchor="middle">先验 𝒩(0,I)</text><path d="M540 196 C556 232 552 250 545 260" fill="none" stroke="#7863b0" stroke-width="1.6" stroke-dasharray="6 5" marker-end="url(#ar24d)"/><text x="660" y="290" font-size="12.5" fill="#66529e" text-anchor="middle">KL 项：把编码分布拉向先验</text><text x="40" y="336" font-size="12.5" fill="#57706c">教学示意：μ、σ² 为向量，图中以单个框表示。</text></g></svg></div><figcaption>编码器输出均值与方差而非固定向量；重参数化把随机性拆到噪声 ε 上，使梯度可回传。KL 项约束潜在分布靠近标准正态，从而得到平滑可插值的潜在空间。图为机制示意。</figcaption></figure><p>直接最大化对数似然 <math class="math-inline" aria-label="log p(x)"><mi>log</mi><mi>p</mi><mo>(</mo><mi>x</mi><mo>)</mo></math> 无法计算（要对所有 <math class="math-inline" aria-label="z"><mi>z</mi></math> 积分），VAE 转而最大化它的一个下界，即证据下界（ELBO）：</p><div class="eq eq-scroll" role="region" tabindex="0" aria-label="ELBO：重建项减去变分分布与先验的 KL 散度"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block" aria-label="L 等于 q(z|x) 下 log p(x|z) 的期望减去 q(z|x) 与先验 p(z) 的 KL 散度"><mrow><mi>L</mi><mo>=</mo><msub><mi>𝔼</mi><mrow><mi>q</mi><mo>(</mo><mi>z</mi><mo>|</mo><mi>x</mi><mo>)</mo></mrow></msub><mo>[</mo><mi>log</mi><mi>p</mi><mo>(</mo><mi>x</mi><mo>|</mo><mi>z</mi><mo>)</mo><mo>]</mo><mo>−</mo><msub><mi>D</mi><mtext>KL</mtext></msub><mo>(</mo><mi>q</mi><mo>(</mo><mi>z</mi><mo>|</mo><mi>x</mi><mo>)</mo><mo>‖</mo><mi>p</mi><mo>(</mo><mi>z</mi><mo>)</mo><mo>)</mo></mrow></math></div><p>第一项是<strong>重建项</strong>（解码出来像不像原图），第二项是<strong>正则项</strong>：要求编码出来的分布靠近标准正态先验 <math class="math-inline" aria-label="标准正态先验"><mi>p</mi><mo>(</mo><mi>z</mi><mo>)</mo><mo>=</mo><mi>𝒩</mi><mo>(</mo><mn>0</mn><mo>,</mo><mi>I</mi><mo>)</mo></math>。当 <math class="math-inline" aria-label="q"><mi>q</mi></math> 和先验都是对角高斯时，这项有闭式解：</p><div class="eq eq-scroll" role="region" tabindex="0" aria-label="对角高斯下 KL 散度的闭式解"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block" aria-label="KL 等于负二分之一乘以 j 求和，1 加 log σ_j 平方减 μ_j 平方减 σ_j 平方"><mrow><msub><mi>D</mi><mtext>KL</mtext></msub><mo>=</mo><mo>−</mo><mfrac><mn>1</mn><mn>2</mn></mfrac><munder><mo>∑</mo><mi>j</mi></munder><mrow><mo>(</mo><mn>1</mn><mo>+</mo><mi>log</mi><msubsup><mi>σ</mi><mi>j</mi><mn>2</mn></msubsup><mo>−</mo><msubsup><mi>μ</mi><mi>j</mi><mn>2</mn></msubsup><mo>−</mo><msubsup><mi>σ</mi><mi>j</mi><mn>2</mn></msubsup><mo>)</mo></mrow></mrow></math></div><p>为了让梯度能穿过采样步骤，VAE 用<strong>重参数化</strong>：把随机性挪到外部噪声上，<math class="math-inline" aria-label="z 等于 mu 加 sigma 乘 epsilon"><mi>z</mi><mo>=</mo><mi>μ</mi><mo>+</mo><mi>σ</mi><mo>⊙</mo><mi>ε</mi></math>，其中 <math class="math-inline" aria-label="epsilon 标准正态"><mi>ε</mi><mo>∼</mo><mi>𝒩</mi><mo>(</mo><mn>0</mn><mo>,</mo><mi>I</mi><mo>)</mo></math>。这样 <math class="math-inline" aria-label="mu"><mi>μ</mi></math>、<math class="math-inline" aria-label="sigma"><mi>σ</mi></math> 就变成可求导的确定性函数了。</p><p>正则项带来一个直接的好处：潜在空间是连续且平滑的，两个相近的 <math class="math-inline" aria-label="z"><mi>z</mi></math> 解码出相近的结果，因此在两个样本的 <math class="math-inline" aria-label="z"><mi>z</mi></math> 之间插值就能得到平滑过渡的中间样本——这是 VAE 相对 GAN 的标志性能力。</p></section>
+<section id="sec4" aria-labelledby="title4"><h2 id="title4">04 · 扩散模型：前向加噪，反向去噪</h2><p>扩散模型（Diffusion Model）把思想反过来：不从随机噪声一步跨越到样本，而是把“加噪”与“去噪”拆成很多小步。前向过程是一条固定的马尔可夫链，逐步给真实图片加高斯噪声，直到它变成几乎纯噪声；反向过程则训练一个网络，学会逐步去噪。</p><p>前向过程每步定义为 <math class="math-inline" aria-label="前向转移分布"><mi>q</mi><mo>(</mo><msub><mi>x</mi><mi>t</mi></msub><mo>|</mo><msub><mi>x</mi><mrow><mi>t</mi><mo>−</mo><mn>1</mn></mrow></msub><mo>)</mo><mo>=</mo><mi>𝒩</mi><mo>(</mo><msqrt><mn>1</mn><mo>−</mo><msub><mi>β</mi><mi>t</mi></msub></msqrt><msub><mi>x</mi><mrow><mi>t</mi><mo>−</mo><mn>1</mn></mrow></msub><mo>,</mo><msub><mi>β</mi><mi>t</mi></msub><mi>I</mi><mo>)</mo></math>。这个定义有个漂亮的性质：可以一步直接从 <math class="math-inline" aria-label="x 零"><msub><mi>x</mi><mn>0</mn></msub></math> 算出任意时刻的 <math class="math-inline" aria-label="x t"><msub><mi>x</mi><mi>t</mi></msub></math>，无需反复迭代：</p><div class="eq eq-scroll" role="region" tabindex="0" aria-label="扩散前向过程的闭式重参数化"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block" aria-label="x_t 等于根号 ᾱ_t 乘 x_0 加根号 1 减 ᾱ_t 乘噪声 epsilon"><mrow><msub><mi>x</mi><mi>t</mi></msub><mo>=</mo><msqrt><msub><mover><mi>α</mi><mo>¯</mo></mover><mi>t</mi></msqrt><msub><mi>x</mi><mn>0</mn></msub><mo>+</mo><msqrt><mn>1</mn><mo>−</mo><msub><mover><mi>α</mi><mo>¯</mo></mover><mi>t</mi></msub></msqrt><mi>ε</mi><mo>,</mo><mspace width="1em"/><mi>ε</mi><mo>∼</mo><mi>𝒩</mi><mo>(</mo><mn>0</mn><mo>,</mo><mi>I</mi><mo>)</mo></mrow></math></div><p>其中 <math class="math-inline" aria-label="alpha bar t"><msub><mover><mi>α</mi><mo>¯</mo></mover><mi>t</mi></msub></math> 是前 <math class="math-inline" aria-label="t"><mi>t</mi></math> 步各 <math class="math-inline" aria-label="1 减 beta"><mn>1</mn><mo>−</mo><msub><mi>β</mi><mi>s</mi></msub></math> 的累乘（记为 <math class="math-inline" aria-label="alpha bar t 等于连乘 1 减 beta"><msub><mover><mi>α</mi><mo>¯</mo></mover><mi>t</mi></msub><mo>=</mo><munderover><mo>∏</mo><mrow><mi>s</mi><mo>=</mo><mn>1</mn></mrow><mi>t</mi></munderover><mo>(</mo><mn>1</mn><mo>−</mo><msub><mi>β</mi><mi>s</mi></msub><mo>)</mo></math>）。有了这个闭式解，训练就变得出奇简单：随机取一个时刻 <math class="math-inline" aria-label="t"><mi>t</mi></math>、一个噪声 <math class="math-inline" aria-label="epsilon"><mi>ε</mi></math>，让网络预测被加进去的噪声，最小化均方误差：</p><div class="eq eq-scroll" role="region" tabindex="0" aria-label="扩散模型的简化训练目标"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block" aria-label="L 等于对 t、x_0、epsilon 求期望，epsilon 减预测噪声的二范数平方"><mrow><msub><mi>L</mi><mtext>simple</mtext></msub><mo>=</mo><msub><mi>𝔼</mi><mrow><mi>t</mi><mo>,</mo><msub><mi>x</mi><mn>0</mn></msub><mo>,</mo><mi>ε</mi></mrow></msub><mo>[</mo><msup><mrow><mo>‖</mo><mi>ε</mi><mo>−</mo><msub><mi>ε</mi><mi>θ</mi></msub><mo>(</mo><msub><mi>x</mi><mi>t</mi></msub><mo>,</mo><mi>t</mi><mo>)</mo><mo>‖</mo></mrow><mn>2</mn></msup><mo>]</mo></mrow></math></div><p>一旦学会了“预测噪声”，就能从纯随机噪声出发反向逐步降噪，得到一张全新图片；再把文本编码成条件信号注入网络，就得到文本到图像生成（text-to-image）。原始的 DDPM 需要上千步采样，较慢；Latent Diffusion（如 Stable Diffusion）先用一个自编码器把图片压到低维潜空间，在潜空间里做扩散，大幅降低计算量。Stable Diffusion 各版本的分辨率、文本编码器与训练数据均有差异，具体指标以其官方模型卡为准，本章不复述二手基准。</p><figure id="fig-diffusion"><div class="figure-scroll"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 330" role="img" aria-labelledby="t24c d24c"><title id="t24c">扩散模型的前向加噪与反向去噪阶梯</title><desc id="d24c">上行从左到右是前向过程：清晰图片 x0 逐歩加入高斯噪声变成近纯噪声 x_T；下行从右到左是反向过程：网络从纯噪声开始逐歩预测噪声并去除，重建出图片。</desc><rect x="1" y="1" width="998" height="328" rx="18" fill="#fffdf9" stroke="#d8e2d9"/><defs><marker id="ar24e" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto"><path d="M1 1 L7 4 L1 7" fill="none" stroke="#57706c" stroke-width="1.6"/></marker><marker id="ar24f" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto"><path d="M1 1 L7 4 L1 7" fill="none" stroke="#c4774b" stroke-width="1.6"/></marker></defs><g font-family="system-ui,'PingFang SC','Microsoft YaHei',sans-serif"><text x="40" y="45" font-size="22" fill="#213a37" font-weight="760">前向加噪固定，反向去噪可学</text><text x="60" y="82" font-size="13.5" fill="#147b70" font-weight="720">前向 q：加噪声（固定，无需学习）</text><g stroke="#d8e2d9"><rect x="70" y="98" width="120" height="80" rx="8" fill="#e7f3ef"/><rect x="250" y="98" width="120" height="80" rx="8" fill="#d5ebe4"/><rect x="430" y="98" width="120" height="80" rx="8" fill="#dfe8e4"/><rect x="610" y="98" width="120" height="80" rx="8" fill="#e9edee"/><rect x="790" y="98" width="120" height="80" rx="8" fill="#eef1f2"/></g><g font-size="12" fill="#57706c" text-anchor="middle"><text x="130" y="143">x₀</text><text x="310" y="143">x₁</text><text x="490" y="143">…</text><text x="670" y="143">x_{T−1}</text><text x="850" y="143">x_T</text></g><g fill="#8a9992" text-anchor="middle" font-size="11"><text x="130" y="196">清晰</text><text x="850" y="196">近纯噪声</text></g><g fill="none" stroke="#c4774b" stroke-width="1.8"><path d="M192 138 H246" marker-end="url(#ar24f)"/><path d="M372 138 H426" marker-end="url(#ar24f)"/><path d="M552 138 H606" marker-end="url(#ar24f)"/><path d="M732 138 H786" marker-end="url(#ar24f)"/></g><g font-size="11" fill="#b5673f" text-anchor="middle"><text x="219" y="128">+ε</text><text x="399" y="128">+ε</text><text x="579" y="128">+ε</text><text x="759" y="128">+ε</text></g><text x="60" y="240" font-size="13.5" fill="#7863b0" font-weight="720">反向 p_θ：去噪声（训练网络 ε_θ）</text><g fill="none" stroke="#7863b0" stroke-width="1.8"><path d="M786 288 H732" marker-end="url(#ar24e)"/><path d="M606 288 H552" marker-end="url(#ar24e)"/><path d="M426 288 H372" marker-end="url(#ar24e)"/><path d="M246 288 H192" marker-end="url(#ar24e)"/></g><g font-size="11" fill="#66529e" text-anchor="middle"><text x="759" y="308">去噪</text><text x="579" y="308">去噪</text><text x="399" y="308">去噪</text><text x="219" y="308">去噪</text></g><text x="40" y="322" font-size="12" fill="#57706c">教学示意：方块代表图像在不同噪声水平下的状态。</text></g></svg></div><figcaption>前向过程是固定的加噪链，可一步从 x₀ 跳到任意 x_t；反向过程学习预测被加入的噪声 ε，从纯噪声逐步去噪重建样本。图为机制示意。</figcaption></figure></section>
+<section id="sec5" aria-labelledby="title5"><h2 id="title5">05 · 自回归生成：温度与 top-p</h2><p>语言模型走的是第四条路线：<strong>自回归</strong>。它把一段文本的联合概率拆成一连串条件概率的乘积——每次用已生成的所有词去预测下一个词：</p><div class="eq eq-scroll" role="region" tabindex="0" aria-label="自回归分解：整句概率等于各位置条件概率的乘积"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block" aria-label="p(x) 等于 t 从 1 到 n，p(x_t 给定 x_小于 t) 的连乘"><mrow><mi>p</mi><mo>(</mo><msub><mi>x</mi><mn>1</mn></msub><mo>,</mo><mo>…</mo><mo>,</mo><msub><mi>x</mi><mi>n</mi></msub><mo>)</mo><mo>=</mo><munderover><mo>∏</mo><mrow><mi>t</mi><mo>=</mo><mn>1</mn></mrow><mi>n</mi></munderover><mi>p</mi><mo>(</mo><msub><mi>x</mi><mi>t</mi></msub><mo>|</mo><msub><mi>x</mi><mrow><mo>&lt;</mo><mi>t</mi></mrow></msub><mo>)</mo></mrow></math></div><p>给定上文，网络输出词表上的一整套概率。怎么从这个分布里选下一个词，直接决定了生成结果的风格：<strong>贪心解码</strong>（每次取概率最大的词）最稳但易重复、缺乏变化；<strong>beam search</strong> 维护多条候选路径，适合翻译等有标准答案的任务，但对开放生成容易写出套话；<strong>温度采样</strong>用 <math class="math-inline" aria-label="logits 除以温度"><msub><mi>z</mi><mi>i</mi></msub><mo>/</mo><mi>T</mi></math> 调分布形状，<math class="math-inline" aria-label="T 小于 1"><mi>T</mi><mo>&lt;</mo><mn>1</mn></math> 让分布更尖锐（更确定），<math class="math-inline" aria-label="T 大于 1"><mi>T</mi><mo>&gt;</mo><mn>1</mn></math> 更平坦（更随机）；<strong>top-k / top-p（核采样）</strong>则先截掉一小部分低概率词，再在剩下的词里采样。</p><div class="eq eq-scroll" role="region" tabindex="0" aria-label="带温度的概率：对 logits 除以 T 后做 softmax"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block" aria-label="p_i 等于 exp(z_i/T) 除以对所有 j 的 exp(z_j/T) 求和"><mrow><msub><mi>p</mi><mi>i</mi></msub><mo>=</mo><mfrac><mrow><mi>exp</mi><mo>(</mo><msub><mi>z</mi><mi>i</mi></msub><mo>/</mo><mi>T</mi><mo>)</mo></mrow><mrow><msub><mo>∑</mo><mi>j</mi></msub><mi>exp</mi><mo>(</mo><msub><mi>z</mi><mi>j</mi></msub><mo>/</mo><mi>T</mi><mo>)</mo></mrow></mfrac></mrow></math></div><p>需要区分两个常见误解：<strong>温度并不改变模型学到了什么</strong>，它只是在推理时重塑已算出的分布；<strong>top-p 的截断阈值是动态的</strong>——它从概率最高的词开始累加，直到累计概率超过 <math class="math-inline" aria-label="p"><mi>p</mi></math>（如 0.9），保留下来的词数随每一步分布而变，而 top-k 则固定保留 <math class="math-inline" aria-label="k"><mi>k</mi></math> 个。</p><figure id="fig-ar"><div class="figure-scroll"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 300" role="img" aria-labelledby="t24d d24d"><title id="t24d">自回归生成的逐词预测回路</title><desc id="d24d">已有上文输入语言模型，得到下一个词的概率分布；按温度与 top-p 采样一个词，把它拼回上文，再重复这一过程，直到遇到终止符或达到长度上限。</desc><rect x="1" y="1" width="998" height="298" rx="18" fill="#fffdf9" stroke="#d8e2d9"/><defs><marker id="ar24g" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto"><path d="M1 1 L7 4 L1 7" fill="none" stroke="#57706c" stroke-width="1.6"/></marker><marker id="ar24h" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto"><path d="M1 1 L7 4 L1 7" fill="none" stroke="#c4774b" stroke-width="1.6"/></marker></defs><g font-family="system-ui,'PingFang SC','Microsoft YaHei',sans-serif"><text x="40" y="45" font-size="22" fill="#213a37" font-weight="760">一个词一个词地往前推</text><rect x="70" y="118" width="150" height="60" rx="8" fill="#e7f3ef" stroke="#147b70"/><text x="145" y="144" font-size="13" fill="#147b70" text-anchor="middle">上文 x_{&lt;t}</text><text x="145" y="164" font-size="11" fill="#4f8f88" text-anchor="middle">已生成的词序列</text><path d="M220 148 H286" fill="none" stroke="#57706c" stroke-width="1.6" marker-end="url(#ar24g)"/><rect x="290" y="118" width="150" height="60" rx="8" fill="#f7e9e2" stroke="#c4774b"/><text x="365" y="144" font-size="13" fill="#b5673f" text-anchor="middle">语言模型</text><text x="365" y="164" font-size="11" fill="#c58a6f" text-anchor="middle">输出词表概率 p(·|x_{&lt;t})</text><path d="M440 148 H506" fill="none" stroke="#57706c" stroke-width="1.6" marker-end="url(#ar24g)"/><rect x="510" y="118" width="170" height="60" rx="8" fill="#efeaf7" stroke="#7863b0"/><text x="595" y="144" font-size="13" fill="#66529e" text-anchor="middle">温度 + top-p 采样</text><text x="595" y="164" font-size="11" fill="#8a7db5" text-anchor="middle">得到下一个词 x_t</text><path d="M680 148 H746" fill="none" stroke="#57706c" stroke-width="1.6" marker-end="url(#ar24g)"/><rect x="750" y="118" width="170" height="60" rx="8" fill="#fff7ec" stroke="#c4774b"/><text x="835" y="144" font-size="13" fill="#b5673f" text-anchor="middle">拼回上文</text><text x="835" y="164" font-size="11" fill="#c58a6f" text-anchor="middle">x_{&lt;t+1} = x_{&lt;t} ⊕ x_t</text><path d="M835 178 C835 244 145 250 145 182" fill="none" stroke="#c4774b" stroke-width="1.8" stroke-dasharray="6 5" marker-end="url(#ar24h)"/><text x="490" y="252" font-size="12.5" fill="#b5673f" text-anchor="middle">循环，直到生成终止符或达到长度上限</text><text x="40" y="288" font-size="12.5" fill="#57706c">教学示意：不区分具体解码库实现细节。</text></g></svg></div><figcaption>自回归生成是一个回路：模型用上文算下一个词的概率，采样一个词，拼回上文后再重复。采样策略（贪心、beam、top-p、温度）在此回路中控制多样性与质量。图为机制示意。</figcaption></figure></section>
+<section id="sec6" aria-labelledby="title6"><h2 id="title6">06 · 三种范式怎么选</h2><p>四条路线回答的是同一个问题，但代价与擅长的场景不同。表里把它们的训练目标与典型用法放在一起对比；这里的“典型”是工程经验，不是硬性规则。</p><table><thead><tr><th>路线</th><th>建模目标</th><th>训练信号</th><th>擅长</th><th>主要局限</th></tr></thead><tbody><tr><td>GAN</td><td>隐式分布（只给采样器）</td><td>对抗博弈</td><td>单步快速生成、图像超分辨</td><td>训练不稳定、模式坍塌</td></tr><tr><td>VAE</td><td>带隐变量的显式似然下界</td><td>重建 + KL</td><td>平滑可插值的潜在空间、异常检测</td><td>重建偏模糊、下界不等于真似然</td></tr><tr><td>Diffusion</td><td>隐式分布（学去噪）</td><td>预测噪声的 MSE</td><td>高质量图像生成、条件控制</td><td>采样步数多、推理慢</td></tr><tr><td>自回归</td><td>显式似然（逐词分解）</td><td>下一个词交叉熵</td><td>文本、代码、语音；可算对数似然</td><td>生成长、无法回头修改</td></tr></tbody></table><p>一个常见的误解是“新范式一定全面更好”：Diffusion 在图像质量与多样性上确实普遍超过 GAN，但它并不是万能的——在需要<strong>对数似然</strong>可比较、或只需要一个快速一步生成器的场景，自回归与 GAN 仍有不可替代的位置。选型的起点，永远是任务到底需要“采样质量”、“似然可算”还是“推理速度”。</p></section>
+<section id="sec7" aria-labelledby="title7"><h2 id="title7">07 · 离线实验：核对采样与分布</h2><p>下面的脚本只用 Python 标准库，核对三件事：温度确实在重塑 softmax 的尖锐程度；top-p 只保留累计概率够大的“核心词”；扩散的闭式解里，随噪声水平上升，原图系数 <math class="math-inline" aria-label="根号 alpha bar t"><msqrt><msub><mover><mi>α</mi><mo>¯</mo></mover><mi>t</mi></msub></msqrt></math> 单调下降。可直接运行，无需 NumPy 或 PyTorch。</p><pre><code>import math
 
-        <p>2022年Stable Diffusion和Midjourney让AI绘画引爆全球，2022年末ChatGPT展示了文本生成的能力上限。生成式模型不再是实验室里的玩具，它们正在重塑创意产业、软件开发和科学发现。</p>
+def softmax(zs, T=1.0):
+    scaled = [z / T for z in zs]
+    m = max(scaled)
+    exps = [math.exp(z - m) for z in scaled]
+    s = sum(exps)
+    return [e / s for e in exps]
 
-        <h2>24.2 GAN：两个网络的对弈</h2>
-        <p>GAN（生成对抗网络）可能是深度学习中最有创意的想法。Ian Goodfellow在2014年的酒吧里想到了这个主意：让两个网络互相对抗——<strong>生成器（Generator）</strong>试图伪造逼真的样本，<strong>判别器（Discriminator）</strong>试图区分真假。两者不断升级，最终生成器变得能以假乱真。</p>
+def top_p(probs, p=0.9):
+    order = sorted(range(len(probs)), key=lambda i: probs[i], reverse=True)
+    kept, acc = [], 0.0
+    for i in order:
+        kept.append(i); acc += probs[i]
+        if acc &gt;= p:
+            break
+    return sorted(kept), acc
 
-        <p>这就像一个造假钞的和一个验钞员在博弈——造假钞的技术越来越高明，验钞员的眼睛也越来越挑剔。最终，假钞和真钞难以区分。</p>
+logits = [2.0, 1.5, 0.5, 0.2, -1.0]
+cold = softmax(logits, T=0.5)
+base = softmax(logits, T=1.0)
+hot  = softmax(logits, T=2.0)
+print("T=0.5", [round(x, 4) for x in cold])
+print("T=2.0", [round(x, 4) for x in hot])
+assert max(cold) &gt; max(base) &gt; max(hot)
+kept, acc = top_p(base, 0.9)
+print("top-p kept", kept, "cum", round(acc, 4))
+assert len(kept) &lt; len(base)
 
-        <p>GAN训练的难点：</p>
-        <ul>
-            <li><strong>训练不稳定：</strong>生成器和判别器需要微妙的平衡。如果判别器太强，生成器梯度消失学不到东西。如果生成器太强，判别器被"骗过"，也无法提供有用的反馈信号</li>
-            <li><strong>模式坍塌（Mode Collapse）：</strong>生成器学会了一个"安全"的模式，然后无论什么噪声输入都生成几乎相同的样本</li>
-        </ul>
-
-        <div class="warning">
-            <strong>⚠️ GAN在2026年的地位：</strong>GAN在图像生成领域已经被扩散模型（Diffusion Models）大幅超越。GAN生成的图片在多样性上不如扩散模型，而且训练极其困难。但GAN的思想——两个网络对抗训练——已经渗透到了机器学习的方方面面（如对抗训练、域适应）。G
-        AN是重要的思想遗产，但如果你今天要做一个图像生成项目，应该用Diffusion而不是GAN。
-        </div>
-
-        <h2>24.3 VAE：优雅的数学框架</h2>
-        <p>变分自编码器（VAE）用完全不同的思路做生成。它不是对抗，而是学到一个从简单分布（如标准正态）到数据分布的映射。VAE的核心洞察：</p>
-        <ol>
-            <li><strong>编码器</strong>将输入映射到一个<strong>概率分布</strong>（不是固定向量，而是均值和方差）</li>
-            <li>从该分布采样一个<strong>潜在向量</strong>z</li>
-            <li><strong>解码器</strong>从z重建输入</li>
-        </ol>
-
-        <p>VAE的损失函数有两项：<strong>重建损失</strong>（生成的图像像不像原图）+ <strong>KL散度</strong>（潜在分布是否接近标准正态）。KL项起到正则化作用，保证潜在空间是连续和平滑的——两个相近的z生成相近的输出。这是VAE能"插值"生成平滑过渡的原因。</p>
-
-        <h2>24.4 Diffusion Models：2020年代的王者</h2>
-        <p>扩散模型是目前最强大的图像生成技术，Stable Diffusion、DALL-E 3、Midjourney都建立在此之上。它的核心思想非常优雅：</p>
-
-        <p style="text-align:center; font-size:1.1rem;"><strong>前向过程：逐步给一张真实图片加噪声，直到变成纯噪声</strong></p>
-        <p style="text-align:center; font-size:1.1rem;"><strong>反向过程：训练一个神经网络，学会从噪声中逐步还原出图片</strong></p>
-
-        <p>一旦学会了"去噪"的能力，你就可以从纯随机噪声出发，逐步降噪，生成一张全新的图片。再加一个文本提示控制去噪的方向——就得到了文本到图像生成（Text-to-Image）。</p>
-
-        <table>
-            <tr><th>模型</th><th>核心技术</th><th>特点</th></tr>
-            <tr><td>DDPM</td><td>基础扩散模型</td><td>奠基性工作，但采样慢（需要1000步）</td></tr>
-            <tr><td>Stable Diffusion</td><td>在潜空间做扩散（Latent Diffusion）</td><td>大幅降低计算量，让文生图走向大众</td></tr>
-            <tr><td>DALL-E 3</td><td>扩散 + 强大的文本编码器</td><td>文本理解能力最强</td></tr>
-        </table>
-
-        <div class="highlight">
-            <strong>🔑 为什么Diffusion比GAN好？</strong>(1) 训练稳定——不需要对抗训练，只需最小化一个简单的去噪MSE损失。(2) 覆盖多样性好——不会模式坍塌，能生成数据集中多样的模式。(3) 理论基础优雅——扩散过程可以被理解为学习数据分布的梯度场（score function）。(4) 条件控制灵活——文本、图像、语义图都能自然融入作为条件信号。
-        </div>
-
-        <h2>24.5 自回归生成：GPT的核心</h2>
-        <p>文本生成的主流方式是<strong>自回归</strong>：一个词一个词地预测下一个token。GPT就是这样工作的——给定之前的文本，预测下一个词，然后把这个词加入文本，再预测下下个词。</p>
-
-        <p>自回归生成的关键：</p>
-        <ul>
-            <li><strong>采样策略：</strong>贪心解码（每次选概率最大的）太保守，beam search稍好但容易重复。现代做法用top-p（nucleus）采样或top-k采样，在多样性和质量间平衡</li>
-            <li><strong>温度（Temperature）：</strong>T < 1让分布更尖锐（更确定但更保守），T > 1让分布更平坦（更随机更创意）</li>
-        </ul>
-
-        <p>好了，生成式模型的三大范式（GAN/VAE/Diffusion）就讲到这里。下一章我们进入强化学习——让AI在试错中学习。</p>
-
-        <div class="footer-nav">
-            <a href="23.html">← 上一章</a>
-            <a href="index.html">📖 返回目录</a>
-            <a href="25.html">下一章 →</a>
-        </div>
-    </div>
-</div>
-</div>
-</body>
-</html>
+betas = [0.02 * (i + 1) for i in range(10)]
+ab, coef = 1.0, []
+for b in betas:
+    ab *= (1 - b)
+    coef.append(round(math.sqrt(ab), 4))
+print("sqrt(ab_t)", coef)
+assert coef[0] &gt; coef[-1]</code></pre><p>在本页创作环境中用 Python 3 实际运行，输出为：温度 0.5 时最大概率升到 <code>0.6909</code>（比 T=1 的 <code>0.4891</code> 更尖锐），T=2.0 时降到 <code>0.3471</code>；top-p=0.9 只保留了 4 个词（累计概率 <code>0.9757</code>）；而当 <math class="math-inline" aria-label="beta"><mi>β</mi></math> 从 0.02 递增到 0.2 时，<math class="math-inline" aria-label="根号 alpha bar"><msqrt><mover><mi>α</mi><mo>¯</mo></mover></msqrt></math> 系数从 <code>0.9899</code> 降到 <code>0.5526</code>。这些只是 5 个词、10 步噪声的微小例子，<strong>只用于验证公式的定性行为，不构成对任何真实生成模型的性能结论</strong>。</p></section>
+<section id="sec8" aria-labelledby="title8"><h2 id="title8">08 · 来源、版本与验收界限</h2><p>算法定义以原始论文为准；模型名称与接口属于特定厂商或开源项目，其分辨率、文本编码器与训练数据随版本变化，本章不复述二手基准分数，具体以官方模型卡为准。</p><ul class="refs"><li><a href="https://arxiv.org/abs/1406.2661" rel="noopener noreferrer">Goodfellow et al., Generative Adversarial Nets, 2014</a></li><li><a href="https://arxiv.org/abs/1312.6114" rel="noopener noreferrer">Kingma &amp; Welling, Auto-Encoding Variational Bayes（VAE）, 2013</a></li><li><a href="https://arxiv.org/abs/2006.11239" rel="noopener noreferrer">Ho et al., Denoising Diffusion Probabilistic Models（DDPM）, 2020</a></li><li><a href="https://arxiv.org/abs/2112.10752" rel="noopener noreferrer">Rombach et al., High-Resolution Image Synthesis with Latent Diffusion Models, 2021</a></li><li><a href="https://arxiv.org/abs/1904.09751" rel="noopener noreferrer">Holtzman et al., The Curious Case of Neural Text Degeneration（top-p 采样）, 2019</a></li><li><a href="https://arxiv.org/abs/2005.14165" rel="noopener noreferrer">Brown et al., Language Models are Few-Shot Learners（GPT-3 自回归）, 2020</a></li></ul><p class="note"><strong>验收界限：</strong>GAN、VAE、扩散与自回归四张图均为机制示意，色块与方块不含具体数据；第 07 节脚本仅用标准库，已在本页创作环境运行并给出数值，但不代表真实模型行为；“Diffusion 普遍优于 GAN”是对图像生成的工程经验，非对所有任务成立的普适结论。</p></section>
+<nav class="article-footer" aria-label="章节导航"><a href="23.html">← 上一章</a><a href="../index.html">全部章节</a><a href="25.html">下一章 →</a></nav></article></main></div><footer class="site-footer"><span>机器学习图解教程 · 第 24 章</span><span>从判别边界到生成分布</span></footer></body></html>

@@ -55,6 +55,14 @@
 | 22 | [GRU](https://arxiv.org/abs/1406.1078) · [Seq2Seq](https://arxiv.org/abs/1409.3215) · [Bahdanau 注意力](https://arxiv.org/abs/1409.0473) · [Attention Is All You Need](https://arxiv.org/abs/1706.03762) · [PyTorch LSTM](https://pytorch.org/docs/stable/generated/torch.nn.LSTM.html) · [PyTorch GRU](https://pytorch.org/docs/stable/generated/torch.nn.GRU.html) | RNN 共享权重、梯度易消失/爆炸；LSTM 门控与加法细胞状态；GRU 合并门；Seq2Seq 固定向量的瓶颈；注意力为编码器状态加权和；自注意力并行且路径短；变长需 padding/掩码 |
 | 23 | [Word2Vec](https://arxiv.org/abs/1301.3781) · [Attention Is All You Need](https://arxiv.org/abs/1706.03762) · [BERT](https://arxiv.org/abs/1810.04805) · [RoBERTa](https://arxiv.org/abs/1907.11692) · [Transformers 文档](https://huggingface.co/docs/transformers/index) | one-hot 正交无相似度；静态嵌入一词一向量、多义无法区分；自注意力双向直接连接；1/√d_k 缩放控制 softmax 尖锐度；MLM 训练/推理掩码不一致；NSP 可去掉；编码器理解、解码器生成 |
 
+## 第五批技术核查 · 24–28
+
+以下官方资料核对的是原理、API 与适用条件。本章 SVG 是机制示意或明确声明的人造教学数据，不是实际模型输出或基准曲线。
+
+| 章节 | 一手/官方来源 | 边界和关键纠错 |
+| --- | --- | --- |
+| 24 | [GAN（Goodfellow et al., 2014）](https://arxiv.org/abs/1406.2661) · [VAE（Kingma & Welling, 2013）](https://arxiv.org/abs/1312.6114) · [DDPM（Ho et al., 2020）](https://arxiv.org/abs/2006.11239) · [Latent Diffusion（Rombach et al., 2021）](https://arxiv.org/abs/2112.10752) · [top-p（Holtzman et al., 2019）](https://arxiv.org/abs/1904.09751) · [GPT-3（Brown et al., 2020）](https://arxiv.org/abs/2005.14165) | 判别式建模 p(y\|x)、生成式建模 p(x)；GAN 极小极大博弈、判别器最优时才等价于最小化 JS 散度、训练不稳与模式坍塌；VAE 最大化的是证据下界而非真似然、重参数化、对角高斯 KL 有闭式解；扩散前向固定、可一步采样任意 t、简化目标为预测噪声的 MSE、潜空间扩散降算量；自回归逐词分解、温度只重塑分布、top-p 阈值动态；不复述二手基准分数 |
+
 ## 跨批次共用事实约束
 
 - Docs 是 Pages 唯一构建工件；相对链接不能越过 `docs/`。指向 `examples/` 源码应直接使用 GitHub 仓库的网页 URL。
