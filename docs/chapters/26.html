@@ -1,222 +1,33 @@
-<!DOCTYPE html>
-<html lang="zh-CN">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.5, user-scalable=yes">
-    <title>第26章 大语言模型与RAG</title>
-    <style>
-        * { margin:0; padding:0; box-sizing:border-box; }
-        body {
-            background: linear-gradient(135deg, #f5f3ff 0%, #e8f5f0 100%);
-            font-family: system-ui, -apple-system, 'Segoe UI', 'PingFang SC', Roboto, 'Helvetica Neue', sans-serif;
-            padding: 20px;
-        }
-        .double-border {
-            max-width: 1400px;
-            margin: 0 auto;
-            background: #ffffff;
-            border: 2px solid #8b5cf6;
-            border-radius: 24px;
-            box-shadow: 0 20px 30px -15px rgba(0,0,0,0.2), inset 0 1px 0 0 #f5f3ff;
-            overflow: hidden;
-        }
-        .container { display: grid; grid-template-columns: 260px 1fr; gap: 0; }
-        .sidebar {
-            background: #faf8ff; border-right: 2px solid #c4b5fd; padding: 24px 16px;
-        }
-        .sidebar h3 { font-size: 1.4rem; color: #6d28d9; border-left: 5px solid #8b5cf6; padding-left: 15px; margin-bottom: 25px; }
-        .chapter-list { list-style: none; }
-        .chapter-list li { margin-bottom: 6px; }
-        .chapter-list a {
-            display: block; padding: 8px 12px; text-decoration: none;
-            color: #334155; border-radius: 12px; transition: all 0.2s;
-            font-weight: 500; font-size: 0.92rem;
-        }
-        .chapter-list a:hover { background: #ede9fe; transform: translateX(3px); }
-        .chapter-list .active { background: #7c3aed; color: white; box-shadow: 0 2px 5px rgba(124,58,237,0.3); }
-        .main-content { padding: 30px 35px; background: white; }
-        .footer-nav {
-            margin-top: 45px; padding-top: 20px; border-top: 2px solid #c4b5fd;
-            display: flex; justify-content: space-between;
-        }
-        .footer-nav a {
-            padding: 8px 24px; background: #f1f5f9; text-decoration: none;
-            color: #5b21b6; border-radius: 40px; font-weight: 500; transition: 0.2s;
-        }
-        .footer-nav a:hover { background: #ede9fe; transform: translateY(-2px); }
-        h2 { color: #4c1d95; border-left: 6px solid #8b5cf6; padding-left: 15px; margin: 20px 0 15px; font-size: 1.5rem; }
-        h3 { color: #5b21b6; margin: 20px 0 10px; font-size: 1.2rem; }
-        h4 { color: #6d28d9; margin: 15px 0 8px; font-size: 1.05rem; }
-        p { line-height: 1.85; margin: 10px 0; color: #1e293b; }
-        ul, ol { margin: 10px 0 10px 20px; line-height: 1.8; }
-        li { color: #1e293b; margin-bottom: 4px; }
-        pre { background: #1e1035; color: #e8e8f0; padding: 15px; border-radius: 12px; overflow-x: auto; font-family: 'JetBrains Mono', 'Fira Code', monospace; margin: 15px 0; font-size: 0.9rem; line-height: 1.5; }
-        code { background: #f5f3ff; padding: 2px 6px; border-radius: 4px; font-family: 'JetBrains Mono', monospace; font-size: 0.85em; }
-        pre code { background: none; padding: 0; }
-        table { width: 100%; border-collapse: collapse; margin: 15px 0; background: #fafafe; }
-        th, td { border: 1px solid #c4b5fd; padding: 10px; text-align: left; }
-        th { background: #f5f3ff; color: #5b21b6; font-weight: 600; }
-        .tip, .warning, .highlight { padding: 12px 18px; border-radius: 16px; margin: 15px 0; line-height: 1.7; }
-        .tip { background: #e0f2fe; border-left: 6px solid #0ea5e9; }
-        .warning { background: #fee2e2; border-left: 6px solid #ef4444; }
-        .highlight { background: #fef9c3; border: 1px solid #facc15; }
-        strong { color: #1e1b4b; }
-        @media (max-width: 768px) {
-            .container { grid-template-columns: 1fr; }
-            .sidebar { border-right: none; border-bottom: 2px solid #c4b5fd; }
-            body { padding: 10px; }
-            .main-content { padding: 20px; }
-        }
-    </style>
-    <link rel="stylesheet" href="theme.css">
-</head>
-<body>
-<div class="double-border">
-<div class="container">
-    <div class="sidebar">
-        <h3>🤖 课程目录</h3>
-        <ul class="chapter-list">
-            <li><a href="01.html">第1章 机器学习概述</a></li>
-            <li><a href="02.html">第2章 数学基础：线性代数</a></li>
-            <li><a href="03.html">第3章 数学基础：概率统计</a></li>
-            <li><a href="04.html">第4章 数学基础：优化理论</a></li>
-            <li><a href="05.html">第5章 数据预处理与探索</a></li>
-            <li><a href="06.html">第6章 第一个ML项目实战</a></li>
-            <li><a href="07.html">第7章 模型评估与选择</a></li>
-            <li><a href="08.html">第8章 线性回归与正则化</a></li>
-            <li><a href="09.html">第9章 逻辑回归与分类</a></li>
-            <li><a href="10.html">第10章 决策树与随机森林</a></li>
-            <li><a href="11.html">第11章 支持向量机 SVM</a></li>
-            <li><a href="12.html">第12章 朴素贝叶斯与KNN</a></li>
-            <li><a href="13.html">第13章 聚类算法</a></li>
-            <li><a href="14.html">第14章 降维与特征工程</a></li>
-            <li><a href="15.html">第15章 模型调参与AutoML</a></li>
-            <li><a href="16.html">第16章 处理不平衡数据</a></li>
-            <li><a href="17.html">第17章 模型可解释性</a></li>
-            <li><a href="18.html">第18章 ML系统工程化</a></li>
-            <li><a href="19.html">第19章 神经网络基础</a></li>
-            <li><a href="20.html">第20章 深度学习框架实战</a></li>
-            <li><a href="21.html">第21章 CNN卷积神经网络</a></li>
-            <li><a href="22.html">第22章 RNN与序列模型</a></li>
-            <li><a href="23.html">第23章 NLP自然语言处理</a></li>
-            <li><a href="24.html">第24章 生成式模型</a></li>
-            <li><a href="25.html">第25章 强化学习入门</a></li>
-            <li><a href="26.html" class="active">第26章 大语言模型与RAG</a></li>
-            <li><a href="27.html">第27章 模型部署与服务化</a></li>
-            <li><a href="28.html">第28章 毕业项目：端到端ML系统</a></li>
-        </ul>
-    </div>
-    <div class="main-content">
-        <h2>26.1 LLM：2020年代最大的技术浪潮</h2>
-        <p>2022年11月ChatGPT发布，两个月内用户突破1亿——成为历史上增长最快的消费产品。这不仅仅是又一个AI模型，而是一个时代的转折点。GPT-4、Claude、Gemini、LLaMA、Qwen——这些大语言模型（LLM）正在重塑软件开发、内容创作、客户服务和科学研究的每一个角落。</p>
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="description" content="大语言模型的本质是一个被放大到极致的下一个词预测器。本章讲清解码器自回归的原理、提示工程的有效边界、RAG 的检索—拼接—生成流程，以及 LoRA 如何用低秩矩阵以极小参数量定制大模型。"><title>大语言模型与 RAG：从下一个词预测到检索增强 · 机器学习图解教程</title><link rel="stylesheet" href="../assets/css/article.css"></head><body class="article-page"><a class="skip-link" href="#content">跳转至正文</a><header class="site-header"><div class="header-inner"><a class="wordmark" href="../index.html"><span class="mark">M<span>·</span>L</span><span>机器学习图解教程<small>Machine Learning, Explained</small></span></a><nav aria-label="顶部导航"><a href="../index.html">课程目录</a><a href="https://github.com/1998x-stack/machine-learning-tutorial">GitHub</a></nav></div></header><div class="article-shell"><aside class="article-nav"><nav aria-label="文章目录"><details open><summary>本章目录</summary><div class="nav-items"><a href="../index.html">← 全部章节</a><a href="#sec1">从语言模型到 LLM</a><a href="#sec2">原理：解码器与下一个词预测</a><a href="#sec3">提示工程：有效的杠杆与边界</a><a href="#sec4">RAG：检索增强生成</a><a href="#sec5">LoRA：低秩适配微调</a><a href="#sec6">能力边界与评测</a><a href="#sec7">离线实验：检索与 LoRA 参数量</a><a href="#sec8">来源、版本与验收界限</a></div></details></nav></aside><main class="article-main" id="content"><article><div class="breadcrumb"><a href="../index.html">课程目录</a><span>/</span><span>第 26 章</span></div><header class="article-header"><div class="chapter-number">CHAPTER 26 / 28</div><h1>大语言模型与 RAG：从下一个词预测到检索增强</h1><p class="dek">大语言模型的本质，是一个被放大到极致的下一个词预测器。本章讲清解码器自回归的原理、提示工程的有效边界、RAG 的检索—拼接—生成流程，以及 LoRA 如何用低秩矩阵以极小参数量定制大模型。</p><div class="lead-question">模型的知识全部凝固在训练时的参数里——那它怎么回答一个训练之后才发生的事？</div></header>
+<section id="sec1" aria-labelledby="title1"><h2 id="title1">01 · 从语言模型到 LLM</h2><p>语言模型的任务简单到一句话就能说清：<strong>给定前面的词，预测下一个词的概率分布</strong>。上一章的自回归生成、第 23 章的 Transformer，说的都是同一件事。LLM（大语言模型）并没有换用一个全新的目标，而是把同一个目标——下一个词预测——用极大的参数量和数据量做到极致，训练目标始终是最大化训练语料的对数似然。</p><p>2017 年的 Transformer 提供了可并行、可堆叠的注意力机制，2020 年前后的工作证明了“加大模型、数据与算力”能带来质的提升。但这里要区分两个概念：<strong>模型架构</strong>（解码器／编码器的结构选择）与<strong>规模化带来的能力</strong>。所谓“涌现能力”——某些能力在规模跨过某个阈值后突然出现——是否真的“突然”，学界有争议：有工作指出若换成连续度量，能力提升其实是平滑的，突变可能来自评测指标本身的非线性。因此把“涌现”当成一个需要谨慎处理的观察，而不是已证实的规律。</p><p>需要提醒：现代 LLM 是一个极其庞大的黑盒，本章不试图解释它的内部构造，而是聚焦三个能实际动手的工程问题：如何用提示引导它、如何用检索给它补充外部知识、以及如何用低成本方式微调它。</p></section>
+<section id="sec2" aria-labelledby="title2"><h2 id="title2">02 · 原理：解码器与下一个词预测</h2><p>GPT 系列的架构是<strong>解码器堆叠</strong>：把输入的 token 嵌入成向量，消息经多层带<strong>因果掩码</strong>的自注意力与前馈网络后，输出词表上的一套 logits，softmax 之后就是下一个词的概率分布。因果掩码是关键约束——位置 <math class="math-inline" aria-label="t"><mi>t</mi></math> 只能看到左侧（包含自身）的 token，不能“偷看”未来的词，否则训练目标就失去了意义。</p><p>训练目标就是最小化负对数似然，也就是交叉熵：</p><div class="eq eq-scroll" role="region" tabindex="0" aria-label="预训练损失：各位置下一个词负对数似然之和"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block" aria-label="L 等于负的对 t 从 1 到 n，log p_θ(x_t 给定 x 小于 t) 求和"><mrow><mi>L</mi><mo>=</mo><mo>−</mo><munderover><mo>∑</mo><mrow><mi>t</mi><mo>=</mo><mn>1</mn></mrow><mi>n</mi></munderover><mi>log</mi><msub><mi>p</mi><mi>θ</mi></msub><mo>(</mo><msub><mi>x</mi><mi>t</mi></msub><mo>|</mo><msub><mi>x</mi><mrow><mo>&lt;</mo><mi>t</mi></mrow></msub><mo>)</mo></mrow></math></div><p>推理时，这个“预测下一个词”的回路被反复调用：得到分布、按温度与 top-p 采一个词、把它拼回输入再预测。这就是第 24 章讲过的自回归生成，也是文本续写、对话、代码补全的共同底层机制。一个工程细节值得强调：<strong>训练是一次性在所有位置上并行算损失的</strong>（因为真值序列已知），而<strong>推理必须逐词串行</strong>——这也解释了为什么解码比训练更依赖显存带宽与 KV 缓存。</p><figure id="fig-llm"><div class="figure-scroll"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 320" role="img" aria-labelledby="t26a d26a"><title id="t26a">解码器语言模型的推理流程</title><desc id="d26a">输入 token 先嵌入，再经过多层带因果掩码的自注意力与前馈网络，输出词表 logits，softmax 得到下一个词的概率分布，采样后拼回输入，循环生成。</desc><rect x="1" y="1" width="998" height="318" rx="18" fill="#fffdf9" stroke="#d8e2d9"/><defs><marker id="ar26a" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto"><path d="M1 1 L7 4 L1 7" fill="none" stroke="#57706c" stroke-width="1.6"/></marker><marker id="ar26b" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto"><path d="M1 1 L7 4 L1 7" fill="none" stroke="#c4774b" stroke-width="1.6"/></marker></defs><g font-family="system-ui,'PingFang SC','Microsoft YaHei',sans-serif"><text x="40" y="45" font-size="22" fill="#213a37" font-weight="760">一个被反复调用的“预测下一个词”</text><rect x="40" y="122" width="150" height="64" rx="8" fill="#e7f3ef" stroke="#147b70"/><text x="115" y="152" font-size="13" fill="#147b70" text-anchor="middle">输入 tokens</text><text x="115" y="172" font-size="11" fill="#4f8f88" text-anchor="middle">x₁ … x_t</text><path d="M190 154 H222" fill="none" stroke="#57706c" stroke-width="1.6" marker-end="url(#ar26a)"/><rect x="226" y="122" width="120" height="64" rx="8" fill="#f7e9e2" stroke="#c4774b"/><text x="286" y="152" font-size="13" fill="#b5673f" text-anchor="middle">嵌入 + 位置</text><text x="286" y="172" font-size="11" fill="#c58a6f" text-anchor="middle">token → 向量</text><path d="M346 154 H378" fill="none" stroke="#57706c" stroke-width="1.6" marker-end="url(#ar26a)"/><rect x="382" y="104" width="196" height="100" rx="8" fill="#efeaf7" stroke="#7863b0"/><text x="480" y="140" font-size="13" fill="#66529e" text-anchor="middle">解码器层 × N</text><text x="480" y="162" font-size="11.5" fill="#8a7db5" text-anchor="middle">因果掩码自注意力</text><text x="480" y="182" font-size="11.5" fill="#8a7db5" text-anchor="middle">（只能看左侧）</text><path d="M578 154 H610" fill="none" stroke="#57706c" stroke-width="1.6" marker-end="url(#ar26a)"/><rect x="614" y="122" width="120" height="64" rx="8" fill="#f7e9e2" stroke="#c4774b"/><text x="674" y="152" font-size="13" fill="#b5673f" text-anchor="middle">线性投影</text><text x="674" y="172" font-size="11" fill="#c58a6f" text-anchor="middle">词表 logits</text><path d="M734 154 H766" fill="none" stroke="#57706c" stroke-width="1.6" marker-end="url(#ar26a)"/><rect x="770" y="122" width="186" height="64" rx="8" fill="#efeaf7" stroke="#7863b0"/><text x="863" y="148" font-size="13" fill="#66529e" text-anchor="middle">softmax → 采样</text><text x="863" y="170" font-size="11" fill="#8a7db5" text-anchor="middle">得到下一个词</text><path d="M863 186 C863 262 115 270 115 190" fill="none" stroke="#c4774b" stroke-width="1.8" stroke-dasharray="6 5" marker-end="url(#ar26b)"/><text x="490" y="272" font-size="12.5" fill="#b5673f" text-anchor="middle">把新词拼回输入，循环生成</text><text x="40" y="308" font-size="12.5" fill="#57706c">教学示意：层数 N、隐藏维度与词表尺寸因模型而异。</text></g></svg></div><figcaption>解码器语言模型的推理回路：token 经嵌入与因果掩码解码器得到 logits，softmax 采样出下一个词，再拼回输入。训练时所有位置可并行，推理时逐词串行。图为机制示意。</figcaption></figure></section>
+<section id="sec3" aria-labelledby="title3"><h2 id="title3">03 · 提示工程：有效的杠杆与边界</h2><p>提示（prompt）的本质是<strong>只改上下文、不改权重</strong>：模型的参数一字未动，你只是把任务描述和例子放进它的输入。几种常见形式可以按信息量排序：</p><ul><li><strong>零样本（zero-shot）</strong>：只给指令，不给例子，如“把下面这句话翻译成英语”。</li><li><strong>少样本（few-shot）</strong>：在指令前给几个“输入→输出”示例，模型从上下文里推断模式，这叫<strong>上下文学习</strong>（in-context learning）——它不更新任何参数。</li><li><strong>思维链（chain-of-thought）</strong>：让模型先写出中间推理步骤再给答案，在数学、逻辑等多步任务上往往有用。</li></ul><p>需要诚实地对待它的边界：提示工程很大程度上是<strong>实验性</strong>的，同一个提示在不同模型版本、甚至同一模型的不同采样下表现可能不一致；报告效果时必须注明模型版本、提示原文与解码参数，否则结果不可复现。更危险的是<strong>提示注入</strong>：若把用户可控的文本直接拼进系统提示，攻击者可能用“忽略上面的指令”之类的话术绕开限制，因此不能把提示当成安全边界来用。</p></section>
+<section id="sec4" aria-labelledby="title4"><h2 id="title4">04 · RAG：检索增强生成</h2><p>LLM 的知识全部凝固在训练时的参数里：训练之后发生的事实它不知道，企业内部的私有文档它也没见过，而重新训练一次的成本极高。更麻烦的是，当模型不知道的时候，它可能自信地编出一个看似合理的答案——这就是<strong>幻觉</strong>。</p><p>检索增强生成（Retrieval-Augmented Generation, RAG）的思路很直接：<strong>先去外部库里找相关资料，再让模型带着资料回答</strong>。它分成两个阶段：</p><ul><li><strong>索引（离线）</strong>：把文档库切分成小块（chunk），用嵌入模型把每块编码成向量，存入向量数据库。</li><li><strong>检索与生成（在线）</strong>：把用户问题也编码成向量，在向量库里按相似度取回最相关的 top-k 块，与问题一起拼成提示交给 LLM，生成有依据的答案。</li></ul><p>从概率看，RAG 是在检索到的文档 <math class="math-inline" aria-label="z"><mi>z</mi></math> 上做边缘化：</p><div class="eq eq-scroll" role="region" tabindex="0" aria-label="RAG 对检索文档做边缘化：答案概率等于检索概率乘给定文档的生成概率之和"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block" aria-label="p(y|x) 近似等于对 z 求和，p_η(z|x) 乘 p_θ(y|x,z)"><mrow><mi>p</mi><mo>(</mo><mi>y</mi><mo>|</mo><mi>x</mi><mo>)</mo><mo>≈</mo><munder><mo>∑</mo><mi>z</mi></munder><msub><mi>p</mi><mi>η</mi></msub><mo>(</mo><mi>z</mi><mo>|</mo><mi>x</mi><mo>)</mo><msub><mi>p</mi><mi>θ</mi></msub><mo>(</mo><mi>y</mi><mo>|</mo><mi>x</mi><mo>,</mo><mi>z</mi><mo>)</mo></mrow></math></div><p>其中检索器 <math class="math-inline" aria-label="p eta"><msub><mi>p</mi><mi>η</mi></msub></math> 负责选文档，生成器 <math class="math-inline" aria-label="p theta"><msub><mi>p</mi><mi>θ</mi></msub></math> 负责带文档写答案。实际系统为了降低延迟，往往只用 top-k 个文档近似这个求和。两个常见坑：第一，<strong>检索失败则生成必然失败</strong>——若正确的文档没被召回，再强的生成器也无能为力，所以检索召回率是首要指标；第二，即使资料被放进上下文，模型对<strong>中间位置</strong>的信息利用也较差（“lost in the middle”现象），提示里文档的排序也影响效果。</p><figure id="fig-rag"><div class="figure-scroll"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 340" role="img" aria-labelledby="t26b d26b"><title id="t26b">RAG 的索引与检索生成两个阶段</title><desc id="d26b">离线阶段把文档切分并嵌入存入向量库；在线阶段把问题编码后从向量库检索最相关的块，与问题拼接成提示交给大模型，生成带依据的答案。</desc><rect x="1" y="1" width="998" height="338" rx="18" fill="#fffdf9" stroke="#d8e2d9"/><defs><marker id="ar26c" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto"><path d="M1 1 L7 4 L1 7" fill="none" stroke="#57706c" stroke-width="1.6"/></marker><marker id="ar26d" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto"><path d="M1 1 L7 4 L1 7" fill="none" stroke="#7863b0" stroke-width="1.6"/></marker></defs><g font-family="system-ui,'PingFang SC','Microsoft YaHei',sans-serif"><text x="40" y="42" font-size="22" fill="#213a37" font-weight="760">先检索，再带着资料生成</text><text x="40" y="70" font-size="12.5" fill="#147b70" font-weight="720">离线索引</text><rect x="40" y="82" width="140" height="54" rx="8" fill="#e7f3ef" stroke="#147b70"/><text x="110" y="114" font-size="12.5" fill="#147b70" text-anchor="middle">文档库</text><path d="M180 109 H216" fill="none" stroke="#57706c" stroke-width="1.6" marker-end="url(#ar26c)"/><rect x="220" y="82" width="170" height="54" rx="8" fill="#f7e9e2" stroke="#c4774b"/><text x="305" y="114" font-size="12.5" fill="#b5673f" text-anchor="middle">切分 + 嵌入</text><path d="M390 109 H426" fill="none" stroke="#57706c" stroke-width="1.6" marker-end="url(#ar26c)"/><rect x="430" y="82" width="150" height="54" rx="8" fill="#efeaf7" stroke="#7863b0"/><text x="505" y="114" font-size="12.5" fill="#66529e" text-anchor="middle">向量库</text><text x="40" y="196" font-size="12.5" fill="#147b70" font-weight="720">在线检索与生成</text><rect x="40" y="208" width="140" height="54" rx="8" fill="#e7f3ef" stroke="#147b70"/><text x="110" y="240" font-size="12.5" fill="#147b70" text-anchor="middle">用户问题 x</text><path d="M180 235 H216" fill="none" stroke="#57706c" stroke-width="1.6" marker-end="url(#ar26c)"/><rect x="220" y="208" width="170" height="54" rx="8" fill="#f7e9e2" stroke="#c4774b"/><text x="305" y="240" font-size="12.5" fill="#b5673f" text-anchor="middle">检索 top-k 片段</text><path d="M505 140 C505 178 350 176 305 204" fill="none" stroke="#7863b0" stroke-width="1.6" stroke-dasharray="6 5" marker-end="url(#ar26d)"/><text x="560" y="172" font-size="11.5" fill="#66529e">相似度检索</text><path d="M390 235 H426" fill="none" stroke="#57706c" stroke-width="1.6" marker-end="url(#ar26c)"/><rect x="430" y="208" width="180" height="54" rx="8" fill="#efeaf7" stroke="#7863b0"/><text x="520" y="234" font-size="12.5" fill="#66529e" text-anchor="middle">拼接上下文 + 问题</text><text x="520" y="252" font-size="11" fill="#8a7db5" text-anchor="middle">(x, z₁ … z_k)</text><path d="M610 235 H676" fill="none" stroke="#57706c" stroke-width="1.6" marker-end="url(#ar26c)"/><rect x="680" y="206" width="130" height="58" rx="8" fill="#f7e9e2" stroke="#c4774b"/><text x="745" y="240" font-size="13" fill="#b5673f" text-anchor="middle">LLM 生成</text><path d="M810 235 H846" fill="none" stroke="#57706c" stroke-width="1.6" marker-end="url(#ar26c)"/><rect x="850" y="206" width="130" height="58" rx="8" fill="#e7f3ef" stroke="#147b70"/><text x="915" y="234" font-size="13" fill="#147b70" text-anchor="middle">答案 y</text><text x="915" y="252" font-size="11" fill="#4f8f88" text-anchor="middle">可附引用</text><text x="40" y="322" font-size="12.5" fill="#57706c">教学示意：k、向量维度与切分长度均为可调工程参数。</text></g></svg></div><figcaption>RAG 的两个阶段：离线把文档切分、嵌入存入向量库；在线把问题编码、检索 top-k 片段，与问题拼成提示交给 LLM 生成答案。检索失败会直接导致生成失败。图为流程示意。</figcaption></figure></section>
+<section id="sec5" aria-labelledby="title5"><h2 id="title5">05 · LoRA：低秩适配微调</h2><p>要让模型适配某个垂直领域，最直接的办法是<strong>全量微调</strong>：用领域数据继续训练全部参数。但大模型的参数动辄几十上百亿，全量微调要存一份完整副本、显存和存储开销都很大，多个任务还会各自复制一份。</p><p>LoRA（Low-Rank Adaptation）的想法是：冻结原权重 <math class="math-inline" aria-label="W0"><msub><mi>W</mi><mn>0</mn></msub></math>，只训练一个<strong>低秩</strong>的增量 <math class="math-inline" aria-label="Delta W"><mi>Δ</mi><mi>W</mi></math>，其秩 <math class="math-inline" aria-label="r"><mi>r</mi></math> 远小于原矩阵尺寸。增量写成一个“瘦高 × 矮胖”的乘积：</p><div class="eq eq-scroll" role="region" tabindex="0" aria-label="LoRA 前向：冻结权重加上低秩增量 B 乘 A 乘输入"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block" aria-label="h 等于 W_0 x 加 ΔW x，等于 W_0 x 加 B A x"><mrow><mi>h</mi><mo>=</mo><msub><mi>W</mi><mn>0</mn></msub><mi>x</mi><mo>+</mo><mi>Δ</mi><mi>W</mi><mi>x</mi><mo>=</mo><msub><mi>W</mi><mn>0</mn></msub><mi>x</mi><mo>+</mo><mi>B</mi><mi>A</mi><mi>x</mi></mrow></math></div><p>若 <math class="math-inline" aria-label="W0"><msub><mi>W</mi><mn>0</mn></msub></math> 是 <math class="math-inline" aria-label="d 乘 k"><mi>d</mi><mo>×</mo><mi>k</mi></math>，则 <math class="math-inline" aria-label="A"><mi>A</mi></math> 是 <math class="math-inline" aria-label="r 乘 k"><mi>r</mi><mo>×</mo><mi>k</mi></math>、<math class="math-inline" aria-label="B"><mi>B</mi></math> 是 <math class="math-inline" aria-label="d 乘 r"><mi>d</mi><mo>×</mo><mi>r</mi></math>，原始要训 <math class="math-inline" aria-label="d 乘 k"><mi>d</mi><mi>k</mi></math> 个参数，现在只需 <math class="math-inline" aria-label="r(d+k)"><mi>r</mi><mo>(</mo><mi>d</mi><mo>+</mo><mi>k</mi><mo>)</mo></math> 个。初始时把 <math class="math-inline" aria-label="B"><mi>B</mi></math> 置零，使 <math class="math-inline" aria-label="B A"><mi>B</mi><mi>A</mi><mo>=</mo><mn>0</mn></math>，保证微调起点与原模型完全一致。训练好后，可以把 <math class="math-inline" aria-label="B A"><mi>B</mi><mi>A</mi></math> 加回 <math class="math-inline" aria-label="W0"><msub><mi>W</mi><mn>0</mn></msub></math> 合并成一个权重，<strong>推理时不会多出任何延迟</strong>。这是 LoRA 相对其他适配方法的一大优势。</p><p>需要分清概念：LoRA 是一种<strong>参数高效微调（PEFT）</strong>方法，它改变的是“怎么调参”，不涉及模型架构本身；低秩假设的成立与否决定了它能表达多少任务差异，<math class="math-inline" aria-label="r"><mi>r</mi></math> 的大小需要在验证集上权衡。</p><figure id="fig-lora"><div class="figure-scroll"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 320" role="img" aria-labelledby="t26c d26c"><title id="t26c">LoRA 在原权重旁并联低秩分支</title><desc id="d26c">输入同时经过冻结的原权重 W0 与一条低秩的分支 A 和 B；两条输出相加得到结果。只有 A 和 B 的参数被更新，因此可训练参数量远小于原矩阵。</desc><rect x="1" y="1" width="998" height="318" rx="18" fill="#fffdf9" stroke="#d8e2d9"/><defs><marker id="ar26e" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto"><path d="M1 1 L7 4 L1 7" fill="none" stroke="#57706c" stroke-width="1.6"/></marker></defs><g font-family="system-ui,'PingFang SC','Microsoft YaHei',sans-serif"><text x="40" y="45" font-size="22" fill="#213a37" font-weight="760">冻结原权重，只训一条低秩旁路</text><rect x="40" y="140" width="90" height="54" rx="8" fill="#e7f3ef" stroke="#147b70"/><text x="85" y="172" font-size="13" fill="#147b70" text-anchor="middle">输入 x</text><path d="M130 160 C170 150 190 120 230 100" fill="none" stroke="#57706c" stroke-width="1.6" marker-end="url(#ar26e)"/><path d="M130 174 C170 184 190 200 230 212" fill="none" stroke="#57706c" stroke-width="1.6" marker-end="url(#ar26e)"/><rect x="234" y="72" width="170" height="56" rx="8" fill="#eef1f2" stroke="#8a9992"/><text x="319" y="98" font-size="13" fill="#57706c" text-anchor="middle">W₀ (d×k)　🔒 冻结</text><text x="319" y="116" font-size="11" fill="#8a9992" text-anchor="middle">原权重不更新</text><rect x="234" y="184" width="110" height="56" rx="8" fill="#f7e9e2" stroke="#c4774b"/><text x="289" y="210" font-size="12.5" fill="#b5673f" text-anchor="middle">A (r×k)</text><text x="289" y="228" font-size="11" fill="#c58a6f" text-anchor="middle">待训</text><path d="M344 212 H380" fill="none" stroke="#57706c" stroke-width="1.6" marker-end="url(#ar26e)"/><rect x="384" y="184" width="110" height="56" rx="8" fill="#f7e9e2" stroke="#c4774b"/><text x="439" y="210" font-size="12.5" fill="#b5673f" text-anchor="middle">B (d×r)</text><text x="439" y="228" font-size="11" fill="#c58a6f" text-anchor="middle">待训</text><path d="M404 100 C470 100 500 130 540 152" fill="none" stroke="#57706c" stroke-width="1.6" marker-end="url(#ar26e)"/><path d="M494 212 C516 212 524 190 540 176" fill="none" stroke="#57706c" stroke-width="1.6" marker-end="url(#ar26e)"/><circle cx="566" cy="164" r="24" fill="#efeaf7" stroke="#7863b0"/><text x="566" y="170" font-size="18" fill="#66529e" text-anchor="middle">＋</text><path d="M590 164 H626" fill="none" stroke="#57706c" stroke-width="1.6" marker-end="url(#ar26e)"/><rect x="630" y="136" width="160" height="56" rx="8" fill="#e7f3ef" stroke="#147b70"/><text x="710" y="170" font-size="13" fill="#147b70" text-anchor="middle">h = W₀x + BAx</text><rect x="820" y="136" width="150" height="56" rx="8" fill="#fff7ec" stroke="#c4774b"/><text x="895" y="160" font-size="12" fill="#b5673f" text-anchor="middle">可训参数</text><text x="895" y="180" font-size="12" fill="#c58a6f" text-anchor="middle">r(d+k) ≪ dk</text><text x="40" y="286" font-size="12.5" fill="#57706c">教学示意：B 初始为零，使 BA = 0，微调从原模型出发。</text></g></svg></div><figcaption>LoRA 冻结原权重 W₀，并联一条低秩分支 B·A，两条输出相加。只有 A、B 被训练，参数量从 d·k 降到 r(d+k)；合并后推理无额外延迟。图为机制示意。</figcaption></figure></section>
+<section id="sec6" aria-labelledby="title6"><h2 id="title6">06 · 能力边界与评测</h2><p>把 LLM 用到生产环境前，必须先弄清它<strong>不擅长什么</strong>。几类典型局限：</p><ul><li><strong>幻觉</strong>：模型的目标是“生成看起来合理的下一个词”，不是“只说真话”；没有证据时容易编造。RAG 与要求引用可以减轻，但不能根除。</li><li><strong>知识截止与私有数据</strong>：训练完成后的事实模型不知道；企业内部文档也不在训练集里。</li><li><strong>上下文窗口</strong>：提示长度有上限，且窗口内不同位置的信息利用并不均等。</li><li><strong>精确计算与多步推理</strong>：逐词生成对它做严格算术、长链条推理并不天然可靠，需要外部工具或分解步骤。</li></ul><p>评测同样容易踩坑：困惑度（perplexity）低不代表下游任务好；基准集可能已经泄入训练数据（<strong>数据污染</strong>），虚高得分；开放式生成很难用单一自动指标衡量，往往需要人工评估。因此报告结果时必须写明模型版本、提示、解码参数与评测集版本，否则不同系统之间无法公平比较。</p></section>
+<section id="sec7" aria-labelledby="title7"><h2 id="title7">07 · 离线实验：检索与 LoRA 参数量</h2><p>下面两段只用标准库，核对两个核心量：向量检索用余弦相似度排序，能取回与问题最接近的文档；LoRA 的可训参数量确实远小于原矩阵。可直接运行，无需安装任何依赖。</p><pre><code>import math
 
-        <p>作为ML从业者，你不需要从零训练一个LLM（那需要数千万美元），但你必须理解LLM的工作原理、如何微调、如何用RAG构建应用——这些是2026年最炙手可热的工程技能。</p>
+def cosine(a, b):
+    dot = sum(x * y for x, y in zip(a, b))
+    na = math.sqrt(sum(x * x for x in a))
+    nb = math.sqrt(sum(y * y for y in b))
+    return dot / (na * nb)
 
-        <h2>26.2 LLM如何工作：从token到文本</h2>
-        <p>LLM的核心是一个"下一个token预测器"。给定一段文本，它预测最可能的下一个词（准确说是token）。这个过程重复下去，就生成了连贯的文本。</p>
+docs = {
+    &quot;退款政策&quot;: [1.0, 0.1, 0.0],
+    &quot;发货时效&quot;: [0.1, 1.0, 0.2],
+    &quot;会员权益&quot;: [0.0, 0.2, 1.0],
+}
+query = [0.9, 0.2, 0.0]
+scores = sorted(((cosine(query, v), k) for k, v in docs.items()), reverse=True)
+print(&quot;ranking:&quot;, [(k, round(s, 4)) for s, k in scores])
+assert scores[0][1] == &quot;退款政策&quot;
 
-        <h3>Tokenization</h3>
-        <p>文字不能直接喂给模型，需要先切成token。英文大约1个token ≈ 0.75个词，中文约1个token ≈ 0.5个字。GPT-4的上下文窗口128K tokens大约能容纳一本300页的书。</p>
-
-        <h3>Scaling Laws</h3>
-        <p>一个被反复验证的规律：模型越大 + 数据越多 = 效果越好，且这个趋势似乎没有触顶的迹象。这就是为什么各大公司都在疯狂扩大模型规模和训练数据量。</p>
-
-        <table>
-            <tr><th>模型</th><th>参数规模</th><th>上下文窗口</th><th>开源？</th></tr>
-            <tr><td>GPT-4</td><td>~1.8T（未官方确认）</td><td>128K</td><td>否</td></tr>
-            <tr><td>Claude 4 (Opus)</td><td>未公开</td><td>200K</td><td>否</td></tr>
-            <tr><td>LLaMA 3-405B</td><td>405B</td><td>128K</td><td>是</td></tr>
-            <tr><td>Qwen 2.5-72B</td><td>72B</td><td>128K</td><td>是</td></tr>
-            <tr><td>DeepSeek-V3</td><td>671B (MoE)</td><td>128K</td><td>是</td></tr>
-        </table>
-
-        <h2>26.3 Prompt Engineering：撬动LLM的杠杆</h2>
-        <p>好的prompt和差的prompt，效果可以差一个数量级。几个关键技巧：</p>
-
-        <ul>
-            <li><strong>Chain-of-Thought（CoT）：</strong>让模型"一步一步思考"再给答案。比如加上"Let's think step by step"，在推理类任务上准确率大幅提升</li>
-            <li><strong>Few-shot：</strong>给几个示例（输入→输出），模型就能学会输出的格式和风格</li>
-            <li><strong>System Prompt：</strong>设定角色和约束，如"你是一个有10年经验的Python工程师"</li>
-            <li><strong>结构化输出：</strong>明确要求JSON/Markdown格式，方便程序解析</li>
-        </ul>
-
-        <div class="tip">
-            <strong>💡 CoT的原理：</strong>大语言模型是"自回归"的——先输出的token会影响后续的token。当模型先输出推理步骤再输出答案时，它实际上在"给自己的思考分配更多计算"。这就像让一个学生在草稿纸上演算而不是心算——多写几步中间推导能显著提高最终正确率。没有CoT的模型相当于"直觉判断"，有CoT的模型相当于"推理判断"。
-        </div>
-
-        <h2>26.4 RAG：让LLM拥有"外部知识库"</h2>
-        <p>LLM有两个致命弱点：(1) 知识截止于训练日期，不知道最新信息；(2) 对不熟悉的内容可能"幻想"（hallucination）出看起来合理但完全错误的答案。</p>
-
-        <p><strong>RAG（Retrieval-Augmented Generation）</strong>是解决这两个问题的首选方案：</p>
-
-        <ol>
-            <li><strong>索引（Indexing）：</strong>把你的文档（产品手册、公司wiki、知识库）切成小段，用embedding模型转成向量，存入向量数据库</li>
-            <li><strong>检索（Retrieval）：</strong>用户提问时，把问题也转成向量，在数据库中搜索最相关的文档片段</li>
-            <li><strong>生成（Generation）：</strong>把检索到的相关文档片段和用户问题一起塞进prompt，让LLM基于这些资料回答</li>
-        </ol>
-
-        <pre><code>import chromadb
-from sentence_transformers import SentenceTransformer
-
-# 1. 初始化embedding模型和向量数据库
-embedder = SentenceTransformer('BAAI/bge-large-zh-v1.5')
-client = chromadb.Client()
-collection = client.create_collection("company_docs")
-
-# 2. 索引文档
-documents = [
-    "公司年假政策：入职满1年享有5天年假，满3年10天，满5年15天。",
-    "加班政策：工作日加班1.5倍工资，周末2倍，法定假日3倍。",
-    "远程办公政策：每周可申请2天远程办公，需主管审批。",
-]
-for i, doc in enumerate(documents):
-    collection.add(
-        embeddings=[embedder.encode(doc).tolist()],
-        documents=[doc],
-        ids=[f"doc_{i}"]
-    )
-
-# 3. 检索
-query = "我工作3年了，一年有多少天假期？"
-query_embedding = embedder.encode(query).tolist()
-results = collection.query(query_embeddings=[query_embedding], n_results=2)
-
-# 4. 构建prompt发给LLM
-context = "\n".join(results['documents'][0])
-prompt = f"""基于以下公司政策回答问题：
-
-{context}
-
-问题：{query}
-回答："""
-# 把这个prompt发给LLM...
-</code></pre>
-
-        <div class="highlight">
-            <strong>🔑 RAG的最佳实践要点：</strong>(1) 文档分块（chunking）大小很关键——太小缺乏上下文，太大检索不准。常用500-1000字符一块，且块之间要有重叠。(2) 检索时不仅用向量相似度，还可以加入关键词匹配（BM25）做混合检索。(3) rerank——检索到20条候选，再用更精准的模型（如Cohere Rerank或BGE-Reranker）精排到5条。(4) 在prompt中明确要求"如果找不到相关信息，就说不知道，不要编造"——这是减少幻觉的有效手段。
-        </div>
-
-        <h2>26.5 Agent：让LLM使用工具</h2>
-        <p>LLM不仅能回答问题，还能作为"大脑"调用外部工具：搜索引擎、代码解释器、数据库查询、API调用。这就是Agent架构——给LLM配上一个工具箱，让它自己决定什么时候用什么工具。</p>
-
-        <p>ReAct（Reasoning + Acting）模式是目前最流行的Agent范式：Thought（思考我需要做什么）→ Action（执行工具调用）→ Observation（观察结果）→ Thought（基于结果重新思考）→ ... 循环直到任务完成。这种"思考-行动-观察"的循环让LLM能够处理之前无法完成的多步复杂任务。</p>
-
-        <h2>26.6 LoRA微调：用小成本定制大模型</h2>
-        <p>全参数微调一个70B的模型需要几十张GPU。但LoRA（Low-Rank Adaptation）通过在预训练权重旁插入小的可训练矩阵，将可训练参数量减少99%以上，同时效果接近全参数微调。8B模型用LoRA微调甚至能在单张消费级GPU上完成。</p>
-
-        <div class="tip">
-            <strong>💡 什么时候用RAG，什么时候用微调？</strong>需要<strong>动态更新的知识</strong>（如实时数据、最新政策）→ RAG。需要改变<strong>模型行为/风格/输出格式</strong>（如医疗报告风格、特定领域术语）→ 微调。需要两者兼顾 → RAG + 微调。现实中最强的企业应用往往两者都做：微调确保模型理解领域规范，RAG注入最新数据。
-        </div>
-
-        <p>LLM和RAG是现代ML工程中最活跃的领域。下一章我们学习如何把你训练好的模型部署成稳定的线上服务。</p>
-
-        <div class="footer-nav">
-            <a href="25.html">← 上一章</a>
-            <a href="index.html">📖 返回目录</a>
-            <a href="27.html">下一章 →</a>
-        </div>
-    </div>
-</div>
-</div>
-</body>
-</html>
+d, k, r = 4096, 4096, 8
+dk, lora = d * k, r * (d + k)
+print(&quot;full params:&quot;, dk)
+print(&quot;lora params:&quot;, lora)
+print(&quot;ratio: %.4f%%&quot; % (100 * lora / dk))
+assert lora &lt; dk</code></pre><p>在本页创作环境中实际运行，得到：检索排序为 <code>退款政策 0.9929</code>、<code>发货时效 0.307</code>、<code>会员权益 0.0425</code>，与问题最近的正是“退款政策”；当 <math class="math-inline" aria-label="d=k=4096"><mi>d</mi><mo>=</mo><mi>k</mi><mo>=</mo><mn>4096</mn></math>、<math class="math-inline" aria-label="r=8"><mi>r</mi><mo>=</mo><mn>8</mn></math> 时，全量参数为 <code>16777216</code>，LoRA 只需 <code>65536</code>，约为 <code>0.39%</code>。这两组数字是从公式直接算出来的，可手算核对；它们只说明机制，<strong>不代表任何具体模型的实际效果或质量</strong>。</p></section>
+<section id="sec8" aria-labelledby="title8"><h2 id="title8">08 · 来源、版本与验收界限</h2><p>架构与算法定义以原始论文为准；具体模型名称、上下文长度、价格与接口行为随厂商和版本变化，本章不复述二手基准分数。</p><ul class="refs"><li><a href="https://arxiv.org/abs/1706.03762" rel="noopener noreferrer">Vaswani et al., Attention Is All You Need, 2017</a></li><li><a href="https://arxiv.org/abs/2005.14165" rel="noopener noreferrer">Brown et al., Language Models are Few-Shot Learners（GPT-3、上下文学习）, 2020</a></li><li><a href="https://arxiv.org/abs/2201.11903" rel="noopener noreferrer">Wei et al., Chain-of-Thought Prompting Elicits Reasoning, 2022</a></li><li><a href="https://arxiv.org/abs/2005.11401" rel="noopener noreferrer">Lewis et al., Retrieval-Augmented Generation for Knowledge-Intensive NLP, 2020</a></li><li><a href="https://arxiv.org/abs/2307.03172" rel="noopener noreferrer">Liu et al., Lost in the Middle: How Language Models Use Long Contexts, 2023</a></li><li><a href="https://arxiv.org/abs/2106.09685" rel="noopener noreferrer">Hu et al., LoRA: Low-Rank Adaptation of Large Language Models, 2021</a></li><li><a href="https://arxiv.org/abs/2304.15004" rel="noopener noreferrer">Schaeffer et al., Are Emergent Abilities of Large Language Models a Mirage?, 2023</a></li></ul><p class="note"><strong>验收界限：</strong>解码器流程、RAG 流程与 LoRA 结构三张图均为机制示意，不含具体维度；第 07 节脚本仅用标准库，已在本页创作环境运行并给出可手算核对的数值；“涌现能力”的表述本章已注明学界的争议，“提示工程不稳定”与“数据污染”属于工程经验，非定理。</p></section>
+<nav class="article-footer" aria-label="章节导航"><a href="25.html">← 上一章</a><a href="../index.html">全部章节</a><a href="27.html">下一章 →</a></nav></article></main></div><footer class="site-footer"><span>机器学习图解教程 · 第 26 章</span><span>规模、检索与适配</span></footer></body></html>
