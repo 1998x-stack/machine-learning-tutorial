@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 460" role="img" aria-labelledby="nlp-tokenize-title nlp-tokenize-desc">
+<title id="nlp-tokenize-title">从文本到子词 token ID 与注意力掩码</title><desc id="nlp-tokenize-desc">文本经规范化和子词分词后映射到词表 ID；批处理补齐长度，并用 attention mask 区分真实 token 与 padding。</desc>
+<defs>
+ <marker id="nlp-tokenize-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 Z" fill="#55736d"/></marker>
+ <marker id="nlp-tokenize-orange" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L10 5 L0 10 Z" fill="#bc6a47"/></marker>
+ <style>text{font-family:Inter,ui-sans-serif,system-ui,"Noto Sans CJK SC",sans-serif;fill:#203b38}.title{font-size:22px;font-weight:750}.label{font-size:16px;font-weight:650}.small{font-size:13px;fill:#536b66}.tiny{font-size:12px;fill:#536b66}.box{fill:#fffdf8;stroke:#a9bdb3;stroke-width:2}.green{fill:#e3f1eb;stroke:#16786f;stroke-width:2}.orange{fill:#f8e9df;stroke:#bc6a47;stroke-width:2}.purple{fill:#eee9f7;stroke:#7863b0;stroke-width:2}.amber{fill:#f7f0dc;stroke:#9b7533;stroke-width:2}.line{fill:none;stroke:#55736d;stroke-width:2.5;marker-end:url(#nlp-tokenize-arrow)}.oline{fill:none;stroke:#bc6a47;stroke-width:2.5;marker-end:url(#nlp-tokenize-orange)}.dash{stroke-dasharray:7 6}</style>
+</defs><rect width="900" height="460" rx="22" fill="#fbfaf6"/>
+<text x="40" y="42" class="title">模型输入不是“字符串”：它是一组有边界的整数张量</text>
+<rect x="45" y="120" width="170" height="80" rx="13" class="green"/><text x="130" y="154" text-anchor="middle" class="label">原始文本</text><text x="130" y="180" text-anchor="middle" class="small">unbelievable</text>
+<path d="M220 160 H270" class="line"/>
+<rect x="285" y="120" width="180" height="80" rx="13" class="orange"/><text x="375" y="154" text-anchor="middle" class="label">子词切分</text><text x="375" y="180" text-anchor="middle" class="small">un · believ · able</text>
+<path d="M470 160 H520" class="line"/>
+<rect x="535" y="120" width="150" height="80" rx="13" class="purple"/><text x="610" y="154" text-anchor="middle" class="label">词表 ID</text><text x="610" y="180" text-anchor="middle" class="small">[51, 882, 14]</text>
+<path d="M690 160 H740" class="line"/>
+<rect x="755" y="120" width="100" height="80" rx="13" class="green"/><text x="805" y="154" text-anchor="middle" class="label">Embedding</text><text x="805" y="180" text-anchor="middle" class="small">向量序列</text>
+<text x="55" y="270" class="label">批次补齐（PAD）与 attention mask</text>
+<rect x="55" y="300" width="122" height="50" rx="8" class="box"/><text x="116" y="331" text-anchor="middle" class="small">[CLS]</text><text x="116" y="383" text-anchor="middle" class="label">1</text><rect x="190" y="300" width="122" height="50" rx="8" class="box"/><text x="251" y="331" text-anchor="middle" class="small">un</text><text x="251" y="383" text-anchor="middle" class="label">1</text><rect x="325" y="300" width="122" height="50" rx="8" class="box"/><text x="386" y="331" text-anchor="middle" class="small">believ</text><text x="386" y="383" text-anchor="middle" class="label">1</text><rect x="460" y="300" width="122" height="50" rx="8" class="box"/><text x="521" y="331" text-anchor="middle" class="small">able</text><text x="521" y="383" text-anchor="middle" class="label">1</text><rect x="595" y="300" width="122" height="50" rx="8" class="box"/><text x="656" y="331" text-anchor="middle" class="small">[SEP]</text><text x="656" y="383" text-anchor="middle" class="label">1</text><rect x="730" y="300" width="122" height="50" rx="8" class="amber"/><text x="791" y="331" text-anchor="middle" class="small">PAD</text><text x="791" y="383" text-anchor="middle" class="label">0</text>
+<text x="55" y="420" class="small">mask = 1 表示有效 token，0 表示 padding（具体 API 约定须按模型文档确认）。</text>
+</svg>

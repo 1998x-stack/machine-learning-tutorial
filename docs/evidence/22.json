@@ -1,0 +1,68 @@
+{
+  "chapter": "22",
+  "claims": [
+    {
+      "id": "rnn-shared-state",
+      "claim": "A recurrent network applies a shared transition repeatedly over time and passes hidden state between steps.",
+      "kind": "research",
+      "source_url": "https://www.deeplearningbook.org/contents/rnn.html",
+      "locator": "Chapter 10: Sequence Modeling",
+      "status": "verified",
+      "notes": "The article states batch/time/feature shapes separately."
+    },
+    {
+      "id": "bptt-gradient",
+      "claim": "Backpropagation through time multiplies local state Jacobians, which can lead to vanishing or exploding gradients.",
+      "kind": "research",
+      "source_url": "https://www.deeplearningbook.org/contents/rnn.html",
+      "locator": "Chapter 10: Recurrent Neural Networks",
+      "status": "verified",
+      "notes": "Gradient clipping limits norm but does not restore information already lost."
+    },
+    {
+      "id": "lstm-original",
+      "claim": "The 1997 LSTM paper introduced a constant-error-flow memory path with multiplicative gates; the commonly shown forget gate belongs to later LSTM variants.",
+      "kind": "research",
+      "source_url": "https://doi.org/10.1162/neco.1997.9.8.1735",
+      "locator": "Original architecture and abstract",
+      "status": "verified",
+      "notes": "The article distinguishes original LSTM from the later forget-gate formulation."
+    },
+    {
+      "id": "lstm-forget-gate",
+      "claim": "The forget gate was introduced in later LSTM work, including Gers, Schmidhuber and Cummins (2000).",
+      "kind": "research",
+      "source_url": "https://doi.org/10.1162/089976600300015015",
+      "locator": "Learning to Forget",
+      "status": "verified",
+      "notes": "Modern four-gate equations are labeled as modern/common formulation."
+    },
+    {
+      "id": "gru-gates",
+      "claim": "GRU combines reset and update gating with a candidate state; exact update-gate conventions vary across notation and implementations.",
+      "kind": "research",
+      "source_url": "https://arxiv.org/abs/1406.1078",
+      "locator": "Encoder–Decoder recurrent architecture",
+      "status": "verified",
+      "notes": "The article states the chosen convention explicitly."
+    },
+    {
+      "id": "bahdanau-attention",
+      "claim": "Additive attention computes a compatibility score between decoder state and each encoder state, normalizes scores and forms a weighted context vector.",
+      "kind": "research",
+      "source_url": "https://arxiv.org/abs/1409.0473",
+      "locator": "Alignment model equations",
+      "status": "verified",
+      "notes": "Attention weights are not treated as causal explanations."
+    },
+    {
+      "id": "transformer-parallel",
+      "claim": "Transformer training can process positions in parallel, while standard autoregressive decoding remains token-by-token and full attention forms a sequence-length-squared interaction matrix.",
+      "kind": "research",
+      "source_url": "https://arxiv.org/abs/1706.03762",
+      "locator": "Section 4 and computational complexity discussion",
+      "status": "verified",
+      "notes": "The article avoids claiming that Transformer generation is fully parallel."
+    }
+  ]
+}

@@ -1,0 +1,86 @@
+{
+  "chapter": "26",
+  "claims": [
+    {
+      "id": "causal-llm",
+      "claim": "Causal language models factorize joint sequence likelihood into next-token conditionals with a causal attention mask.",
+      "kind": "research",
+      "source_url": "https://arxiv.org/abs/1706.03762",
+      "locator": "Decoder masking and autoregressive factorization",
+      "status": "verified",
+      "notes": "Training token positions can be computed in parallel; autoregressive generation iterates by output token."
+    },
+    {
+      "id": "kv-cache",
+      "claim": "A KV cache retains earlier key and value projections for autoregressive decoding, avoiding repeated computation of the same prefix at the cost of memory.",
+      "kind": "implementation",
+      "source_url": "https://huggingface.co/docs/transformers/en/kv_cache",
+      "locator": "Cache strategies and memory considerations",
+      "status": "verified",
+      "notes": "GQA and MQA may use a different number of KV heads from query heads; toy code tests shape only."
+    },
+    {
+      "id": "rag-origin",
+      "claim": "Original RAG combines parametric generation with external non-parametric memory and considers RAG-Sequence and RAG-Token formulations.",
+      "kind": "research",
+      "source_url": "https://arxiv.org/abs/2005.11401",
+      "locator": "Sections 2–3 RAG formulation",
+      "status": "verified",
+      "notes": "Modern concatenate-top-k systems are engineering variants rather than literal reproductions of the original marginalization."
+    },
+    {
+      "id": "access-control",
+      "claim": "Retrieved documents and tool responses are untrusted external content; prompt instruction alone cannot enforce access permissions.",
+      "kind": "security",
+      "source_url": "https://cheatsheetseries.owasp.org/cheatsheets/LLM_Prompt_Injection_Prevention_Cheat_Sheet.html",
+      "locator": "Least privilege and indirect injection controls",
+      "status": "verified",
+      "notes": "Authorization must be enforced before retrieval/context assembly and again at tool boundary."
+    },
+    {
+      "id": "retrieval-metrics",
+      "claim": "Recall@k evaluates retrieval coverage of a labeled relevant-document set and differs from answer groundedness, correctness, or citation support.",
+      "kind": "evaluation",
+      "source_url": "https://learn.microsoft.com/en-us/azure/foundry/concepts/evaluation-evaluators/rag-evaluators",
+      "locator": "RAG retrieval and groundedness evaluators",
+      "status": "verified",
+      "notes": "Incomplete ground-truth relevance sets invalidate naive absolute Recall@k interpretation."
+    },
+    {
+      "id": "react",
+      "claim": "ReAct interleaves reasoning and environment actions for tasks requiring interactions with external sources.",
+      "kind": "research",
+      "source_url": "https://arxiv.org/abs/2210.03629",
+      "locator": "ReAct abstract/method",
+      "status": "verified",
+      "notes": "The article does not imply ReAct eliminates the need for trusted policy checks and audit logs."
+    },
+    {
+      "id": "lora-update",
+      "claim": "LoRA freezes pretrained weight W0 and learns a low-rank update BA, often scaled by alpha/r, with r(din+dout) new parameters.",
+      "kind": "research",
+      "source_url": "https://arxiv.org/abs/2106.09685",
+      "locator": "Method: low-rank update matrices",
+      "status": "verified",
+      "notes": "Parameter savings depend on selected target modules, rank and any other unfrozen parameters."
+    },
+    {
+      "id": "lora-shapes",
+      "claim": "For W0[dout,din], A[r,din] and B[dout,r], update BA has shape [dout,din].",
+      "kind": "derivation",
+      "source_url": "https://arxiv.org/abs/2106.09685",
+      "locator": "Low-rank matrix factorization",
+      "status": "derived",
+      "notes": "Shape and parameter count follow directly from matrix multiplication; checked by PyTorch demonstration."
+    },
+    {
+      "id": "rag-toy-retriever",
+      "claim": "The text's tiny retrieval experiment uses scikit-learn character n-gram TF-IDF, not semantic embeddings or a production vector database.",
+      "kind": "toy",
+      "source_url": "https://scikit-learn.org/stable/modules/feature_extraction.html",
+      "locator": "TfidfVectorizer feature mapping",
+      "status": "illustrative",
+      "notes": "Synthetic enterprise policy snippets are fabricated teaching inputs; access filtering is simplified and not a security implementation."
+    }
+  ]
+}

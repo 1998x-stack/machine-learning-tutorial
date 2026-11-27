@@ -72,3 +72,48 @@
 - Docs 是 Pages 唯一构建工件；相对链接不能越过 `docs/`。指向 `examples/` 源码应直接使用 GitHub 仓库的网页 URL。
 - 随机样本或合成数据的数值结果只能说明定义与算法，不代表真实应用准确率或因果效应。
 - 对生成的公式曲线验证坐标和峰值，对邻域图核验距离、eps/min_samples 计数，对聚类中心核验平均值。未实测的算法性能图一律注明“示意”。
+
+## 第四批技术核查 · 16–20
+
+| 章节 | 一手论文 / 官方资料 | 必须保留的边界 |
+|---|---|---|
+| 16 | [SMOTE 原始论文](https://doi.org/10.1613/jair.953) · [imbalanced-learn Pipeline](https://imbalanced-learn.org/stable/references/generated/imblearn.pipeline.Pipeline.html) · [阈值调优](https://scikit-learn.org/stable/modules/classification_threshold.html) · [分类指标](https://scikit-learn.org/stable/modules/model_evaluation.html) | 采样只在训练折；测试分布不变；AP 与梯形 PR-AUC 区分；阈值由验证集和成本决定 |
+| 17 | [SHAP 原论文](https://proceedings.neurips.cc/paper/2017/hash/8a20a8621978632d76c43dfd28b67767-Abstract.html) · [SHAP TreeExplainer](https://shap.readthedocs.io/en/latest/generated/shap.TreeExplainer.html) · [LIME 原论文](https://doi.org/10.1145/2939672.2939778) · [PDP/ICE](https://scikit-learn.org/stable/modules/partial_dependence.html) | 输出空间与背景分布要明确；相关特征改变归因；局部代理要报告 fidelity；预测解释不是因果解释 |
+| 18 | [MLflow Tracking](https://mlflow.org/docs/latest/tracking/) · [Model Registry](https://www.mlflow.org/docs/latest/registry/) · [Feast](https://docs.feast.dev/) · [Google MLOps](https://docs.cloud.google.com/architecture/mlops-continuous-delivery-and-automation-pipelines-in-machine-learning) · [Hidden Technical Debt](https://proceedings.neurips.cc/paper/2015/hash/86df7dcfd896fcaf2674f757a2463eba-Abstract.html) | 区分 run 与 registry version/alias；point-in-time join 防止未来信息泄漏；MLOps level 是参考框架 |
+| 19 | [Backpropagation](https://www.nature.com/articles/323533a0) · [Xavier](https://proceedings.mlr.press/v9/glorot10a.html) · [He initialization](https://openaccess.thecvf.com/content_iccv_2015/html/He_Delving_Deep_into_Rectifiers_Surpassing_Human-Level_Performance_on_ImageNet_ICCV_2015_paper.html) · [BatchNorm](https://proceedings.mlr.press/v37/ioffe15.html) · [PyTorch BatchNorm1d variance estimators](https://docs.pytorch.org/docs/stable/generated/torch.nn.BatchNorm1d.html) · [Dropout](https://www.jmlr.org/beta/papers/v15/srivastava14a.html) | 初始化取决于 fan/激活；BN 训练与推理统计不同；Dropout 仅训练时随机失活；梯度与参数更新分离 |
+| 20 | [Autograd](https://docs.pytorch.org/docs/stable/notes/autograd.html) · [DataLoader](https://docs.pytorch.org/docs/stable/data.html) · [Module](https://docs.pytorch.org/docs/stable/generated/torch.nn.Module.html) · [AMP](https://docs.pytorch.org/docs/stable/amp.html) · [Saving/Loading](https://docs.pytorch.org/tutorials/beginner/saving_loading_models.html) | logits/目标形状匹配；eval 与 grad mode 分离；完整续训需要 optimizer/scaler/scheduler 状态；CUDA AMP 不可由 CPU CI 代替 |
+
+每章的详细主张、来源定位、状态和限制记录在 docs/evidence/16.json 至 docs/evidence/20.json。18 幅新 SVG 中，数值与机制示例均为解析推导或教学构造；不冒充外部 benchmark。
+
+## 第五批技术核查 · 21–25
+
+| 章节 | 一手论文 / 官方资料 | 必须保留的边界 |
+|---|---|---|
+| 21 | [ResNet 原论文](https://arxiv.org/abs/1512.03385) · [PyTorch Conv2d](https://docs.pytorch.org/docs/stable/generated/torch.nn.Conv2d.html) · [TorchVision ResNet-50 权重与 transforms](https://docs.pytorch.org/vision/main/models/generated/torchvision.models.resnet50.html) · [TorchVision 模型总览](https://docs.pytorch.org/vision/main/models.html) | 互相关与严格卷积区分；输出尺寸考虑 stride/padding/dilation/groups；3.57% 是原论文集成 top-5 结果；V1.5 stride 与 V2 resize 232/crop 224 需注明 |
+| 22 | [LSTM 原论文](https://doi.org/10.1162/neco.1997.9.8.1735) · [Forget gate 后续工作](https://doi.org/10.1162/089976600300015015) · [GRU / RNN Encoder–Decoder](https://arxiv.org/abs/1406.1078) · [Bahdanau Attention](https://arxiv.org/abs/1409.0473) · [Transformer](https://arxiv.org/abs/1706.03762) | 原始 LSTM 与现代 forget-gate 版本分开；GRU 门控约定说明；BPTT 梯度连乘；attention 权重不是因果解释；Transformer 自回归推理仍逐 token |
+| 23 | [Word2Vec](https://arxiv.org/abs/1301.3781) · [Transformer](https://arxiv.org/abs/1706.03762) · [BERT](https://arxiv.org/abs/1810.04805) · [RoBERTa](https://arxiv.org/abs/1907.11692) · [Hugging Face Tokenizer](https://huggingface.co/docs/transformers/main_classes/tokenizer) | tokenizer 与模型权重配套；BERT 原始 MLM/NSP 与 RoBERTa 后续设置区分；双向 encoder 与 causal decoder 的可见上下文不同 |
+| 24 | [GAN](https://arxiv.org/abs/1406.2661) · [VAE](https://arxiv.org/abs/1312.6114) · [DDPM](https://arxiv.org/abs/2006.11239) · [Latent Diffusion](https://arxiv.org/abs/2112.10752) · [GPT-2 report](https://openai.com/index/better-language-models/) | 原始 GAN minimax 与 non-saturating loss 区分；VAE 的 ELBO 和 KL 方向正确；DDPM 噪声日程与时间步一致；Latent Diffusion 的收益受编码器表达能力约束 |
+| 25 | [Sutton & Barto](http://incompleteideas.net/book/the-book-2nd.html) · [Q-Learning](https://doi.org/10.1007/BF00992698) · [DQN](https://www.nature.com/articles/nature14236) · [Double DQN](https://arxiv.org/abs/1509.06461) · [REINFORCE](https://doi.org/10.1162/neco.1992.4.2.229) · [PPO](https://arxiv.org/abs/1707.06347) · [Gymnasium Env API](https://gymnasium.farama.org/main/api/env/) | 表格 Q-learning 收敛依赖充分探索等条件；DQN target/replay 不保证任意任务稳定；terminated 与 truncated 区分；PPO clipping 不是严格信赖域保证 |
+
+详细主张、来源定位、状态和限制记录在 `docs/evidence/21.json` 至 `25.json`。新增 20 幅 SVG 是原创机制图；19 个 Python 示例使用随机/合成小张量核验形状和更新规则，不构成论文复现或生产模型性能结论。
+
+## 第六批一手来源与技术边界 · 26–28
+
+| 章节 | 一手论文 / 官方资料 | 审计要点 |
+|---|---|---|
+| 26 | [Attention Is All You Need](https://arxiv.org/abs/1706.03762) · [RAG: Lewis et al.](https://arxiv.org/abs/2005.11401) · [LoRA: Hu et al.](https://arxiv.org/abs/2106.09685) · [ReAct](https://arxiv.org/abs/2210.03629) · [Hugging Face KV Cache](https://huggingface.co/docs/transformers/en/kv_cache) | 自回归解码与训练并行计算区分；原始 RAG 与工程检索增强不同；LoRA 的矩阵维度与新增参数可推导；Agent 工具权限不能只靠提示词 |
+| 26 | [OWASP LLM Prompt Injection Prevention](https://cheatsheetseries.owasp.org/cheatsheets/LLM_Prompt_Injection_Prevention_Cheat_Sheet.html) · [Microsoft RAG Evaluators](https://learn.microsoft.com/en-us/azure/foundry/concepts/evaluation-evaluators/rag-evaluators) · [PyTorch SDPA](https://docs.pytorch.org/docs/stable/generated/torch.nn.functional.scaled_dot_product_attention.html) | 文档/工具输出属于不可信输入；检索 Recall@k 与 groundedness/accuracy 分开评估；不同 mask API 的 True/False 约定必须明确 |
+| 27 | [FastAPI Request Body](https://fastapi.tiangolo.com/tutorial/body/) · [FastAPI Lifespan](https://fastapi.tiangolo.com/advanced/events/) · [scikit-learn Model Persistence](https://scikit-learn.org/stable/model_persistence.html) · [ONNX Runtime Python](https://onnxruntime.ai/docs/get-started/with-python) | API 验证、生命周期与 CPU 推理并发；受信任反序列化和依赖兼容；ONNX 输出数值必须同输入对照，不能假设转换必然加速 |
+| 27 | [Docker Build Best Practices](https://docs.docker.com/build/building/best-practices/) · [Google MLOps](https://docs.cloud.google.com/architecture/mlops-continuous-delivery-and-automation-pipelines-in-machine-learning) · [NumPy Quantile](https://numpy.org/doc/stable/reference/generated/numpy.quantile.html) | 容器仅是构建示例；95/5 发布和 60ms 延迟预算属于人工机制图，不代表任何真实服务或万能阈值 |
+| 28 | [Feast historical feature retrieval](https://docs.feast.dev/getting-started/concepts/feature-retrieval) · [scikit-learn TimeSeriesSplit](https://scikit-learn.org/stable/modules/generated/sklearn.model_selection.TimeSeriesSplit.html) · [Common pitfalls](https://scikit-learn.org/stable/common_pitfalls.html) · [Classification threshold](https://scikit-learn.org/stable/modules/classification_threshold.html) | as-of 历史特征、事件时间与 available_at；未来 7 天标签窗口；时序 gap 防跨期泄漏；阈值由验证集选，测试集不可参与调参 |
+| 28 | [Randomized uplift model evaluation research](https://www.sciencedirect.com/science/article/pii/S037722172300721X) · [Hidden Technical Debt](https://proceedings.neurips.cc/paper/2015/hash/86df7dcfd896fcaf2674f757a2463eba-Abstract.html) · [Model persistence](https://scikit-learn.org/stable/model_persistence.html) | 购买预测概率不同于优惠券处理效应；随机处理/对照和利润成本需要真实实验；model SHA 不能代替来源审查，工件必须可追溯 |
+
+全部新增 15 幅章节 SVG 为原创计算机制图，示意中的企业政策、用户事件、处理组结果、延迟预算、Canary 比例和成本阈值均为构造案例。代码片段的运行成功不等于真实语义检索、云端部署、生产 QPS、商业试验或 LLM 基准复现。逐项来源定位与 verified / derived / illustrative 状态见 `docs/evidence/26.json` 至 `28.json`。
+
+## 全站第二轮审计的优先级
+
+1. 技术事实：文中跨年份模型、框架 API、过时服务建议和引用是否仍符合当前官方版本。
+2. 数学与 SVG：分母、矩阵形状、轴含义、箭头起点/终点、数据标签与图注是否一一对应；每张 SVG 应单独以浏览器或 XML 工具打开。
+3. Python 示例：固定依赖与随机种子，在 CI 的 Python 3.12 中逐段独立执行；真实模型下载和外部服务不混入离线质量门禁。
+4. 移动端与无障碍：360/390px 没有文档级水平溢出；宽图/公式局部滚动；focus 可见；MathML 实际排版及打印/无联网阅读可用。
+5. 发布与回滚：先通过 PR 静态、Python、Playwright，再合并并检查 Pages 实际工作流；没有独立在线访问复核则明确标记未验证。

@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 460" role="img" aria-labelledby="cnn-residual-title cnn-residual-desc">
+<title id="cnn-residual-title">ResNet 恒等捷径与投影捷径</title><desc id="cnn-residual-desc">同形状时将残差分支 F(x) 与恒等捷径 x 相加；空间尺寸或通道变化时，捷径需投影到相同形状。</desc>
+<defs>
+ <marker id="cnn-residual-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 Z" fill="#55736d"/></marker>
+ <marker id="cnn-residual-orange" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L10 5 L0 10 Z" fill="#bc6a47"/></marker>
+ <style>text{font-family:Inter,ui-sans-serif,system-ui,"Noto Sans CJK SC",sans-serif;fill:#203b38}.title{font-size:22px;font-weight:750}.label{font-size:16px;font-weight:650}.small{font-size:13px;fill:#536b66}.tiny{font-size:12px;fill:#536b66}.box{fill:#fffdf8;stroke:#a9bdb3;stroke-width:2}.green{fill:#e3f1eb;stroke:#16786f;stroke-width:2}.orange{fill:#f8e9df;stroke:#bc6a47;stroke-width:2}.purple{fill:#eee9f7;stroke:#7863b0;stroke-width:2}.amber{fill:#f7f0dc;stroke:#9b7533;stroke-width:2}.line{fill:none;stroke:#55736d;stroke-width:2.5;marker-end:url(#cnn-residual-arrow)}.oline{fill:none;stroke:#bc6a47;stroke-width:2.5;marker-end:url(#cnn-residual-orange)}.dash{stroke-dasharray:7 6}</style>
+</defs><rect width="900" height="460" rx="22" fill="#fbfaf6"/>
+<text x="40" y="42" class="title">相加要求两条分支的张量形状完全一致</text>
+<text x="70" y="100" class="label">同形状：identity shortcut</text>
+<rect x="55" y="145" width="115" height="64" rx="12" class="green"/><text x="112" y="183" text-anchor="middle" class="label">x</text>
+<path d="M170 176 H245" class="line"/><rect x="250" y="145" width="150" height="64" rx="12" class="orange"/><text x="325" y="183" text-anchor="middle" class="label">F(x)</text><path d="M400 176 H455" class="line"/>
+<circle cx="480" cy="176" r="24" fill="#fff" stroke="#16786f" stroke-width="3"/><text x="480" y="184" text-anchor="middle" class="label">+</text><path d="M170 176 V95 H480 V147" class="line"/>
+<path d="M505 176 H570" class="line"/><rect x="585" y="145" width="140" height="64" rx="12" class="purple"/><text x="655" y="183" text-anchor="middle" class="label">y = F(x)+x</text>
+<line x1="40" y1="250" x2="860" y2="250" stroke="#d5ddd5"/>
+<text x="70" y="292" class="label">形状变化：projection shortcut</text>
+<rect x="55" y="332" width="115" height="58" rx="12" class="green"/><text x="112" y="368" text-anchor="middle" class="label">x</text><path d="M170 360 H230" class="line"/><rect x="240" y="332" width="165" height="58" rx="12" class="orange"/><text x="322" y="368" text-anchor="middle" class="small">残差分支 stride=2</text><path d="M405 360 H470" class="line"/><circle cx="495" cy="360" r="22" fill="#fff" stroke="#16786f" stroke-width="3"/><text x="495" y="368" text-anchor="middle" class="label">+</text><rect x="240" y="410" width="165" height="38" rx="9" class="purple"/><text x="322" y="435" text-anchor="middle" class="tiny">1×1 Conv + stride 2</text><path d="M170 360 V429 H230" class="line"/><path d="M405 429 H495 V383" class="line"/>
+<text x="540" y="352" class="small">两支输出都为</text><text x="540" y="377" class="small">N × C' × H' × W'</text>
+</svg>

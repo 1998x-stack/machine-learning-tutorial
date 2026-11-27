@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 460" role="img" aria-labelledby="gen-gan-title gen-gan-desc">
+<title id="gen-gan-title">GAN 的生成器与判别器交替博弈</title><desc id="gen-gan-desc">生成器把噪声 z 映射为合成样本；判别器比较真实与合成样本。两者的梯度更新目标不同。</desc>
+<defs>
+ <marker id="gen-gan-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 Z" fill="#55736d"/></marker>
+ <marker id="gen-gan-orange" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L10 5 L0 10 Z" fill="#bc6a47"/></marker>
+ <style>text{font-family:Inter,ui-sans-serif,system-ui,"Noto Sans CJK SC",sans-serif;fill:#203b38}.title{font-size:22px;font-weight:750}.label{font-size:16px;font-weight:650}.small{font-size:13px;fill:#536b66}.tiny{font-size:12px;fill:#536b66}.box{fill:#fffdf8;stroke:#a9bdb3;stroke-width:2}.green{fill:#e3f1eb;stroke:#16786f;stroke-width:2}.orange{fill:#f8e9df;stroke:#bc6a47;stroke-width:2}.purple{fill:#eee9f7;stroke:#7863b0;stroke-width:2}.amber{fill:#f7f0dc;stroke:#9b7533;stroke-width:2}.line{fill:none;stroke:#55736d;stroke-width:2.5;marker-end:url(#gen-gan-arrow)}.oline{fill:none;stroke:#bc6a47;stroke-width:2.5;marker-end:url(#gen-gan-orange)}.dash{stroke-dasharray:7 6}</style>
+</defs><rect width="900" height="460" rx="22" fill="#fbfaf6"/>
+<text x="40" y="42" class="title">GAN：一个网络造样本，另一个网络评估真假</text>
+<rect x="55" y="145" width="130" height="70" rx="12" class="purple"/><text x="120" y="188" text-anchor="middle" class="label">噪声 z</text><path d="M185 180 H255" class="line"/>
+<rect x="270" y="145" width="150" height="70" rx="12" class="orange"/><text x="345" y="188" text-anchor="middle" class="label">Generator G</text><path d="M420 180 H490" class="line"/>
+<rect x="505" y="145" width="135" height="70" rx="12" class="green"/><text x="572" y="188" text-anchor="middle" class="label">假样本 G(z)</text><path d="M640 180 H700" class="line"/>
+<rect x="715" y="145" width="135" height="70" rx="12" class="purple"/><text x="782" y="188" text-anchor="middle" class="label">Discriminator</text>
+<rect x="55" y="300" width="135" height="65" rx="12" class="green"/><text x="122" y="340" text-anchor="middle" class="label">真实样本 x</text><path d="M190 332 H680 V240 H715" class="line"/>
+<path d="M782 215 V260 H345 V220" class="oline"/><text x="520" y="286" class="small">生成器更新：提高 D(G(z))</text>
+<text x="55" y="415" class="small">D 学习区分真实/合成；G 学习欺骗 D。训练是交替优化，不保证每次更新都改善样本质量。</text>
+</svg>

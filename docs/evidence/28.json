@@ -1,0 +1,95 @@
+{
+  "chapter": "28",
+  "claims": [
+    {
+      "id": "future-label",
+      "claim": "A user purchase prediction at time t must compute features only from information available by t, while its future seven-day label comes from later events.",
+      "kind": "derivation",
+      "source_url": "https://docs.feast.dev/getting-started/concepts/feature-retrieval",
+      "locator": "Point-in-time historical feature retrieval",
+      "status": "derived",
+      "notes": "A target definition and observation window are explicit, not sourced benchmark results."
+    },
+    {
+      "id": "point-in-time",
+      "claim": "Historical feature joins enforce event-time correctness and must account for data availability, not blindly use the latest value.",
+      "kind": "implementation",
+      "source_url": "https://docs.feast.dev/getting-started/concepts/feature-retrieval",
+      "locator": "Feast historical feature retrieval",
+      "status": "verified",
+      "notes": "available_at may differ from source event time and needs production validation."
+    },
+    {
+      "id": "temporal-split",
+      "claim": "TimeSeriesSplit uses chronological ordering and supports a gap parameter to separate training and evaluation observations.",
+      "kind": "implementation",
+      "source_url": "https://scikit-learn.org/stable/modules/generated/sklearn.model_selection.TimeSeriesSplit.html",
+      "locator": "TimeSeriesSplit docs including gap",
+      "status": "verified",
+      "notes": "The custom sample uses calendar-time gaps matched to the label horizon, not an off-the-shelf index count."
+    },
+    {
+      "id": "label-embargo",
+      "claim": "Seven-day future labels must be mature by the next evaluation period; a seven-day embargo is one sufficient toy rule under complete on-time labeling.",
+      "kind": "derivation",
+      "source_url": "https://scikit-learn.org/stable/modules/generated/sklearn.model_selection.TimeSeriesSplit.html",
+      "locator": "Gap and ordered train/test behavior",
+      "status": "derived",
+      "notes": "Late labels, correlated entities and ingestion delays may require a longer or more specific boundary."
+    },
+    {
+      "id": "threshold-validation",
+      "claim": "Thresholds must be chosen on validation/CV data, not the final untouched test partition.",
+      "kind": "implementation",
+      "source_url": "https://scikit-learn.org/stable/modules/classification_threshold.html",
+      "locator": "Threshold tuning, selection bias and CV guidance",
+      "status": "verified",
+      "notes": "Toy cost ratio 1:5 is illustrative, not a real coupon utility function."
+    },
+    {
+      "id": "pipeline-contract",
+      "claim": "Training preprocessing belongs inside a Pipeline to avoid validation/test data leakage and maintain a coherent inference artifact.",
+      "kind": "implementation",
+      "source_url": "https://scikit-learn.org/stable/common_pitfalls.html",
+      "locator": "Data leakage and Pipeline guidance",
+      "status": "verified",
+      "notes": "Same code path cannot by itself prove as-of correctness of external feature sources."
+    },
+    {
+      "id": "uplift-vs-propensity",
+      "claim": "Purchase probability P(Y|X) differs from the causal uplift of sending a coupon; randomized treatment/control groups support estimating an average effect under design assumptions.",
+      "kind": "research",
+      "source_url": "https://www.sciencedirect.com/science/article/pii/S037722172300721X",
+      "locator": "Randomized-control-trial uplift evaluation",
+      "status": "verified",
+      "notes": "The example uses an artificial treatment effect and random assignment; cannot represent real company uplift."
+    },
+    {
+      "id": "artifact-trace",
+      "claim": "A production ML release requires dependency, data, training code, model, evaluation, schema and monitoring lineage, not only a serialized estimator.",
+      "kind": "research",
+      "source_url": "https://proceedings.neurips.cc/paper/2015/hash/86df7dcfd896fcaf2674f757a2463eba-Abstract.html",
+      "locator": "Hidden Technical Debt in Machine Learning Systems",
+      "status": "verified",
+      "notes": "Auditability/rollback contract is an engineering requirement, not a claim of deployed service."
+    },
+    {
+      "id": "joblib-safety",
+      "claim": "Joblib serializes Python objects and cannot safely load untrusted artifacts; hash verifies file integrity but not provenance or safety.",
+      "kind": "implementation",
+      "source_url": "https://scikit-learn.org/stable/model_persistence.html",
+      "locator": "Security and compatibility",
+      "status": "verified",
+      "notes": "Toy persistence example only reloads its own freshly created artifact."
+    },
+    {
+      "id": "synthetic-evaluation",
+      "claim": "Model metrics from generated user event features are synthetic diagnostic outputs, not real e-commerce benchmark results.",
+      "kind": "toy",
+      "source_url": "https://scikit-learn.org/stable/modules/model_evaluation.html",
+      "locator": "Evaluation metric definitions",
+      "status": "illustrative",
+      "notes": "No external production dataset used; the generated label model is known by construction."
+    }
+  ]
+}

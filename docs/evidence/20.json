@@ -1,0 +1,68 @@
+{
+  "chapter": "20",
+  "claims": [
+    {
+      "id": "autograd",
+      "claim": "PyTorch autograd records a dynamic computation graph during forward execution and computes gradients by reverse-mode automatic differentiation.",
+      "kind": "implementation",
+      "source_url": "https://docs.pytorch.org/docs/stable/notes/autograd.html",
+      "locator": "Autograd mechanics: graph history",
+      "status": "verified",
+      "notes": "Gradients accumulate in leaf .grad fields unless cleared."
+    },
+    {
+      "id": "dataloader",
+      "claim": "DataLoader supports automatic batching, samplers, map-style and iterable-style datasets, multiprocessing and memory pinning.",
+      "kind": "implementation",
+      "source_url": "https://docs.pytorch.org/docs/stable/data.html",
+      "locator": "torch.utils.data documentation",
+      "status": "verified",
+      "notes": "num_workers, pin_memory and drop_last are workload-dependent choices."
+    },
+    {
+      "id": "module-modes",
+      "claim": "Module.train/eval toggles training-sensitive submodule behavior such as Dropout and BatchNorm, but is distinct from autograd grad mode.",
+      "kind": "implementation",
+      "source_url": "https://docs.pytorch.org/docs/stable/generated/torch.nn.Module.html",
+      "locator": "Module.train API",
+      "status": "verified",
+      "notes": "Evaluation commonly combines model.eval() with inference_mode()."
+    },
+    {
+      "id": "training-step",
+      "claim": "The standard optimization step clears gradients, computes forward loss, calls backward and then optimizer.step.",
+      "kind": "implementation",
+      "source_url": "https://docs.pytorch.org/tutorials/beginner/basics/optimization_tutorial.html",
+      "locator": "Optimizing Model Parameters",
+      "status": "verified",
+      "notes": "The order can change for gradient accumulation or other specialized training algorithms."
+    },
+    {
+      "id": "amp",
+      "claim": "Automatic mixed precision commonly combines autocast with GradScaler for float16 training on supported accelerators.",
+      "kind": "implementation",
+      "source_url": "https://docs.pytorch.org/docs/stable/amp.html",
+      "locator": "Automatic Mixed Precision documentation",
+      "status": "verified",
+      "notes": "bfloat16 and CPU execution may use different scaling behavior; hardware path must be tested."
+    },
+    {
+      "id": "checkpoint",
+      "claim": "Resuming training requires optimizer state in addition to model state, and may also require scheduler/scaler/progress state.",
+      "kind": "implementation",
+      "source_url": "https://docs.pytorch.org/tutorials/beginner/saving_loading_models.html",
+      "locator": "Saving and Loading a General Checkpoint",
+      "status": "verified",
+      "notes": "The runnable example uses weights_only=True for a checkpoint containing supported tensors and primitive values."
+    },
+    {
+      "id": "training-demo",
+      "claim": "The MLP experiment standardizes only training data, uses a DataLoader, evaluates in eval/inference_mode, and conditionally enables CUDA AMP.",
+      "kind": "experiment",
+      "source_url": "https://github.com/1998x-stack/machine-learning-tutorial/blob/main/docs/chapters/20.html",
+      "locator": "DataLoader and MLP training experiment",
+      "status": "illustrative",
+      "notes": "The default CI runner is CPU-only and does not verify CUDA acceleration."
+    }
+  ]
+}

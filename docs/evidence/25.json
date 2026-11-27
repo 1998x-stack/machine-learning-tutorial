@@ -1,0 +1,68 @@
+{
+  "chapter": "25",
+  "claims": [
+    {
+      "id": "mdp-markov",
+      "claim": "An MDP specifies states, actions, transition dynamics, rewards and discounting; the Markov property conditions future dynamics on the current state and action.",
+      "kind": "textbook",
+      "source_url": "http://incompleteideas.net/book/the-book-2nd.html",
+      "locator": "Chapters 3–4",
+      "status": "verified",
+      "notes": "The article distinguishes state from observation and notes POMDP cases."
+    },
+    {
+      "id": "q-learning-update",
+      "claim": "Q-Learning updates a state-action estimate toward reward plus discounted maximum next-state action value, using an off-policy target.",
+      "kind": "research",
+      "source_url": "https://doi.org/10.1007/BF00992698",
+      "locator": "Watkins & Dayan (1992), Q-learning",
+      "status": "verified",
+      "notes": "Convergence statements are scoped to finite tabular settings and standard assumptions."
+    },
+    {
+      "id": "dqn-stabilizers",
+      "claim": "The original DQN combines experience replay with a target network to stabilize value learning from high-dimensional observations.",
+      "kind": "research",
+      "source_url": "https://www.nature.com/articles/nature14236",
+      "locator": "Methods: experience replay and target Q-network",
+      "status": "verified",
+      "notes": "The article does not claim these two techniques guarantee stability for arbitrary environments."
+    },
+    {
+      "id": "double-dqn",
+      "claim": "Double DQN separates action selection and action evaluation to reduce maximization overestimation.",
+      "kind": "research",
+      "source_url": "https://arxiv.org/abs/1509.06461",
+      "locator": "Double Q-learning for deep reinforcement learning",
+      "status": "verified",
+      "notes": "The code block illustrates the selection/evaluation tensor contract."
+    },
+    {
+      "id": "reinforce",
+      "claim": "REINFORCE is a Monte Carlo policy-gradient estimator based on return-weighted log policy gradients.",
+      "kind": "research",
+      "source_url": "https://doi.org/10.1162/neco.1992.4.2.229",
+      "locator": "Williams (1992), Simple Statistical Gradient-Following Algorithms",
+      "status": "verified",
+      "notes": "A baseline independent of the sampled action can reduce variance without changing the expected gradient."
+    },
+    {
+      "id": "ppo-clipping",
+      "claim": "PPO optimizes a clipped surrogate policy objective to discourage excessively large probability-ratio updates.",
+      "kind": "research",
+      "source_url": "https://arxiv.org/abs/1707.06347",
+      "locator": "Clipped surrogate objective",
+      "status": "verified",
+      "notes": "Clipping is not described as a strict trust-region guarantee."
+    },
+    {
+      "id": "gymnasium-api",
+      "claim": "Gymnasium step returns observation, reward, terminated, truncated and info; terminated and truncated have distinct semantics.",
+      "kind": "implementation",
+      "source_url": "https://gymnasium.farama.org/main/api/env/",
+      "locator": "Env.step API",
+      "status": "verified",
+      "notes": "The text explains why time-limit truncation may still bootstrap."
+    }
+  ]
+}
